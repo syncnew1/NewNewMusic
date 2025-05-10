@@ -9,6 +9,12 @@ export function PlayerProvider({ children }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.7);
 
+  const playSong = (song, index) => {
+    setCurrentSong(song);
+    setCurrentSongIndex(index);
+    setIsPlaying(true);
+  };
+
   return (
     <PlayerContext.Provider
       value={{
@@ -21,7 +27,8 @@ export function PlayerProvider({ children }) {
         isPlaying,
         setIsPlaying,
         volume,
-        setVolume
+        setVolume,
+        playSong
       }}
     >
       {children}
