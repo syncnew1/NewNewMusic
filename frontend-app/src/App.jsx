@@ -6,7 +6,6 @@ import { PlayerProvider, usePlayer } from './context/PlayerContext';
 function App() {
   const { songs, setSongs, currentSong, setCurrentSong, currentSongIndex, setCurrentSongIndex, isPlaying, setIsPlaying, volume, setVolume } = usePlayer();
   const [preloadedSongs, setPreloadedSongs] = useState({});
-  const audioRef = useRef(null);
 
   useEffect(() => {
     fetch('/api/songs')
@@ -32,33 +31,30 @@ function App() {
     }
   }, [currentSongIndex, songs, preloadedSongs]);
 
-  let isAudioPlaying = false;
+  const audioRef = useRef(null);
 
 const playSong = (song, index) => {
-  if (isAudioPlaying) return;
-  
   // 清理之前的音频实例
   if (audioRef.current) {
     audioRef.current.pause();
-    audioRef.current.currentTime = 0;
     audioRef.current.removeEventListener('ended', handleAudioEnded);
   }
   
-  isAudioPlaying = true;
+  // 创建新的音频实例
+  const audio = new Audio(`/api/songs/stream/${song.filePath}`);
+  audioRef.current = audio;
+  
   setCurrentSong(song);
   setCurrentSongIndex(index);
   setIsPlaying(true);
-
-  // 创建新的音频实例
-  audioRef.current = new Audio(`/api/songs/stream/${song.filePath}`);
-  audioRef.current.volume = volume;
-  audioRef.current.addEventListener('ended', handleAudioEnded);
-  audioRef.current.play().catch(e => console.error('Play error:', e));
+  
+  audio.play().catch(e => console.error('Play error:', e));
+  
+  audio.addEventListener('ended', handleAudioEnded);
 };
 
 const handleAudioEnded = () => {
-  isAudioPlaying = false;
-  playNextSong();
+  setIsPlaying(false);
 };
 
   const togglePlayPause = () => {
@@ -66,7 +62,7 @@ const handleAudioEnded = () => {
   };
 
   const playNextSong = () => {
-  if (songs.length === 0 || isAudioPlaying) return;
+  if (songs.length === 0) return;
   
   const nextIndex = (currentSongIndex + 1) % songs.length;
   const nextSong = songs[nextIndex];
@@ -75,26 +71,26 @@ const handleAudioEnded = () => {
     // 清理之前的音频实例
     if (audioRef.current) {
       audioRef.current.pause();
-      audioRef.current.currentTime = 0;
       audioRef.current.removeEventListener('ended', handleAudioEnded);
     }
     
-    isAudioPlaying = true;
+    // 使用预加载的音频
     audioRef.current = preloadedSongs[nextSong.id];
     audioRef.current.currentTime = 0;
-    audioRef.current.volume = volume;
-    audioRef.current.addEventListener('ended', handleAudioEnded);
     audioRef.current.play().catch(e => console.error('Play error:', e));
+    
     setIsPlaying(true);
     setCurrentSong(nextSong);
     setCurrentSongIndex(nextIndex);
+    
+    audioRef.current.addEventListener('ended', handleAudioEnded);
   } else {
     playSong(nextSong, nextIndex);
   }
 };
 
   const playPreviousSong = () => {
-  if (songs.length === 0 || isAudioPlaying) return;
+  if (songs.length === 0) return;
   
   const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
   const prevSong = songs[prevIndex];
@@ -103,19 +99,19 @@ const handleAudioEnded = () => {
     // 清理之前的音频实例
     if (audioRef.current) {
       audioRef.current.pause();
-      audioRef.current.currentTime = 0;
       audioRef.current.removeEventListener('ended', handleAudioEnded);
     }
     
-    isAudioPlaying = true;
+    // 使用预加载的音频
     audioRef.current = preloadedSongs[prevSong.id];
     audioRef.current.currentTime = 0;
-    audioRef.current.volume = volume;
-    audioRef.current.addEventListener('ended', handleAudioEnded);
     audioRef.current.play().catch(e => console.error('Play error:', e));
+    
     setIsPlaying(true);
     setCurrentSong(prevSong);
     setCurrentSongIndex(prevIndex);
+    
+    audioRef.current.addEventListener('ended', handleAudioEnded);
   } else {
     playSong(prevSong, prevIndex);
   }
@@ -249,12 +245,14 @@ const handleAudioEnded = () => {
                 />
               </div>
             </div>
-            {audioRef.current && (
+            {isPlaying && currentSong && currentSong.filePath && (
               <audio
-                ref={audioRef}
                 controls
                 autoPlay
+                src={`/api/songs/stream/${currentSong.filePath}`}
                 className="hidden"
+                onEnded={() => setIsPlaying(false)}
+                volume={volume}
                 onTimeUpdate={(e) => {
                   const audioElement = e.target;
                   const progressBar = document.querySelector('.progress-bar');
