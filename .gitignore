@@ -22,7 +22,7 @@ target/
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
-frontend-app/dist/
+**/dist/
 /nbdist/
 /.nb-gradle/
 build/
@@ -32,7 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 
-frontend-app/node_modules/
+**/node_modules/
 *.exe
 *.msi
 *.dmg
