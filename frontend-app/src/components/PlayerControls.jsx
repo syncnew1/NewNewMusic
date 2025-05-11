@@ -1,7 +1,9 @@
 import React from 'react';
-import { usePlayer } from '../context/PlayerContext';
+import { usePlayer } from '../contexts/PlayerContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 function PlayerControls() {
+  const { theme } = useTheme();
   const { 
     currentSong, 
     isPlaying, 
@@ -82,8 +84,8 @@ function PlayerControls() {
   };
 
   return (
-    <div className="player-controls p-4 bg-gray-800 text-white fixed bottom-0 left-0 right-0">
-      {currentSong && (
+    <div className={`player-controls p-4 fixed bottom-0 left-0 right-0 ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-900 border-t border-gray-300'}`}>
+      {currentSong && currentSong.filePath && (
         <audio 
           ref={audioRef} 
           src={`http://localhost:8080/api/songs/stream/${currentSong.filePath}`}
@@ -96,8 +98,8 @@ function PlayerControls() {
         <div className="song-info w-1/4">
           {currentSong ? (
             <>
-              <p className="text-lg font-semibold">{currentSong.title}</p>
-              <p className="text-sm text-gray-400">{currentSong.artist}</p>
+              <p className="text-lg font-semibold">{currentSong.title || 'Unknown Title'}</p>
+              <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>{currentSong.artist || 'Unknown Artist'}</p>
             </>
           ) : (
             <p>No song selected</p>
@@ -105,33 +107,33 @@ function PlayerControls() {
         </div>
 
         <div className="controls flex flex-col items-center w-1/2">
-          <div className="flex items-center space-x-4 mb-2">
-            <button onClick={handlePlayPrev} disabled={!currentSong || songs.length === 0} className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600 disabled:opacity-50"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-skip-back"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg></button>
-            <button onClick={togglePlayPause} disabled={!currentSong} className="px-4 py-2 bg-blue-500 rounded hover:bg-blue-400 disabled:opacity-50">
+          <div className={`flex items-center space-x-4 mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-700'}`}>
+            <button onClick={handlePlayPrev} disabled={!currentSong || songs.length === 0} className={`px-3 py-1 rounded disabled:opacity-50 ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-300 hover:bg-gray-400 text-gray-800'}`}><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-skip-back"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg></button>
+            <button onClick={togglePlayPause} disabled={!currentSong} className={`px-4 py-2 rounded disabled:opacity-50 ${theme === 'dark' ? 'bg-blue-500 hover:bg-blue-400' : 'bg-blue-600 hover:bg-blue-500 text-white'}`}>
               {isPlaying ? 
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-pause"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg> : 
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-play"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>}
             </button>
-            <button onClick={handlePlayNext} disabled={!currentSong || songs.length === 0} className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600 disabled:opacity-50"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-skip-forward"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg></button>
+            <button onClick={handlePlayNext} disabled={!currentSong || songs.length === 0} className={`px-3 py-1 rounded disabled:opacity-50 ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-300 hover:bg-gray-400 text-gray-800'}`}><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-skip-forward"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg></button>
           </div>
           {currentSong && (
             <div className="progress-bar w-full flex items-center">
-              <span className="text-xs mr-2">{formatTime(audioRef.current?.currentTime || 0)}</span>
+              <span className={`text-xs mr-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>{formatTime(audioRef.current?.currentTime || 0)}</span>
               <input 
                 type="range" 
                 min="0" 
                 max="100" 
                 value={progress} 
                 onChange={handleProgressChange} 
-                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                className={`w-full h-2 rounded-lg appearance-none cursor-pointer ${theme === 'dark' ? 'bg-gray-600' : 'bg-gray-400'}`}
                 disabled={!currentSong}
               />
-              <span className="text-xs ml-2">{formatTime(duration)}</span>
+              <span className={`text-xs ml-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>{formatTime(duration)}</span>
             </div>
           )}
         </div>
 
-        <div className="volume-control w-1/4 flex items-center justify-end">
+        <div className={`volume-control w-1/4 flex items-center justify-end ${theme === 'dark' ? 'text-white' : 'text-gray-700'}`}>
           <input 
             type="range" 
             min="0" 
@@ -139,7 +141,7 @@ function PlayerControls() {
             step="0.01" 
             value={volume} 
             onChange={handleVolumeChange} 
-            className="w-24 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+            className={`w-24 h-2 rounded-lg appearance-none cursor-pointer ${theme === 'dark' ? 'bg-gray-600' : 'bg-gray-400'}`}
           />
         </div>
       </div>

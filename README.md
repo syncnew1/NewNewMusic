@@ -26,12 +26,7 @@ npm install
 ```
 npm run dev
 ```
-5. 启动 Electron 应用 (开发模式)
-   进入 `frontend-app` 目录:
-```
-cd frontend-app
-npm run electron:dev
-```
+
 
 ## 使用方法
 1. 访问 http://localhost:5173/
@@ -66,14 +61,7 @@ npm run build
 ```
 2. 打包后端项目
 
-### Electron 应用
-1. 构建 Electron 应用 (进入 `frontend-app` 目录后执行)
-```bash
-cd frontend-app
-npm run electron:build
-```
-   构建完成后，可在 `frontend-app/dist_electron` 目录下找到打包好的应用。
-
+## 部署步骤
 2. 打包后端项目
 ```
 mvn clean package
