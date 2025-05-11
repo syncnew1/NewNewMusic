@@ -22,9 +22,15 @@ cd NewNewMusic
 ```
 npm install
 ```
-4. 启动开发服务器
+4. 启动开发服务器 (Web)
 ```
 npm run dev
+```
+5. 启动 Electron 应用 (开发模式)
+   进入 `frontend-app` 目录:
+```
+cd frontend-app
+npm run electron:dev
 ```
 
 ## 使用方法
@@ -51,10 +57,23 @@ npm run dev
 访问 [API 文档](http://localhost:8080/swagger-ui.html) 查看详细接口说明
 
 ## 部署步骤
+
+### Web 应用
 1. 构建前端项目
-```
+```bash
+cd frontend-app
 npm run build
 ```
+2. 打包后端项目
+
+### Electron 应用
+1. 构建 Electron 应用 (进入 `frontend-app` 目录后执行)
+```bash
+cd frontend-app
+npm run electron:build
+```
+   构建完成后，可在 `frontend-app/dist_electron` 目录下找到打包好的应用。
+
 2. 打包后端项目
 ```
 mvn clean package
