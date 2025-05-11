@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+# 忽略前端构建产物
+frontend-app/dist/
+frontend-app/node_modules/
+*.exe

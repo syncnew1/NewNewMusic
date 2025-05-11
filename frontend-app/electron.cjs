@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const isDev = require('electron-is-dev');
+
 
 function createWindow() {
   // 创建浏览器窗口
@@ -15,14 +15,18 @@ function createWindow() {
   });
 
   // 加载应用
-  if (isDev) {
+  // app.isPackaged 在应用打包后为 true，开发时为 false
+  if (process.env.NODE_ENV === 'development' || !app.isPackaged) {
     // 开发模式下加载 Vite 开发服务器
     mainWindow.loadURL('http://localhost:5173');
     // 打开开发者工具
     mainWindow.webContents.openDevTools();
   } else {
     // 生产模式下加载打包后的 index.html
-    mainWindow.loadFile(path.join(__dirname, 'dist', 'index.html'));
+    // 通常打包工具会将 vite build 的输出（默认为 dist 目录的内容）放到asar包的根目录
+    mainWindow.loadFile(path.join(__dirname, 'index.html'));
+    // 在生产环境也打开开发者工具，以便调试白屏问题
+    mainWindow.webContents.openDevTools(); 
   }
 
   // 可以在这里处理 IPC 事件，例如：
