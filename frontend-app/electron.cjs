@@ -11,6 +11,7 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.cjs'), // 如果您有预加载脚本
       contextIsolation: true,
       nodeIntegration: false, // 为了安全，推荐设置为 false，并通过 preload 暴露特定 API
+      webSecurity: false, // 临时禁用 webSecurity 以进行调试
     },
   });
 
@@ -24,7 +25,8 @@ function createWindow() {
   } else {
     // 生产模式下加载打包后的 index.html
     // 通常打包工具会将 vite build 的输出（默认为 dist 目录的内容）放到asar包的根目录
-    mainWindow.loadFile(path.join(__dirname, 'index.html'));
+    // Assuming 'dist' folder is packaged as a subfolder, adjust path accordingly.
+    mainWindow.loadFile(path.join(__dirname, 'dist', 'index.html'));
     // 在生产环境也打开开发者工具，以便调试白屏问题
     mainWindow.webContents.openDevTools(); 
   }

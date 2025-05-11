@@ -33,7 +33,8 @@ build/
 .vscode/
 
 
-# 忽略前端构建产物
-frontend-app/dist/
-frontend-app/node_modules/
+/dist/
+/node_modules/
 *.exe
+*.msi
+*.dmg
