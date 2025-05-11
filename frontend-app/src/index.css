@@ -2,8 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary-bg: #ffffff;
+  --primary-text: #1f2937; /* Tailwind gray-800 */
+  --secondary-text: #4b5563; /* Tailwind gray-600 */
+  --accent-color: #3b82f6; /* Tailwind blue-500 */
+  --accent-text-color: #ffffff; /* Text color for on accent background */
+  --card-bg: #f9fafb; /* Tailwind gray-50 */
+  --border-color: #e5e7eb; /* Tailwind gray-200 */
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --link-hover-color: #000000;
+  --button-hover-opacity: 0.8;
+}
+
+.dark {
+  --primary-bg: #111827; /* Tailwind gray-900 */
+  --primary-text: #f3f4f6; /* Tailwind gray-100 */
+  --secondary-text: #9ca3af; /* Tailwind gray-400 */
+  --accent-color: #60a5fa; /* Tailwind blue-400 */
+  --accent-text-color: #111827; /* Text color for on accent background in dark mode */
+  --card-bg: #1f2937; /* Tailwind gray-800 */
+  --border-color: #374151; /* Tailwind gray-700 */
+  --shadow-color: rgba(255, 255, 255, 0.05);
+  --link-hover-color: #ffffff;
+}
+
 body {
   min-height: 100vh;
+  background-color: var(--primary-bg);
+  color: var(--primary-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 code {
@@ -16,13 +44,5 @@ code {
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-  background-color: #ffffff; /* White background for the main content area */
-  border-radius: 1rem; /* Slightly reduced border-radius */
-  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.1); /* Softer shadow for light theme */
-}
-
-.dark #root {
-  background-color: #1a1a1a;
-  color: #ffffff;
-  box-shadow: 0 4px 16px 0 rgba(255, 255, 255, 0.05);
+  /* Background and shadow are now handled by body or specific components like App's main div */
 }
