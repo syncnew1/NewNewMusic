@@ -7,8 +7,14 @@ import PlayerControls from './components/PlayerControls';
 import FavoritesPage from './pages/FavoritesPage'; // Import FavoritesPage
 import SearchPage from './pages/SearchPage'; // Import SearchPage
 import { useTheme } from './contexts/ThemeContext';
+import { useContext } from 'react'; // Add useContext
+import { AuthContext } from './contexts/AuthContext'; // Import AuthContext
+import LoginPage from './pages/LoginPage'; // Import LoginPage
+import RegisterPage from './pages/RegisterPage'; // Import RegisterPage
+import ProfilePage from './pages/ProfilePage'; // Import ProfilePage (assuming it exists or will be created)
 
 function App() {
+  const { currentUser, logout } = useContext(AuthContext); // Get currentUser and logout from AuthContext
   const { theme, toggleTheme } = useTheme();
   const { setSongs } = usePlayer();
 
@@ -38,6 +44,18 @@ function App() {
             <li><Link to="/" className={`hover:underline hover:text-link-hover-color`}>Home</Link></li>
             <li><Link to="/favorites" className={`hover:underline hover:text-link-hover-color`}>Favorites</Link></li>
             <li><Link to="/search" className={`hover:underline hover:text-link-hover-color`}>Search</Link></li>
+            {!currentUser && (
+              <>
+                <li><Link to="/login" className={`hover:underline hover:text-link-hover-color`}>Login</Link></li>
+                <li><Link to="/register" className={`hover:underline hover:text-link-hover-color`}>Register</Link></li>
+              </>
+            )}
+            {currentUser && (
+              <>
+                <li><Link to="/profile" className={`hover:underline hover:text-link-hover-color`}>Profile</Link></li>
+                <li><button onClick={logout} className={`hover:underline hover:text-link-hover-color`}>Logout</button></li>
+              </>
+            )}
           </ul>
         </nav>
       </header>
@@ -46,6 +64,9 @@ function App() {
           <Route path="/" element={<SongList />} />
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/search" element={<SearchPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </main>
       <PlayerControls />
