@@ -8,18 +8,18 @@ function FavoritesPage() {
   const favoriteSongs = []; // Placeholder
 
   return (
-    <div className={`favorites-page flex-1 p-6 rounded-lg shadow-md ${theme === 'dark' ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-700'}`}>
-      <h2 className={`text-3xl font-semibold mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>My Favorite Songs</h2>
+    <div className={`favorites-page flex-1 p-6 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 transition-colors duration-300 ease-in-out`}>
+      <h2 className={`text-3xl font-semibold mb-6 text-gray-800 dark:text-white transition-colors duration-300 ease-in-out`}>My Favorite Songs</h2>
       {favoriteSongs.length === 0 ? (
-        <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>You haven't added any songs to your favorites yet.</p>
+        <p className={`text-gray-500 dark:text-gray-400 transition-colors duration-300 ease-in-out`}>You haven't added any songs to your favorites yet.</p>
       ) : (
         <ul className="space-y-2">
           {favoriteSongs.map(song => (
             <li 
               key={song.id} 
-              className={`p-4 rounded-md transition-all duration-300 ease-in-out ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'}`}
+              className={`p-4 rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors duration-300 ease-in-out`}
             >
-              <span className="font-medium">{song.title}</span> - <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>{song.artist}</span>
+              <span className="font-medium">{song.title}</span> - <span className={`text-gray-600 dark:text-gray-400 transition-colors duration-300 ease-in-out`}>{song.artist}</span>
               {/* Add a button to remove from favorites if needed */}
             </li>
           ))}

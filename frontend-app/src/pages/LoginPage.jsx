@@ -37,15 +37,15 @@ const LoginPage = () => {
 
     return (
         <div className="container mx-auto p-4">
-            <div className="max-w-md mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+            <div className="max-w-md mx-auto bg-white dark:bg-gray-800 shadow-md rounded px-8 pt-6 pb-8 mb-4 transition-colors duration-300 ease-in-out">
+                <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white transition-colors duration-300 ease-in-out">Login</h2>
                 <form onSubmit={handleLogin}>
                     <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
+                        <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2 transition-colors duration-300 ease-in-out" htmlFor="username">
                             Username
                         </label>
                         <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded w-full py-2 px-3 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline transition-colors duration-300 ease-in-out"
                             id="username"
                             type="text"
                             placeholder="Username"
@@ -55,11 +55,11 @@ const LoginPage = () => {
                         />
                     </div>
                     <div className="mb-6">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+                        <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2 transition-colors duration-300 ease-in-out" htmlFor="password">
                             Password
                         </label>
                         <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                            className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded w-full py-2 px-3 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline transition-colors duration-300 ease-in-out"
                             id="password"
                             type="password"
                             placeholder="******************"
@@ -70,7 +70,7 @@ const LoginPage = () => {
                     </div>
                     <div className="flex items-center justify-between">
                         <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            className="bg-blue-500 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors duration-300 ease-in-out"
                             type="submit"
                             disabled={loading}
                         >
@@ -78,7 +78,7 @@ const LoginPage = () => {
                         </button>
                     </div>
                     {message && (
-                        <div className="mt-4 p-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                        <div className="mt-4 p-2 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 px-4 py-3 rounded relative transition-colors duration-300 ease-in-out" role="alert">
                             {message}
                         </div>
                     )}
