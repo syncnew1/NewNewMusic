@@ -2,6 +2,10 @@ package com.music.newnewmusic.controller;
 
 import com.music.newnewmusic.model.Song;
 import com.music.newnewmusic.service.SongService;
+import com.music.newnewmusic.service.FavoriteSongService;
+import com.music.newnewmusic.model.UserFavoriteSong;
+import com.music.newnewmusic.security.UserDetailsImpl;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +26,12 @@ import java.net.MalformedURLException;
 public class SongController {
 
     private final SongService songService;
+    private final FavoriteSongService favoriteSongService;
 
     @Autowired
-    public SongController(SongService songService) {
+    public SongController(SongService songService, FavoriteSongService favoriteSongService) {
         this.songService = songService;
+        this.favoriteSongService = favoriteSongService;
     }
 
     @GetMapping
@@ -100,5 +106,48 @@ public class SongController {
             // Catch any other potential exceptions during file access
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @PostMapping("/{songId}/favorite")
+    public ResponseEntity<?> addFavoriteSong(@PathVariable String songId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+        }
+        try {
+            UserFavoriteSong favoriteSong = favoriteSongService.addFavoriteSong(userDetails.getId(), songId);
+            return ResponseEntity.ok(favoriteSong);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("收藏歌曲时发生错误");
+        }
+    }
+
+    @DeleteMapping("/{songId}/favorite")
+    public ResponseEntity<?> removeFavoriteSong(@PathVariable String songId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+        }
+        favoriteSongService.removeFavoriteSong(userDetails.getId(), songId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/favorites")
+    public ResponseEntity<?> getFavoriteSongs(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+        }
+        List<UserFavoriteSong> favoriteSongs = favoriteSongService.getFavoriteSongsByUserId(userDetails.getId());
+        return ResponseEntity.ok(favoriteSongs);
+    }
+
+    @GetMapping("/{songId}/isFavorite")
+    public ResponseEntity<Boolean> isSongFavorited(@PathVariable String songId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) {
+             // Or handle as an error, depending on requirements
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
+        }
+        boolean isFavorited = favoriteSongService.isSongFavorited(userDetails.getId(), songId);
+        return ResponseEntity.ok(isFavorited);
     }
 }

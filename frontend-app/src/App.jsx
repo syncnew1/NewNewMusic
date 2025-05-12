@@ -12,6 +12,7 @@ import { AuthContext } from './contexts/AuthContext'; // Import AuthContext
 import LoginPage from './pages/LoginPage'; // Import LoginPage
 import RegisterPage from './pages/RegisterPage'; // Import RegisterPage
 import ProfilePage from './pages/ProfilePage'; // Import ProfilePage (assuming it exists or will be created)
+import Icons from './components/Icons';
 
 function App() {
   const { currentUser, logout } = useContext(AuthContext); // Get currentUser and logout from AuthContext
@@ -36,7 +37,7 @@ function App() {
             onClick={toggleTheme}
             className={`p-2 rounded-md transition-colors duration-200 bg-accent-color text-accent-text-color hover:opacity-button-hover`}
           >
-            {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
+            {theme === 'light' ? Icons.themeToggle.light : Icons.themeToggle.dark}
           </button>
         </div>
         <nav className={`mt-4 pb-2 text-secondary-text transition-colors duration-300 ease-in-out`}>
