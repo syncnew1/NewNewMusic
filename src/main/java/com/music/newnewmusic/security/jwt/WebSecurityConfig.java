@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -49,7 +50,17 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/test/**").permitAll() // Example: Allow public access to test endpoints
-                        .requestMatchers("/api/songs/**").permitAll()
+                        // Publicly accessible song GET endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/songs").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/songs/search/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/songs/stream/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/songs/{id:[\\w-]+}").permitAll() // Matches song IDs, not "favorites"
+                        // Authenticated song favorite endpoints
+                        .requestMatchers(HttpMethod.POST, "/api/songs/{songId}/favorite").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/songs/{songId}/favorite").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/songs/favorites").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/songs/{songId}/isFavorite").authenticated()
+                        // Other requests require authentication
                         .anyRequest().authenticated());
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

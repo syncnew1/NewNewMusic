@@ -10,8 +10,8 @@ import { useTheme } from './contexts/ThemeContext';
 import { useContext } from 'react'; // Add useContext
 import { AuthContext } from './contexts/AuthContext'; // Import AuthContext
 import LoginPage from './pages/LoginPage'; // Import LoginPage
-import RegisterPage from './pages/RegisterPage'; // Import RegisterPage
-import ProfilePage from './pages/ProfilePage'; // Import ProfilePage (assuming it exists or will be created)
+import RegisterPage from './pages/Registerpage'; // Import RegisterPage
+import ProfilePage from './pages/profilePage'; // Import ProfilePage (assuming it exists or will be created)
 import Icons from './components/Icons';
 
 function App() {

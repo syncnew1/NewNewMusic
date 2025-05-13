@@ -29,10 +29,15 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        logger.debug("AuthTokenFilter: Processing request for URI: {}", request.getRequestURI());
+        logger.debug("AuthTokenFilter: Authorization Header: {}", request.getHeader("Authorization"));
         try {
             String jwt = parseJwt(request);
+            logger.debug("AuthTokenFilter: Parsed JWT: {}", jwt);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+                logger.debug("AuthTokenFilter: JWT is valid.");
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
+                logger.debug("AuthTokenFilter: Username from JWT: {}", username);
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -40,9 +45,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                logger.debug("AuthTokenFilter: User authentication set for: {}", username);
+            } else {
+                logger.debug("AuthTokenFilter: JWT is null or invalid.");
             }
         } catch (Exception e) {
-            logger.error("Cannot set user authentication: {}", e);
+            logger.error("AuthTokenFilter: Cannot set user authentication: {}", e.getMessage(), e);
         }
 
         filterChain.doFilter(request, response);
@@ -50,11 +58,14 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
+        logger.debug("AuthTokenFilter - parseJwt: Raw Authorization Header: {}", headerAuth);
 
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7);
+            String jwtToken = headerAuth.substring(7);
+            logger.debug("AuthTokenFilter - parseJwt: Extracted JWT Token: {}", jwtToken);
+            return jwtToken;
         }
-
+        logger.debug("AuthTokenFilter - parseJwt: No Bearer token found in Authorization header.");
         return null;
     }
 }

@@ -20,10 +20,14 @@ import org.springframework.http.MediaType;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.net.MalformedURLException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/songs")
 public class SongController {
+
+    private static final Logger logger = LoggerFactory.getLogger(SongController.class); // Added logger
 
     private final SongService songService;
     private final FavoriteSongService favoriteSongService;
@@ -111,14 +115,20 @@ public class SongController {
     @PostMapping("/{songId}/favorite")
     public ResponseEntity<?> addFavoriteSong(@PathVariable String songId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails == null) {
+            logger.warn("Add favorite song request for songId {} without authenticated user.", songId);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
         }
+        Long userId = userDetails.getId();
+        logger.info("User {} attempting to add song {} to favorites.", userId, songId);
         try {
-            UserFavoriteSong favoriteSong = favoriteSongService.addFavoriteSong(userDetails.getId(), songId);
+            UserFavoriteSong favoriteSong = favoriteSongService.addFavoriteSong(userId, songId);
+            logger.info("Successfully added song {} to favorites for user {}. Favorite ID: {}", songId, userId, favoriteSong.getId());
             return ResponseEntity.ok(favoriteSong);
         } catch (IllegalStateException e) {
+            logger.warn("Failed to add song {} to favorites for user {}: {}", songId, userId, e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (Exception e) {
+            logger.error("Error adding song {} to favorites for user {}:", songId, userId, e); // Log the full exception
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("收藏歌曲时发生错误");
         }
     }
