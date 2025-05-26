@@ -1,34 +1,26 @@
 package com.music.newnewmusic.model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
-@Table(name = "users")
+@Document(collection = "users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column(nullable = false, unique = true, length = 20)
     private String username;
 
-    @Column(nullable = false, unique = true, length = 50)
     private String email;
 
-    @Column(nullable = false, length = 120)
     private String password;
 
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles", 
-                     joinColumns = @JoinColumn(name = "user_id"),
-                     foreignKey = @ForeignKey(name = "FK_user_roles_user_id") // Matches DDL FK name
-    )
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role_name", nullable = false, length = 255) // Column in user_roles table
     private Set<Role> roles = new HashSet<>();
+
+    private Set<String> favoriteSongIds = new HashSet<>(); // Added favoriteSongIds field
 
     public User() {
     }
@@ -40,11 +32,11 @@ public class User {
     }
 
     // Getters and Setters
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -78,5 +70,14 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    // Getter and Setter for favoriteSongIds
+    public Set<String> getFavoriteSongIds() {
+        return favoriteSongIds;
+    }
+
+    public void setFavoriteSongIds(Set<String> favoriteSongIds) {
+        this.favoriteSongIds = favoriteSongIds;
     }
 }

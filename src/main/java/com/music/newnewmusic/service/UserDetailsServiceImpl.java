@@ -2,13 +2,13 @@ package com.music.newnewmusic.service;
 
 import com.music.newnewmusic.model.User;
 import com.music.newnewmusic.repository.UserRepository;
+import com.music.newnewmusic.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import com.music.newnewmusic.security.UserDetailsImpl; // 新增导入
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

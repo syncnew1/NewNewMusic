@@ -1,17 +1,16 @@
-import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import {useContext, useEffect} from 'react'; // Add useContext
+import {BrowserRouter as Router, Link, Route, Routes} from 'react-router-dom';
 import './App.css';
-import { usePlayer } from './contexts/PlayerContext'; // Path is already correct, no change needed here if PlayerContext.jsx is already in /contexts
+import {usePlayer} from './contexts/PlayerContext'; // Path is already correct, no change needed here if PlayerContext.jsx is already in /contexts
 import SongList from './components/SongList';
 import PlayerControls from './components/PlayerControls';
 import FavoritesPage from './pages/FavoritesPage'; // Import FavoritesPage
 import SearchPage from './pages/SearchPage'; // Import SearchPage
-import { useTheme } from './contexts/ThemeContext';
-import { useContext } from 'react'; // Add useContext
-import { AuthContext } from './contexts/AuthContext'; // Import AuthContext
+import {useTheme} from './contexts/ThemeContext';
+import {AuthContext} from './contexts/AuthContext'; // Import AuthContext
 import LoginPage from './pages/LoginPage'; // Import LoginPage
-import RegisterPage from './pages/Registerpage'; // Import RegisterPage
-import ProfilePage from './pages/profilePage'; // Import ProfilePage (assuming it exists or will be created)
+import RegisterPage from './pages/registerpage'; // Import RegisterPage
+import ProfilePage from './pages/ProfilePage'; // Corrected import path
 import Icons from './components/Icons';
 
 function App() {

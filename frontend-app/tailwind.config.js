@@ -6,7 +6,18 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'primary-bg': 'var(--primary-bg)',
+        'primary-text': 'var(--primary-text)',
+        'secondary-text': 'var(--secondary-text)',
+        'accent-color': 'var(--accent-color)',
+        'accent-text-color': 'var(--accent-text-color)',
+        'card-bg': 'var(--card-bg)',
+        'border-color': 'var(--border-color)',
+        'input-bg': 'var(--input-bg)', // Will be defined in index.css
+      }
+    },
   },
   plugins: [],
 }

@@ -1,7 +1,7 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import AuthService from '../services/AuthService';
-import { AuthContext } from '../contexts/AuthContext';
+import React, {useContext, useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import AuthService from '../services/authService';
+import {AuthContext} from '../contexts/AuthContext';
 
 const RegisterPage = () => {
     const [username, setUsername] = useState('');

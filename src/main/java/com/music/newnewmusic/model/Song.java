@@ -17,9 +17,6 @@ public class Song {
     private String coverArtPath; // Path to the album cover image
 
     // Constructors
-    public Song() {
-    }
-
     public Song(String title, String artist, String album, String genre, String duration, String filePath, String coverArtPath) {
         this.title = title;
         this.artist = artist;
@@ -94,6 +91,8 @@ public class Song {
     public void setCoverArtPath(String coverArtPath) {
         this.coverArtPath = coverArtPath;
     }
+
+
 
     @Override
     public String toString() {

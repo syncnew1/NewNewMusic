@@ -1,6 +1,6 @@
 import React from 'react';
-import { usePlayer } from '../contexts/PlayerContext';
-import { useTheme } from '../contexts/ThemeContext';
+import {usePlayer} from '../contexts/PlayerContext';
+import {useTheme} from '../contexts/ThemeContext';
 
 function PlayerControls() {
   const { theme } = useTheme();

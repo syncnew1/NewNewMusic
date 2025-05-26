@@ -1,11 +1,11 @@
 import React from 'react';
-import { usePlayer } from '../contexts/PlayerContext';
-import { useTheme } from '../contexts/ThemeContext';
-import { FavoriteIcon } from '../components/Icons';
+import {usePlayer} from '../contexts/PlayerContext';
+import {useTheme} from '../contexts/ThemeContext';
+import {FavoriteIcon} from '../components/Icons';
 
 function SongList() {
   const { theme } = useTheme();
-  const { songs, currentSong, playSong, addFavorite, removeFavorite, isFavorite } = usePlayer();
+  const { songs, currentSong, playSong, addFavorite, removeFavorite, isFavorite, favoriteError, clearFavoriteError } = usePlayer();
 
   if (!songs || songs.length === 0) {
     return (
@@ -19,6 +19,18 @@ function SongList() {
   return (
     <div className={`song-list flex-1 p-6 rounded-lg shadow-md ${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
       <h2 className={`text-2xl font-semibold mb-6 ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}`}>Playlist</h2>
+      {favoriteError && (
+        <div className={`mb-4 p-3 rounded-md flex justify-between items-center ${theme === 'dark' ? 'bg-red-800 text-red-200' : 'bg-red-100 text-red-700'}`}>
+          <span>{favoriteError}</span>
+          <button 
+            onClick={clearFavoriteError} 
+            className={`ml-2 p-1 rounded-full ${theme === 'dark' ? 'hover:bg-red-700' : 'hover:bg-red-200'}`}
+            aria-label="Clear error"
+          >
+            ✕
+          </button>
+        </div>
+      )}
       <ul className="space-y-2">
         {songs.map((song, index) => (
           <li

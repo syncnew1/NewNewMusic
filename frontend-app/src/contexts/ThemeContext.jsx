@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 
 const ThemeContext = createContext();
 
@@ -7,7 +7,7 @@ export const useTheme = () => useContext(ThemeContext);
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
     const localTheme = window.localStorage.getItem('theme');
-    return localTheme || 'dark'; // Default to dark theme
+    return localTheme || 'dark'; 
   });
 
   useEffect(() => {

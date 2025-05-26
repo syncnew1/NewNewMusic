@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useTheme } from '../contexts/ThemeContext';
-import { usePlayer } from '../contexts/PlayerContext';
+import React, {useState} from 'react';
+import {useTheme} from '../contexts/ThemeContext';
+import {usePlayer} from '../contexts/PlayerContext';
 
 function SearchPage() {
   const { theme } = useTheme();

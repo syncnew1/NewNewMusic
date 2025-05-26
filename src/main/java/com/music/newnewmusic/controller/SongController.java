@@ -1,33 +1,26 @@
 package com.music.newnewmusic.controller;
 
 import com.music.newnewmusic.model.Song;
-import com.music.newnewmusic.service.SongService;
+import com.music.newnewmusic.model.User;
 import com.music.newnewmusic.service.FavoriteSongService;
-import com.music.newnewmusic.model.UserFavoriteSong;
-import com.music.newnewmusic.security.UserDetailsImpl;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import com.music.newnewmusic.service.SongService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.net.MalformedURLException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/songs")
 public class SongController {
 
-    private static final Logger logger = LoggerFactory.getLogger(SongController.class); // Added logger
+    private static final Logger logger = LoggerFactory.getLogger(SongController.class);
 
     private final SongService songService;
     private final FavoriteSongService favoriteSongService;
@@ -40,124 +33,92 @@ public class SongController {
 
     @GetMapping
     public List<Song> getAllSongs() {
+        logger.info("Fetching all songs");
         return songService.getAllSongs();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Song> getSongById(@PathVariable String id) {
-        Optional<Song> song = songService.getSongById(id);
-        return song.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @PostMapping
-    public ResponseEntity<Song> addSong(@RequestBody Song song) {
-        Song newSong = songService.addSong(song);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newSong);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Song> updateSong(@PathVariable String id, @RequestBody Song songDetails) {
-        Song updatedSong = songService.updateSong(id, songDetails);
-        if (updatedSong != null) {
-            return ResponseEntity.ok(updatedSong);
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSong(@PathVariable String id) {
-        songService.deleteSong(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/search/title")
-    public List<Song> findSongsByTitle(@RequestParam String title) {
-        return songService.findByTitle(title);
-    }
-
-    @GetMapping("/search/artist")
-    public List<Song> findSongsByArtist(@RequestParam String artist) {
-        return songService.findByArtist(artist);
-    }
-
-    @GetMapping("/search/album")
-    public List<Song> findSongsByAlbum(@RequestParam String album) {
-        return songService.findByAlbum(album);
-    }
-
-    @GetMapping("/search/genre")
-    public List<Song> findSongsByGenre(@RequestParam String genre) {
-        return songService.findByGenre(genre);
-    }
-
-    @GetMapping("/stream/{filename:.+}")
-    public ResponseEntity<Resource> streamSong(@PathVariable String filename) {
-        try {
-            Path songFile = Paths.get("src/main/resources/music").resolve(filename);
-            Resource resource = new UrlResource(songFile.toUri());
-            if (resource.exists() || resource.isReadable()) {
-                return ResponseEntity.ok()
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
-                        .contentType(MediaType.parseMediaType("audio/mpeg"))
-                        .body(resource);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (MalformedURLException e) {
-            // Consider logging the exception
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        } catch (Exception e) {
-            // Catch any other potential exceptions during file access
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
     @PostMapping("/{songId}/favorite")
-    public ResponseEntity<?> addFavoriteSong(@PathVariable String songId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<?> addFavorite(@PathVariable String songId, @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
-            logger.warn("Add favorite song request for songId {} without authenticated user.", songId);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+            logger.warn("User details not found in security context while adding favorite song {}", songId);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "用户未认证"));
         }
-        Long userId = userDetails.getId();
-        logger.info("User {} attempting to add song {} to favorites.", userId, songId);
+        String userId = userDetails.getUsername();
+        logger.info("User {} attempting to add song {} to favorites", userId, songId);
         try {
-            UserFavoriteSong favoriteSong = favoriteSongService.addFavoriteSong(userId, songId);
-            logger.info("Successfully added song {} to favorites for user {}. Favorite ID: {}", songId, userId, favoriteSong.getId());
-            return ResponseEntity.ok(favoriteSong);
+            User updatedUser = favoriteSongService.addFavoriteSong(userId, songId);
+            // Consider what to return. Returning the updated user might be too much.
+            // Returning a success message or just HTTP 200 OK might be better.
+            // For now, let's return a simple success message or the updated favorite song IDs.
+            return ResponseEntity.ok(Map.of("message", "歌曲收藏成功", "favoriteSongIds", updatedUser.getFavoriteSongIds()));
         } catch (IllegalStateException e) {
-            logger.warn("Failed to add song {} to favorites for user {}: {}", songId, userId, e.getMessage());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+            logger.warn("Failed to add favorite song for user {}: {}", userId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            logger.warn("Failed to add favorite song due to invalid argument for user {}: {}", userId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            logger.error("Error adding song {} to favorites for user {}:", songId, userId, e); // Log the full exception
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("收藏歌曲时发生错误");
+            logger.error("Error adding favorite song {} for user {}:", songId, userId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "收藏歌曲时出错"));
         }
     }
 
     @DeleteMapping("/{songId}/favorite")
-    public ResponseEntity<?> removeFavoriteSong(@PathVariable String songId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<?> removeFavorite(@PathVariable String songId, @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+            logger.warn("User details not found in security context while removing favorite song {}", songId);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "用户未认证"));
         }
-        favoriteSongService.removeFavoriteSong(userDetails.getId(), songId);
-        return ResponseEntity.noContent().build();
+        String userId = userDetails.getUsername();
+        logger.info("User {} attempting to remove song {} from favorites", userId, songId);
+        try {
+            favoriteSongService.removeFavoriteSong(userId, songId);
+            return ResponseEntity.ok(Map.of("message", "歌曲取消收藏成功"));
+        } catch (IllegalArgumentException e) {
+            logger.warn("Failed to remove favorite song due to invalid argument for user {}: {}", userId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+        }
+         catch (Exception e) {
+            logger.error("Error removing favorite song {} for user {}:", songId, userId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "取消收藏歌曲时出错"));
+        }
     }
 
     @GetMapping("/favorites")
-    public ResponseEntity<?> getFavoriteSongs(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<?> getFavorites(@AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+            logger.warn("User details not found in security context while fetching favorites");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "用户未认证"));
         }
-        List<UserFavoriteSong> favoriteSongs = favoriteSongService.getFavoriteSongsByUserId(userDetails.getId());
-        return ResponseEntity.ok(favoriteSongs);
+        String userId = userDetails.getUsername();
+        logger.info("Fetching favorite songs for user {}", userId);
+        try {
+            List<Song> favoriteSongs = favoriteSongService.getFavoriteSongsByUserId(userId);
+            return ResponseEntity.ok(favoriteSongs);
+        } catch (IllegalArgumentException e) {
+            logger.warn("Failed to get favorite songs due to invalid argument for user {}: {}", userId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+        }
+         catch (Exception e) {
+            logger.error("Error fetching favorite songs for user {}:", userId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "获取收藏列表时出错"));
+        }
     }
 
     @GetMapping("/{songId}/isFavorite")
-    public ResponseEntity<Boolean> isSongFavorited(@PathVariable String songId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<Map<String, Boolean>> isFavorite(@PathVariable String songId, @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
-             // Or handle as an error, depending on requirements
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
+            logger.warn("User details not found in security context while checking favorite status for song {}: 用户未认证", songId);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("isFavorite", false));
         }
-        boolean isFavorited = favoriteSongService.isSongFavorited(userDetails.getId(), songId);
-        return ResponseEntity.ok(isFavorited);
+        String userId = userDetails.getUsername();
+        logger.debug("Checking if song {} is favorited by user {}", songId, userId);
+        try {
+            boolean isFavorited = favoriteSongService.isSongFavorited(userId, songId);
+            return ResponseEntity.ok(Map.of("isFavorite", isFavorited));
+        } catch (Exception e) {
+            logger.error("Error checking favorite status for song {} for user {}: 检查收藏状态时出错", songId, userId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("isFavorite", false));
+        }
     }
 }

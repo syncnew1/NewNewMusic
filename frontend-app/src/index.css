@@ -10,6 +10,7 @@
   --accent-text-color: #ffffff; /* Text color for on accent background */
   --card-bg: #f9fafb; /* Tailwind gray-50 */
   --border-color: #e5e7eb; /* Tailwind gray-200 */
+  --input-bg: #f9fafb; /* Tailwind gray-50, for light mode */
   --shadow-color: rgba(0, 0, 0, 0.1);
   --link-hover-color: #000000;
   --button-hover-opacity: 0.8;
@@ -23,6 +24,7 @@
   --accent-text-color: #111827; /* Text color for on accent background in dark mode */
   --card-bg: #1f2937; /* Tailwind gray-800 */
   --border-color: #374151; /* Tailwind gray-700 */
+  --input-bg: #374151; /* Tailwind gray-700, for dark mode */
   --shadow-color: rgba(255, 255, 255, 0.05);
   --link-hover-color: #ffffff;
 }

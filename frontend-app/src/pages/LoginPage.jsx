@@ -1,7 +1,7 @@
-import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import AuthService from '../services/AuthService';
-import { AuthContext } from '../contexts/AuthContext'; // Use AuthContext
+import React, {useContext, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import AuthService from '../services/authService';
+import {AuthContext} from '../contexts/AuthContext'; // Use AuthContext
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');

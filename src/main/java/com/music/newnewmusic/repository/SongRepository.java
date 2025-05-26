@@ -2,6 +2,7 @@ package com.music.newnewmusic.repository;
 
 import com.music.newnewmusic.model.Song;
 import org.springframework.data.mongodb.repository.MongoRepository;
+
 import java.util.List;
 
 public interface SongRepository extends MongoRepository<Song, String> {
