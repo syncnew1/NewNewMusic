@@ -11,7 +11,7 @@ function SongList() {
     return (
       <div className={`song-list flex-1 p-6 rounded-lg shadow-md ${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
         <h2 className={`text-2xl font-semibold mb-6 ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}`}>Playlist</h2>
-        <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>还没有歌曲，请上传</p>
+        <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>No songs available. Add some music!</p>
       </div>
     );
   }

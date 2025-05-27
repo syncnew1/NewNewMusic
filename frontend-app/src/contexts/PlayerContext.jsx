@@ -27,11 +27,9 @@ export function PlayerProvider({ children }) {
           // UserFavoriteSong has: id (of the favorite record), userId, songId, songTitle, songArtist
           // We need objects with: id (as songId), title, artist for consistency with 'song' objects used elsewhere
           const mappedFavorites = response.data.map(fav => ({
-            id: fav.songId,       // This 'id' will be the song's actual ID
-            title: fav.songTitle,
-            artist: fav.songArtist,
-            // Optionally, keep the favorite record's ID if needed for specific operations, though not currently used by removeFavorite
-            // favoriteRecordId: fav.id 
+            id: fav.id,      
+            title: fav.title,
+            artist: fav.artist,
           }));
           setFavoriteSongs(mappedFavorites);
         } catch (error) {

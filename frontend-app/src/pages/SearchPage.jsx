@@ -4,7 +4,7 @@ import {usePlayer} from '../contexts/PlayerContext';
 
 function SearchPage() {
   const { theme } = useTheme();
-  const { songs, playSong } = usePlayer(); 
+  const { songs, playSong } = usePlayer(); // Assuming songs are available globally
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
