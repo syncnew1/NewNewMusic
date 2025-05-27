@@ -77,7 +77,7 @@ const RegisterPage = () => {
                     </div>
                     <div className="mb-6">
                         <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2 transition-colors duration-300 ease-in-out" htmlFor="password">
-                            Password
+                            密码
                         </label>
                         <input
                             className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded w-full py-2 px-3 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline transition-colors duration-300 ease-in-out"
