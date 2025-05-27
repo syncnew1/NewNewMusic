@@ -40,11 +40,8 @@ export const AuthProvider = ({ children }) => {
         setCurrentUser(null);
     };
 
-    // We can add a check here to verify token validity with backend if needed
-    // For now, we assume if a user object exists in localStorage, they are "logged in"
-
     if (loading) {
-        return <p>Loading user...</p>; // Or a spinner component
+        return <p>Loading user...</p>; 
     }
 
     return (

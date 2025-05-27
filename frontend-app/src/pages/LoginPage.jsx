@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import AuthService from '../services/authService';
-import {AuthContext} from '../contexts/AuthContext'; // Use AuthContext
+import {AuthContext} from '../contexts/AuthContext'; 
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
@@ -9,7 +9,7 @@ const LoginPage = () => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
-    const { login } = useContext(AuthContext); // Use AuthContext
+    const { login } = useContext(AuthContext);
 
     const handleLogin = (e) => {
         e.preventDefault();
@@ -18,9 +18,9 @@ const LoginPage = () => {
 
         AuthService.login(username, password).then(
             (response) => {
-                login(response.data); // Update AuthContext with user data from response
-                navigate('/'); // Redirect to home page
-                // window.location.reload(); // Consider removing if context update handles UI refresh
+                login(response.data);
+                navigate('/');
+                // window.location.reload();
             },
             (error) => {
                 const resMessage =
@@ -38,7 +38,7 @@ const LoginPage = () => {
     return (
         <div className="container mx-auto p-4">
             <div className="max-w-md mx-auto bg-white dark:bg-gray-800 shadow-md rounded px-8 pt-6 pb-8 mb-4 transition-colors duration-300 ease-in-out">
-                <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white transition-colors duration-300 ease-in-out">Login</h2>
+                <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white transition-colors duration-300 ease-in-out">登录</h2>
                 <form onSubmit={handleLogin}>
                     <div className="mb-4">
                         <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2 transition-colors duration-300 ease-in-out" htmlFor="username">
@@ -74,7 +74,7 @@ const LoginPage = () => {
                             type="submit"
                             disabled={loading}
                         >
-                            {loading ? <span>Loading...</span> : <span>Login</span>}
+                            {loading ? <span>Loading...</span> : <span>登录</span>}
                         </button>
                     </div>
                     {message && (

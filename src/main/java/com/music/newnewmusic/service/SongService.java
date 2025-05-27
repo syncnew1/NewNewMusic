@@ -40,7 +40,7 @@ public class SongService {
             song.setFilePath(songDetails.getFilePath());
             song.setCoverArtPath(songDetails.getCoverArtPath());
             return songRepository.save(song);
-        }).orElse(null); // Or throw an exception if preferred
+        }).orElse(null); 
     }
 
     public void deleteSong(String id) {

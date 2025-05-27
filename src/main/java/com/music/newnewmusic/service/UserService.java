@@ -27,18 +27,15 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Error: User not found."));
 
-        // Check if username is changing and if new username is already taken
         if (!user.getUsername().equals(profileUpdateRequest.getUsername()) && userRepository.existsByUsername(profileUpdateRequest.getUsername())) {
             throw new RuntimeException("Error: Username is already taken!");
         }
-        // Check if email is changing and if new email is already taken
         if (!user.getEmail().equals(profileUpdateRequest.getEmail()) && userRepository.existsByEmail(profileUpdateRequest.getEmail())) {
             throw new RuntimeException("Error: Email is already in use!");
         }
 
         user.setUsername(profileUpdateRequest.getUsername());
         user.setEmail(profileUpdateRequest.getEmail());
-        // Add other updatable fields here if necessary
         return userRepository.save(user);
     }
 

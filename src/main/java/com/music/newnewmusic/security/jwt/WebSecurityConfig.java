@@ -44,25 +44,22 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors(org.springframework.security.config.Customizer.withDefaults()) // Integrate CORS configuration
+        http.cors(org.springframework.security.config.Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/test/**").permitAll() // Example: Allow public access to test endpoints
-                        // Publicly accessible song GET endpoints
+                        .requestMatchers("/api/test/**").permitAll() 
                         .requestMatchers(HttpMethod.GET, "/api/songs").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/songs/search/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/songs/stream/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/songs/{id:[\\w-]+}").permitAll() // Matches song IDs, not "favorites"
-                        // Authenticated song favorite endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/songs/{id:[\\w-]+}").permitAll() 
                         .requestMatchers(HttpMethod.POST, "/api/songs/{songId}/favorite").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/songs/{songId}/favorite").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/songs/favorites").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/songs/{songId}/isFavorite").authenticated()
                         .requestMatchers("/api/user/**").authenticated()
-                        // Other requests require authentication
                         .anyRequest().authenticated());
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

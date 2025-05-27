@@ -19,12 +19,12 @@ public class FavoriteSongService {
 
     private static final Logger logger = LoggerFactory.getLogger(FavoriteSongService.class);
 
-    // private final UserFavoriteSongRepository userFavoriteSongRepository; // No longer needed
-    private final UserRepository userRepository; // Added UserRepository
+    // private final UserFavoriteSongRepository userFavoriteSongRepository; 
+    private final UserRepository userRepository;
     private final SongService songService;
 
     @Autowired
-    public FavoriteSongService(UserRepository userRepository, SongService songService) { // Injected UserRepository
+    public FavoriteSongService(UserRepository userRepository, SongService songService) { 
         this.userRepository = userRepository;
         this.songService = songService;
     }
@@ -38,7 +38,6 @@ public class FavoriteSongService {
                     return new IllegalArgumentException("无效的用户ID: " + userId);
                 });
 
-        // Ensure song exists before adding to favorites
         songService.getSongById(songId)
                 .orElseThrow(() -> {
                     logger.error("Song not found with id: {}", songId);
@@ -54,7 +53,7 @@ public class FavoriteSongService {
         try {
             User updatedUser = userRepository.save(user);
             logger.info("Successfully added song {} to favorites for user {}", songId, userId);
-            return updatedUser; // Return the updated user or void/boolean based on preference
+            return updatedUser;
         } catch (Exception e) {
             logger.error("Error saving user {} after adding favorite song {}:", userId, songId, e);
             throw e; 
@@ -67,14 +66,12 @@ public class FavoriteSongService {
         User user = userRepository.findByUsername(userId)
                 .orElseThrow(() -> {
                     logger.error("User not found with id: {}", userId);
-                    // Or simply return if user not found, depending on desired behavior
                     return new IllegalArgumentException("无效的用户ID: " + userId);
                 });
 
         if (!user.getFavoriteSongIds().contains(songId)) {
             logger.warn("Song {} not in favorites for user {}. Cannot remove.", songId, userId);
-            // Optionally throw an exception or just log and return
-            return; // Or throw new IllegalStateException("歌曲未被收藏");
+            return; 
         }
 
         user.getFavoriteSongIds().remove(songId);
@@ -94,19 +91,18 @@ public class FavoriteSongService {
         
         Set<String> favoriteSongIds = user.getFavoriteSongIds();
         if (favoriteSongIds.isEmpty()) {
-            return List.of(); // Return empty list if no favorites
+            return List.of(); 
         }
-        // Fetch song details for each favorite song ID
         return favoriteSongIds.stream()
-                .map(songId -> songService.getSongById(songId).orElse(null)) // Handle case where a song might have been deleted
-                .filter(song -> song != null) // Filter out nulls if a song was deleted
+                .map(songId -> songService.getSongById(songId).orElse(null)) 
+                .filter(song -> song != null)
                 .collect(Collectors.toList());
     }
 
     public boolean isSongFavorited(String userId, String songId) {
         logger.debug("Checking if song {} is favorited by user {}", songId, userId);
         User user = userRepository.findByUsername(userId)
-                .orElse(null); // Return false if user not found
+                .orElse(null); 
         if (user == null) {
             return false;
         }

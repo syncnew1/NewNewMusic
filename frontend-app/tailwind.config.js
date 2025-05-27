@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: 'class', // Enable class-based dark mode
+  darkMode: 'class',
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -15,7 +15,7 @@ export default {
         'accent-text-color': 'var(--accent-text-color)',
         'card-bg': 'var(--card-bg)',
         'border-color': 'var(--border-color)',
-        'input-bg': 'var(--input-bg)', // Will be defined in index.css
+        'input-bg': 'var(--input-bg)',
       }
     },
   },

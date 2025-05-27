@@ -34,8 +34,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(messageResponse, HttpStatus.BAD_REQUEST);
     }
 
-    // You can add more @ExceptionHandler methods here for other specific exceptions
-    // For example, a generic handler for other unexpected errors:
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllUncaughtException(Exception ex, WebRequest request) {
         logger.error("Unknown error occurred", ex);

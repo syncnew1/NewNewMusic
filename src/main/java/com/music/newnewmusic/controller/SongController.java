@@ -47,9 +47,6 @@ public class SongController {
         logger.info("User {} attempting to add song {} to favorites", userId, songId);
         try {
             User updatedUser = favoriteSongService.addFavoriteSong(userId, songId);
-            // Consider what to return. Returning the updated user might be too much.
-            // Returning a success message or just HTTP 200 OK might be better.
-            // For now, let's return a simple success message or the updated favorite song IDs.
             return ResponseEntity.ok(Map.of("message", "歌曲收藏成功", "favoriteSongIds", updatedUser.getFavoriteSongIds()));
         } catch (IllegalStateException e) {
             logger.warn("Failed to add favorite song for user {}: {}", userId, e.getMessage());

@@ -51,10 +51,9 @@ const ProfilePage = () => {
         userService.updateUserProfile(profileData)
             .then(response => {
                 setProfileMessage('Profile updated successfully!');
-                // Optionally update currentUser in authService and state if username/email changes affect login display
                 const updatedUser = { ...currentUser, username: response.data.username, email: response.data.email };
                 localStorage.setItem('user', JSON.stringify(updatedUser));
-                setCurrentUser(updatedUser); // Update state to reflect changes immediately if needed
+                setCurrentUser(updatedUser);
             })
             .catch(error => {
                 const resMessage = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
@@ -78,17 +77,17 @@ const ProfilePage = () => {
     };
 
     if (!currentUser) {
-        return <div>Please log in to view your profile.</div>;
+        return <div>请登陆后查看</div>;
     }
 
     return (
         <div className="container mx-auto mt-5 p-4 bg-card-bg rounded-lg shadow-lg">
-            <h2 class="text-2xl font-semibold mb-4 text-primary-text">User Profile</h2>
+            <h2 class="text-2xl font-semibold mb-4 text-primary-text">用户信息</h2>
             {profileError && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">{profileError}</div>}
             {profileMessage && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">{profileMessage}</div>}
             <form onSubmit={handleProfileSubmit}>
                 <div className="mb-3">
-                    <label htmlFor="username" className="block text-sm font-medium text-secondary-text">Username</label>
+                    <label htmlFor="username" className="block text-sm font-medium text-secondary-text">游用户名</label>
                     <input
                         type="text"
                         className="mt-1 block w-full px-3 py-2 bg-input-bg border border-border-color rounded-md shadow-sm focus:outline-none focus:ring-accent-color focus:border-accent-color sm:text-sm text-primary-text"
@@ -100,7 +99,7 @@ const ProfilePage = () => {
                     />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="email" className="block text-sm font-medium text-secondary-text">Email</label>
+                    <label htmlFor="email" className="block text-sm font-medium text-secondary-text">邮箱</label>
                     <input
                         type="email"
                         className="mt-1 block w-full px-3 py-2 bg-input-bg border border-border-color rounded-md shadow-sm focus:outline-none focus:ring-accent-color focus:border-accent-color sm:text-sm text-primary-text"
@@ -116,12 +115,12 @@ const ProfilePage = () => {
 
             <hr className="my-5" />
 
-            <h2 class="text-2xl font-semibold mb-4 mt-8 text-primary-text">Change Password</h2>
+            <h2 class="text-2xl font-semibold mb-4 mt-8 text-primary-text">密码修改</h2>
             {passwordError && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">{passwordError}</div>}
             {passwordMessage && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">{passwordMessage}</div>}
             <form onSubmit={handlePasswordSubmit}>
                 <div className="mb-3">
-                    <label htmlFor="currentPassword" className="block text-sm font-medium text-secondary-text">Current Password</label>
+                    <label htmlFor="currentPassword" className="block text-sm font-medium text-secondary-text">旧密码</label>
                     <input
                         type="password"
                         className="mt-1 block w-full px-3 py-2 bg-input-bg border border-border-color rounded-md shadow-sm focus:outline-none focus:ring-accent-color focus:border-accent-color sm:text-sm text-primary-text"
@@ -133,7 +132,7 @@ const ProfilePage = () => {
                     />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="newPassword" className="block text-sm font-medium text-secondary-text">New Password</label>
+                    <label htmlFor="newPassword" className="block text-sm font-medium text-secondary-text">新密码</label>
                     <input
                         type="password"
                         className="mt-1 block w-full px-3 py-2 bg-input-bg border border-border-color rounded-md shadow-sm focus:outline-none focus:ring-accent-color focus:border-accent-color sm:text-sm text-primary-text"
@@ -145,7 +144,7 @@ const ProfilePage = () => {
                     />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="confirmNewPassword" className="block text-sm font-medium text-secondary-text">Confirm New Password</label>
+                    <label htmlFor="confirmNewPassword" className="block text-sm font-medium text-secondary-text">确认密码</label>
                     <input
                         type="password"
                         className="mt-1 block w-full px-3 py-2 bg-input-bg border border-border-color rounded-md shadow-sm focus:outline-none focus:ring-accent-color focus:border-accent-color sm:text-sm text-primary-text"

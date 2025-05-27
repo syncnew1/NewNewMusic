@@ -12,11 +12,10 @@ public class Song {
     private String artist;
     private String album;
     private String genre;
-    private String duration; // e.g., "3:45"
-    private String filePath; // Path to the music file or stream URL
-    private String coverArtPath; // Path to the album cover image
+    private String duration; 
+    private String filePath; 
+    private String coverArtPath; 
 
-    // Constructors
     public Song(String title, String artist, String album, String genre, String duration, String filePath, String coverArtPath) {
         this.title = title;
         this.artist = artist;
@@ -27,7 +26,6 @@ public class Song {
         this.coverArtPath = coverArtPath;
     }
 
-    // Getters and Setters
     public String getId() {
         return id;
     }

@@ -20,7 +20,7 @@ public class User {
 
     private Set<Role> roles = new HashSet<>();
 
-    private Set<String> favoriteSongIds = new HashSet<>(); // Added favoriteSongIds field
+    private Set<String> favoriteSongIds = new HashSet<>(); 
 
     public User() {
     }
@@ -31,7 +31,6 @@ public class User {
         this.password = password;
     }
 
-    // Getters and Setters
     public String getId() {
         return id;
     }
@@ -72,7 +71,6 @@ public class User {
         this.roles = roles;
     }
 
-    // Getter and Setter for favoriteSongIds
     public Set<String> getFavoriteSongIds() {
         return favoriteSongIds;
     }

@@ -15,10 +15,6 @@ public class ProfileUpdateRequest {
     @Email
     private String email;
 
-    // Add other fields that can be updated, e.g., profilePictureUrl, bio
-    // private String profilePictureUrl;
-    // private String bio;
-
     public String getUsername() {
         return username;
     }
@@ -35,19 +31,5 @@ public class ProfileUpdateRequest {
         this.email = email;
     }
 
-    // public String getProfilePictureUrl() {
-    //     return profilePictureUrl;
-    // }
 
-    // public void setProfilePictureUrl(String profilePictureUrl) {
-    //     this.profilePictureUrl = profilePictureUrl;
-    // }
-
-    // public String getBio() {
-    //     return bio;
-    // }
-
-    // public void setBio(String bio) {
-    //     this.bio = bio;
-    // }
 }

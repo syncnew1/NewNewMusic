@@ -1,6 +1,5 @@
 import axios from 'axios';
-import authHeader from './authHeader'; // Function to get JWT token for authenticated requests
-
+import authHeader from './authHeader';
 const API_URL = '/api/user';
 
 const getUserProfile = () => {

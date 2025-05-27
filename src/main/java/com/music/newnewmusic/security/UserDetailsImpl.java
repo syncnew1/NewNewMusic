@@ -18,7 +18,7 @@ public class UserDetailsImpl implements UserDetails {
 
     private String username;
 
-    private String email; // 新增 email 字段
+    private String email; 
 
     @JsonIgnore
     private String password;
@@ -29,20 +29,20 @@ public class UserDetailsImpl implements UserDetails {
                            Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
-        this.email = email; // 初始化 email
+        this.email = email; 
         this.password = password;
         this.authorities = authorities;
     }
 
     public static UserDetailsImpl build(User user) {
         Set<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.name())) // 假设 Role 有 name() 方法或是一个枚举
+                .map(role -> new SimpleGrantedAuthority(role.name())) 
                 .collect(Collectors.toSet());
 
         return new UserDetailsImpl(
-                user.getId(), // 假设 User 有 getId()
+                user.getId(), 
                 user.getUsername(),
-                user.getEmail(), // 假设 User 有 getEmail()
+                user.getEmail(), 
                 user.getPassword(),
                 authorities);
     }
@@ -52,7 +52,7 @@ public class UserDetailsImpl implements UserDetails {
         return authorities;
     }
 
-    public String getEmail() { // 新增 getEmail 方法
+    public String getEmail() {
         return email;
     }
 

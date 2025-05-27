@@ -11,7 +11,7 @@ public class UserFavoriteSong {
 
     private String userId;
 
-    private String songId; // Storing MongoDB ObjectId as String
+    private String songId; 
     private String songTitle;
     private String songArtist;
 
@@ -25,7 +25,6 @@ public class UserFavoriteSong {
         this.songArtist = songArtist;
     }
 
-    // Getters and Setters
     public String getId() {
         return id;
     }

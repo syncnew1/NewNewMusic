@@ -68,9 +68,9 @@ export function PlayerProvider({ children }) {
         setVolume,
         playSong,
         favoriteSongs,
-        favoriteError, // Expose error state
-        clearFavoriteError, // Expose clear error function
-        addFavorite: async (song) => { // song here is a Song object { id, title, artist, ... }
+        favoriteError,
+        clearFavoriteError,
+        addFavorite: async (song) => {
           const user = JSON.parse(localStorage.getItem('user'));
           if (!user || !user.accessToken) {
             console.error('No token found, cannot add favorite. User or accessToken is missing.');
@@ -79,24 +79,14 @@ export function PlayerProvider({ children }) {
           }
           setFavoriteError(null); 
           try {
-            // Client-side check (optional, backend is the source of truth)
-            // if (favoriteSongs.some(favSong => favSong.id === song.id)) {
-            //   console.log('Song already in favorites (client-side check)');
-            //   setFavoriteError('歌曲已在您的收藏列表中。');
-            //   return;
-            // }
-
             await axios.post(`${API_BASE_URL}/${song.id}/favorite`, {}, {
               headers: { 'Authorization': `Bearer ${user.accessToken}` }
             });
-            // Optimistically update UI with the song object that was passed in
-            // This song object should have id, title, artist
+
             setFavoriteSongs(prevFavorites => [...prevFavorites, { id: song.id, title: song.title, artist: song.artist }]); 
           } catch (error) {
             console.error('Error adding favorite song:', error);
             if (error.response && error.response.status === 400) {
-              // Assuming 400 from this endpoint means "already favorited" or a similar validation error
-              // For a more specific message, the backend could return a structured error response
               setFavoriteError('歌曲已被收藏或请求无效。');
             } else if (error.response && error.response.status === 401) {
               setFavoriteError('登录已过期，请重新登录。');
@@ -112,7 +102,7 @@ export function PlayerProvider({ children }) {
             setFavoriteError('请先登录再操作。');
             return;
           }
-          setFavoriteError(null); // Clear previous errors
+          setFavoriteError(null); 
           try {
             await axios.delete(`${API_BASE_URL}/${songId}/favorite`, {
               headers: { 'Authorization': `Bearer ${user.accessToken}` }
@@ -128,7 +118,6 @@ export function PlayerProvider({ children }) {
           }
         },
         isFavorite: (songId) => {
-          // This should now work correctly as all items in favoriteSongs will have an 'id' property representing songId
           return favoriteSongs.some(s => s.id === songId);
         }
       }}

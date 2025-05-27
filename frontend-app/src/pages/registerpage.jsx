@@ -25,11 +25,9 @@ const RegisterPage = () => {
 
         AuthService.register(username, email, password).then(
             (response) => {
-                // Assuming response.data contains the user object upon successful registration
-                // similar to how login response is handled.
                 login(response.data); 
                 setLoading(false);
-                navigate('/'); // Redirect to home page after successful registration and login
+                navigate('/'); 
             },
             (error) => {
                 const resMessage =
@@ -47,11 +45,11 @@ const RegisterPage = () => {
     return (
         <div className="container mx-auto p-4">
             <div className="max-w-md mx-auto bg-white dark:bg-gray-800 shadow-md rounded px-8 pt-6 pb-8 mb-4 transition-colors duration-300 ease-in-out">
-                <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white transition-colors duration-300 ease-in-out">Register</h2>
+                <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white transition-colors duration-300 ease-in-out">注册</h2>
                 <form onSubmit={handleRegister}>
                     <div className="mb-4">
                         <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2 transition-colors duration-300 ease-in-out" htmlFor="username">
-                            Username
+                            用户名
                         </label>
                         <input
                             className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded w-full py-2 px-3 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline transition-colors duration-300 ease-in-out"
@@ -65,7 +63,7 @@ const RegisterPage = () => {
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2 transition-colors duration-300 ease-in-out" htmlFor="email">
-                            Email
+                            邮箱
                         </label>
                         <input
                             className="shadow appearance-none border border-gray-300 dark:border-gray-600 rounded w-full py-2 px-3 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline transition-colors duration-300 ease-in-out"
@@ -97,7 +95,7 @@ const RegisterPage = () => {
                             type="submit"
                             disabled={loading}
                         >
-                            {loading ? <span>Loading...</span> : <span>Sign Up</span>}
+                            {loading ? <span>Loading...</span> : <span>登录</span>}
                         </button>
                     </div>
                     {message && (

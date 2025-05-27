@@ -42,7 +42,7 @@ function SongList() {
             </div>
             <button 
               onClick={(e) => {
-                e.stopPropagation(); // Prevent li's onClick from firing
+                e.stopPropagation();
                 isFavorite(song.id) ? removeFavorite(song.id) : addFavorite(song);
               }}
               className={`ml-4 p-2 rounded-full hover:bg-opacity-20 transition-colors duration-200`}

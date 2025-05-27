@@ -1,13 +1,14 @@
 # NewNewMusic
 
 ## 项目简介
-NewNewMusic 是一个现代音乐播放器应用，采用 React 前端框架构建，提供流畅的音乐播放体验和直观的用户界面。
+NewNewMusic 是一个功能丰富的现代音乐播放器应用，结合了强大的后端服务和直观的前端界面。它旨在提供无缝的音乐播放体验，支持用户管理、歌曲收藏等核心功能。
 
 ## 功能特性
-- 歌曲列表展示
-- 音乐播放控制
-- 响应式设计
-- 现代UI风格
+- **用户认证与授权**：安全的用户注册、登录和基于JWT的身份验证。
+- **歌曲管理**：展示、播放和搜索音乐。
+- **用户收藏**：用户可以收藏自己喜欢的歌曲。
+- **响应式设计**：适应不同设备的屏幕尺寸。
+- **现代UI风格**：提供美观、直观的用户界面。
 
 ## 安装步骤
 1. 克隆项目仓库
@@ -53,20 +54,26 @@ npm run dev
 
 ## 部署步骤
 
-### Web 应用
-1. 构建前端项目
+### 1. 构建前端项目
 ```bash
 cd frontend-app
+npm install
 npm run build
 ```
-2. 打包后端项目
 
-## 部署步骤
-2. 打包后端项目
-```
+### 2. 打包后端项目
+```bash
 mvn clean package
 ```
-3. 启动服务
-```
+
+### 3. 启动服务
+```bash
 java -jar target/newnewmusic.jar
 ```
+
+### 4. 解决Git SSL证书问题 (可选)
+如果在克隆或拉取项目时遇到 `SSL certificate problem: unable to get local issuer certificate` 错误，可以通过以下命令配置Git忽略SSL验证：
+```bash
+git config --global http.sslVerify false
+```
+**注意**：此操作会降低Git操作的安全性，建议仅在开发环境或明确了解风险的情况下使用。在生产环境中，应配置正确的SSL证书。

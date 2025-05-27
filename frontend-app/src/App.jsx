@@ -1,20 +1,20 @@
-import {useContext, useEffect} from 'react'; // Add useContext
+import {useContext, useEffect} from 'react';
 import {BrowserRouter as Router, Link, Route, Routes} from 'react-router-dom';
 import './App.css';
-import {usePlayer} from './contexts/PlayerContext'; // Path is already correct, no change needed here if PlayerContext.jsx is already in /contexts
+import {usePlayer} from './contexts/PlayerContext';
 import SongList from './components/SongList';
 import PlayerControls from './components/PlayerControls';
-import FavoritesPage from './pages/FavoritesPage'; // Import FavoritesPage
-import SearchPage from './pages/SearchPage'; // Import SearchPage
+import FavoritesPage from './pages/FavoritesPage';
+import SearchPage from './pages/SearchPage';
 import {useTheme} from './contexts/ThemeContext';
-import {AuthContext} from './contexts/AuthContext'; // Import AuthContext
-import LoginPage from './pages/LoginPage'; // Import LoginPage
-import RegisterPage from './pages/registerpage'; // Import RegisterPage
-import ProfilePage from './pages/ProfilePage'; // Corrected import path
+import {AuthContext} from './contexts/AuthContext';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import ProfilePage from './pages/ProfilePage';
 import Icons from './components/Icons';
 
 function App() {
-  const { currentUser, logout } = useContext(AuthContext); // Get currentUser and logout from AuthContext
+  const { currentUser, logout } = useContext(AuthContext);
   const { theme, toggleTheme } = useTheme();
   const { setSongs } = usePlayer();
 
@@ -41,19 +41,19 @@ function App() {
         </div>
         <nav className={`mt-4 pb-2 text-secondary-text transition-colors duration-300 ease-in-out`}>
           <ul className="flex justify-center space-x-6">
-            <li><Link to="/" className={`hover:underline hover:text-link-hover-color`}>Home</Link></li>
-            <li><Link to="/favorites" className={`hover:underline hover:text-link-hover-color`}>Favorites</Link></li>
-            <li><Link to="/search" className={`hover:underline hover:text-link-hover-color`}>Search</Link></li>
+            <li><Link to="/" className={`hover:underline hover:text-link-hover-color`}>主页</Link></li>
+            <li><Link to="/favorites" className={`hover:underline hover:text-link-hover-color`}>收藏</Link></li>
+            <li><Link to="/search" className={`hover:underline hover:text-link-hover-color`}>搜索</Link></li>
             {!currentUser && (
               <>
-                <li><Link to="/login" className={`hover:underline hover:text-link-hover-color`}>Login</Link></li>
-                <li><Link to="/register" className={`hover:underline hover:text-link-hover-color`}>Register</Link></li>
+                <li><Link to="/login" className={`hover:underline hover:text-link-hover-color`}>登录</Link></li>
+                <li><Link to="/register" className={`hover:underline hover:text-link-hover-color`}>注册</Link></li>
               </>
             )}
             {currentUser && (
               <>
-                <li><Link to="/profile" className={`hover:underline hover:text-link-hover-color`}>Profile</Link></li>
-                <li><button onClick={logout} className={`hover:underline hover:text-link-hover-color`}>Logout</button></li>
+                <li><Link to="/profile" className={`hover:underline hover:text-link-hover-color`}>个人信息</Link></li>
+                <li><button onClick={logout} className={`hover:underline hover:text-link-hover-color`}>退出</button></li>
               </>
             )}
           </ul>
