@@ -22,7 +22,13 @@ const RecommendedSongsPage = () => {
             try {
                 setLoading(true);
                 const data = await songService.getRecommendedSongs();
-                setRecommendedSongs(data);
+                // Filter out duplicate songs by id before setting state
+                const uniqueSongs = data.filter((song, index, self) =>
+                    index === self.findIndex((s) => (
+                        s.id === song.id
+                    ))
+                );
+                setRecommendedSongs(uniqueSongs);
                 setError(null);
             } catch (err) {
                 console.error("Error fetching recommended songs:", err);
