@@ -23,15 +23,8 @@ export function PlayerProvider({ children }) {
           const response = await axios.get(`${API_BASE_URL}/favorites/user`, { 
             headers: { 'Authorization': `Bearer ${user.accessToken}` }
           });
-          // Map UserFavoriteSong objects to a consistent structure for the frontend state
-          // UserFavoriteSong has: id (of the favorite record), userId, songId, songTitle, songArtist
-          // We need objects with: id (as songId), title, artist for consistency with 'song' objects used elsewhere
-          const mappedFavorites = response.data.map(fav => ({
-            id: fav.id,      
-            title: fav.title,
-            artist: fav.artist,
-          }));
-          setFavoriteSongs(mappedFavorites);
+          // The backend now directly returns List<Song>, so no mapping is needed.
+          setFavoriteSongs(response.data); // Directly use the song list from backend
         } catch (error) {
           console.error('Error fetching initial favorite songs:', error);
           setFavoriteSongs([]);

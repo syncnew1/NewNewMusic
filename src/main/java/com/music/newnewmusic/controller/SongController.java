@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import com.music.newnewmusic.security.services.UserDetailsImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -95,8 +96,7 @@ public class SongController {
         } catch (IllegalArgumentException e) {
             logger.warn("Failed to get favorite songs due to invalid argument for user {}: {}", userId, e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
-        }
-         catch (Exception e) {
+        } catch (Exception e) {
             logger.error("Error fetching favorite songs for user {}:", userId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "获取收藏列表时出错"));
         }
@@ -109,13 +109,27 @@ public class SongController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("isFavorite", false));
         }
         String userId = userDetails.getUsername();
-        logger.debug("Checking if song {} is favorited by user {}", songId, userId);
         try {
             boolean isFavorited = favoriteSongService.isSongFavorited(userId, songId);
             return ResponseEntity.ok(Map.of("isFavorite", isFavorited));
         } catch (Exception e) {
             logger.error("Error checking favorite status for song {} for user {}: 检查收藏状态时出错", songId, userId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("isFavorite", false));
+        }
+    }
+
+    @GetMapping("/recommendations")
+    public ResponseEntity<List<Song>> getRecommendedSongs(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) {
+            logger.warn("User not authenticated for recommendations");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        try {
+            List<Song> recommendedSongs = songService.getRecommendedSongs(userDetails.getUsername());
+            return ResponseEntity.ok(recommendedSongs);
+        } catch (Exception e) {
+            logger.error("Error getting recommended songs for user {}: ", userDetails.getUsername(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

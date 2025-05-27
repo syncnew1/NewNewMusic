@@ -11,6 +11,7 @@ import {AuthContext} from './contexts/AuthContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
+import RecommendedSongsPage from './pages/RecommendedSongsPage';
 import Icons from './components/Icons';
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
             <li><Link to="/" className={`hover:underline hover:text-link-hover-color`}>主页</Link></li>
             <li><Link to="/favorites" className={`hover:underline hover:text-link-hover-color`}>收藏</Link></li>
             <li><Link to="/search" className={`hover:underline hover:text-link-hover-color`}>搜索</Link></li>
+            <li><Link to="/recommendations" className={`hover:underline hover:text-link-hover-color`}>推荐</Link></li> {/* Added recommendations link */}
             {!currentUser && (
               <>
                 <li><Link to="/login" className={`hover:underline hover:text-link-hover-color`}>登录</Link></li>
@@ -67,6 +69,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/recommendations" element={<RecommendedSongsPage />} /> 
         </Routes>
       </main>
       <PlayerControls />

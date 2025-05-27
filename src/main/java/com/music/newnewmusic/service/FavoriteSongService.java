@@ -84,10 +84,8 @@ public class FavoriteSongService {
     }
 
     public List<Song> getFavoriteSongsByUserId(String userId) {
-        logger.debug("Fetching favorite songs for userId={}", userId);
         User user = userRepository.findByUsername(userId)
                 .orElseThrow(() -> new IllegalArgumentException("无效的用户ID: " + userId));
-        
         Set<String> favoriteSongIds = user.getFavoriteSongIds();
         if (favoriteSongIds.isEmpty()) {
             return List.of(); 
@@ -99,12 +97,15 @@ public class FavoriteSongService {
     }
 
     public boolean isSongFavorited(String userId, String songId) {
-        logger.debug("Checking if song {} is favorited by user {}", songId, userId);
         User user = userRepository.findByUsername(userId)
-                .orElse(null); 
+                .orElse(null);
         if (user == null) {
             return false;
         }
         return user.getFavoriteSongIds().contains(songId);
+    }
+
+    public User getUserById(String userId) {
+        return userRepository.findByUsername(userId).orElse(null);
     }
 }

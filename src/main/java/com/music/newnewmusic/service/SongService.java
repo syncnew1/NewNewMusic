@@ -18,15 +18,22 @@ import java.net.MalformedURLException;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
+import com.music.newnewmusic.model.User;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.Set;
+
 @Service
 public class SongService {
 
     private final SongRepository songRepository;
+    private final FavoriteSongService favoriteSongService; // Added for recommendation
     private final Path fileStorageLocation; // Added for file storage path
 
     @Autowired
-    public SongService(SongRepository songRepository, @Value("${file.upload-dir:./uploads/songs}") String uploadDir) { 
+    public SongService(SongRepository songRepository, FavoriteSongService favoriteSongService, @Value("${file.upload-dir:./uploads/songs}") String uploadDir) { 
         this.songRepository = songRepository;
+        this.favoriteSongService = favoriteSongService; // Added for recommendation
         this.fileStorageLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
         try {
             Files.createDirectories(this.fileStorageLocation);
@@ -106,5 +113,46 @@ public class SongService {
 
     public Path loadSongFile(String fileName) {
         return this.fileStorageLocation.resolve(fileName).normalize();
+    }
+
+    public List<Song> getRecommendedSongs(String userId) {
+        User user = favoriteSongService.getUserById(userId);
+        if (user == null || user.getFavoriteSongIds() == null || user.getFavoriteSongIds().isEmpty()) {
+            // If user has no favorites, return a list of popular or random songs (e.g., first 10 songs)
+            // For simplicity, returning first 10 songs, or an empty list if less than 10 songs exist
+            List<Song> allSongs = songRepository.findAll();
+            return allSongs.size() > 10 ? allSongs.subList(0, 10) : allSongs;
+        }
+
+        List<String> favoriteSongIds = user.getFavoriteSongIds();
+        List<Song> favoriteSongs = songRepository.findAllById(favoriteSongIds);
+
+        Set<String> favoriteGenres = favoriteSongs.stream()
+                                                .map(Song::getGenre)
+                                                .filter(genre -> genre != null && !genre.isEmpty())
+                                                .collect(Collectors.toSet());
+
+        Set<String> favoriteArtists = favoriteSongs.stream()
+                                                 .map(Song::getArtist)
+                                                 .filter(artist -> artist != null && !artist.isEmpty())
+                                                 .collect(Collectors.toSet());
+
+        List<Song> recommendedSongs = songRepository.findAll().stream()
+                .filter(song -> !favoriteSongIds.contains(song.getId())) // Exclude already favorited songs
+                .filter(song -> (song.getGenre() != null && favoriteGenres.contains(song.getGenre())) || 
+                               (song.getArtist() != null && favoriteArtists.contains(song.getArtist())))
+                .limit(10) // Limit to 10 recommendations
+                .collect(Collectors.toList());
+        
+        // If not enough recommendations, fill with some popular/random songs (excluding favorites)
+        if (recommendedSongs.size() < 10) {
+            List<Song> additionalSongs = songRepository.findAll().stream()
+                .filter(song -> !favoriteSongIds.contains(song.getId()) && !recommendedSongs.contains(song))
+                .limit(10 - recommendedSongs.size())
+                .collect(Collectors.toList());
+            recommendedSongs.addAll(additionalSongs);
+        }
+
+        return recommendedSongs;
     }
 }
