@@ -28,7 +28,7 @@ const isSongFavorited = (songId) => {
 };
 
 const getRecommendedSongs = () => {
-    return axios.get(`${API_URL}/recommendations`, { headers: authHeader() });
+    return axios.get(`${API_URL}/recommendations`, { headers: authHeader() }).then(response => response.data);
 };
 
 const uploadSong = (formData) => {

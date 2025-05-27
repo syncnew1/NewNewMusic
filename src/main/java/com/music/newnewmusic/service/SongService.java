@@ -2,6 +2,7 @@ package com.music.newnewmusic.service;
 
 import com.music.newnewmusic.model.Song;
 import com.music.newnewmusic.repository.SongRepository;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
 import com.music.newnewmusic.model.User;
+import com.music.newnewmusic.repository.UserRepository;
 import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.Set;
@@ -27,18 +29,24 @@ import java.util.Set;
 public class SongService {
 
     private final SongRepository songRepository;
-    private final FavoriteSongService favoriteSongService; // Added for recommendation
+    private final UserRepository userRepository; // Added for recommendation
     private final Path fileStorageLocation; // Added for file storage path
+    private final MongoTemplate mongoTemplate;
 
-    @Autowired
-    public SongService(SongRepository songRepository, FavoriteSongService favoriteSongService, @Value("${file.upload-dir:./uploads/songs}") String uploadDir) { 
+    public SongService(SongRepository songRepository, UserRepository userRepository, MongoTemplate mongoTemplate) {
         this.songRepository = songRepository;
-        this.favoriteSongService = favoriteSongService; // Added for recommendation
-        this.fileStorageLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
+        this.userRepository = userRepository;
+        this.mongoTemplate = mongoTemplate;
+        // Updated to point to the user-specified music directory
+        this.fileStorageLocation = Paths.get("src/main/resources/music")
+                .toAbsolutePath().normalize();
         try {
-            Files.createDirectories(this.fileStorageLocation);
+            // Ensure the directory exists, though for src/main/resources it usually does
+            if (!Files.exists(this.fileStorageLocation)) {
+                 Files.createDirectories(this.fileStorageLocation);
+            }
         } catch (Exception ex) {
-            throw new RuntimeException("Could not create the directory where the uploaded files will be stored.", ex);
+            throw new RuntimeException("Could not create or access the directory where the music files are stored.", ex);
         }
     }
 
@@ -115,8 +123,22 @@ public class SongService {
         return this.fileStorageLocation.resolve(fileName).normalize();
     }
 
+    public Resource loadSongAsResource(String fileName) throws MalformedURLException {
+        try {
+            Path filePath = loadSongFile(fileName);
+            Resource resource = new UrlResource(filePath.toUri());
+            if (resource.exists() || resource.isReadable()) {
+                return resource;
+            } else {
+                throw new RuntimeException("Could not read the file: " + fileName);
+            }
+        } catch (MalformedURLException ex) {
+            throw new RuntimeException("Error: " + ex.getMessage());
+        }
+    }
+
     public List<Song> getRecommendedSongs(String userId) {
-        User user = favoriteSongService.getUserById(userId);
+        User user = userRepository.findByUsername(userId).orElse(null);
         if (user == null || user.getFavoriteSongIds() == null || user.getFavoriteSongIds().isEmpty()) {
             // If user has no favorites, return a list of popular or random songs (e.g., first 10 songs)
             // For simplicity, returning first 10 songs, or an empty list if less than 10 songs exist
@@ -124,7 +146,7 @@ public class SongService {
             return allSongs.size() > 10 ? allSongs.subList(0, 10) : allSongs;
         }
 
-        List<String> favoriteSongIds = user.getFavoriteSongIds();
+        List<String> favoriteSongIds = new java.util.ArrayList<>(user.getFavoriteSongIds());
         List<Song> favoriteSongs = songRepository.findAllById(favoriteSongIds);
 
         Set<String> favoriteGenres = favoriteSongs.stream()

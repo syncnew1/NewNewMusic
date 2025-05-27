@@ -11,11 +11,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import com.music.newnewmusic.security.services.UserDetailsImpl;
+import org.springframework.core.io.Resource;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import com.music.newnewmusic.security.UserDetailsImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import org.springframework.http.MediaType;
 
 @RestController
 @RequestMapping("/api/songs")
@@ -30,6 +34,23 @@ public class SongController {
     public SongController(SongService songService, FavoriteSongService favoriteSongService) {
         this.songService = songService;
         this.favoriteSongService = favoriteSongService;
+    }
+
+    @GetMapping("/stream/{fileName:.+}")
+    public ResponseEntity<org.springframework.core.io.Resource> streamSong(@PathVariable String fileName) {
+        try {
+            org.springframework.core.io.Resource file = songService.loadSongAsResource(fileName);
+            return ResponseEntity.ok()
+                    .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + file.getFilename() + "\"")
+                    .contentType(org.springframework.http.MediaType.parseMediaType("audio/mpeg")) // Adjust content type as needed
+                    .body(file);
+        } catch (MalformedURLException e) {
+            logger.error("Malformed URL for song {}: {}", fileName, e.getMessage());
+            return ResponseEntity.badRequest().build();
+        } catch (IOException e) {
+            logger.error("Could not read song file {}: {}", fileName, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping
