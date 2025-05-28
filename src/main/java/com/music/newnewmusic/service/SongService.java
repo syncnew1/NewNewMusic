@@ -65,7 +65,8 @@ public class SongService {
     public Song updateSong(String id, Song songDetails) {
         return songRepository.findById(id).map(song -> {
             song.setTitle(songDetails.getTitle());
-            song.setArtist(songDetails.getArtist());
+            // Assuming songDetails.getArtist() now returns List<String>
+            song.setArtist(songDetails.getArtist()); 
             song.setAlbum(songDetails.getAlbum());
             song.setGenre(songDetails.getGenre());
             song.setDuration(songDetails.getDuration());
@@ -84,7 +85,8 @@ public class SongService {
     }
 
     public List<Song> findByArtist(String artist) {
-        return songRepository.findByArtistContainingIgnoreCase(artist);
+        // Assuming this method now searches if the artist is in the list of artists for a song
+        return songRepository.findByArtist(artist);
     }
 
     public List<Song> findByAlbum(String album) {
@@ -95,7 +97,7 @@ public class SongService {
         return songRepository.findByGenreContainingIgnoreCase(genre);
     }
 
-    public Song storeSong(String title, String artist, String album, String genre, MultipartFile file) throws IOException {
+    public Song storeSong(String title, List<String> artists, String album, String genre, MultipartFile file) throws IOException {
         // Normalize file name
         String originalFileName = file.getOriginalFilename();
         if (originalFileName == null) {
@@ -111,7 +113,7 @@ public class SongService {
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            Song newSong = new Song(title, artist, album, genre, null, fileName, null); 
+            Song newSong = new Song(title, artists, album, genre, null, fileName, null); 
             
             return songRepository.save(newSong);
         } catch (IOException ex) {
@@ -155,14 +157,14 @@ public class SongService {
                                                 .collect(Collectors.toSet());
 
         Set<String> favoriteArtists = favoriteSongs.stream()
-                                                 .map(Song::getArtist)
+                                                 .flatMap(song -> song.getArtist().stream()) // Flatten the list of artists
                                                  .filter(artist -> artist != null && !artist.isEmpty())
                                                  .collect(Collectors.toSet());
 
         List<Song> recommendedSongs = songRepository.findAll().stream()
                 .filter(song -> !favoriteSongIds.contains(song.getId())) // Exclude already favorited songs
                 .filter(song -> (song.getGenre() != null && favoriteGenres.contains(song.getGenre())) || 
-                               (song.getArtist() != null && favoriteArtists.contains(song.getArtist())))
+                               (song.getArtist() != null && !Collections.disjoint(song.getArtist(), favoriteArtists)))
                 .limit(10) // Limit to 10 recommendations
                 .collect(Collectors.toList());
         

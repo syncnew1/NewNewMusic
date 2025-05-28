@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/songs")
@@ -136,6 +137,26 @@ public class SongController {
         } catch (Exception e) {
             logger.error("Error checking favorite status for song {} for user {}: 检查收藏状态时出错", songId, userId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("isFavorite", false));
+        }
+    }
+
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadSong(@RequestParam("title") String title,
+                                        @RequestParam("artists") List<String> artists,
+                                        @RequestParam("album") String album,
+                                        @RequestParam("genre") String genre,
+                                        @RequestParam("file") MultipartFile file) {
+        try {
+            logger.info("Attempting to upload song: title={}, artists={}, album={}, genre={}, file={}", title, artists, album, genre, file.getOriginalFilename());
+            Song savedSong = songService.storeSong(title, artists, album, genre, file);
+            logger.info("Song uploaded successfully: {}", savedSong.getId());
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedSong);
+        } catch (IOException e) {
+            logger.error("Error uploading song: title={}, artists={}, album={}, genre={}: {}", title, artists, album, genre, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "上传歌曲失败: " + e.getMessage()));
+        } catch (Exception e) {
+            logger.error("Unexpected error uploading song: title={}, artists={}, album={}, genre={}: {}", title, artists, album, genre, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "上传歌曲时发生未知错误"));
         }
     }
 

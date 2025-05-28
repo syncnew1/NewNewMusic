@@ -1,5 +1,6 @@
 import {createContext, useContext, useEffect, useState} from 'react';
 import axios from 'axios';
+import { AuthContext } from './AuthContext'; // Import AuthContext
 
 const PlayerContext = createContext();
 
@@ -11,28 +12,30 @@ export function PlayerProvider({ children }) {
   const [volume, setVolume] = useState(0.7);
   const [favoriteSongs, setFavoriteSongs] = useState([]); // Manage favorite songs
   const [favoriteError, setFavoriteError] = useState(null); // Added for user-friendly error messages
+  const { currentUser } = useContext(AuthContext); // Get currentUser from AuthContext
 
   const API_BASE_URL = 'http://localhost:8080/api/songs'; // Base URL for song-related favorite actions
 
-  // Fetch favorite songs when the component mounts or when user logs in
+  // Fetch favorite songs when the component mounts or when user logs in/out
   useEffect(() => {
     const fetchInitialFavorites = async () => {
-      const user = JSON.parse(localStorage.getItem('user'));
-      if (user && user.accessToken) {
+      // Use currentUser from AuthContext instead of localStorage directly
+      if (currentUser && currentUser.accessToken) {
         try {
           const response = await axios.get(`${API_BASE_URL}/favorites/user`, { 
-            headers: { 'Authorization': `Bearer ${user.accessToken}` }
+            headers: { 'Authorization': `Bearer ${currentUser.accessToken}` }
           });
-          // The backend now directly returns List<Song>, so no mapping is needed.
-          setFavoriteSongs(response.data); // Directly use the song list from backend
+          setFavoriteSongs(response.data); 
         } catch (error) {
           console.error('Error fetching initial favorite songs:', error);
-          setFavoriteSongs([]);
+          setFavoriteSongs([]); // Reset favorites on error or if no user
         }
+      } else {
+        setFavoriteSongs([]); // Clear favorites if no user is logged in
       }
     };
     fetchInitialFavorites();
-  }, []);
+  }, [currentUser]); // Add currentUser to dependency array
 
   const playSong = (song, index) => {
     setCurrentSong(song);

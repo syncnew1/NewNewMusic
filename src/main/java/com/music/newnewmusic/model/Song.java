@@ -2,6 +2,7 @@ package com.music.newnewmusic.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.List;
 
 @Document(collection = "songs")
 public class Song {
@@ -9,14 +10,14 @@ public class Song {
     @Id
     private String id;
     private String title;
-    private String artist;
+    private List<String> artist;
     private String album;
     private String genre;
     private String duration; 
     private String filePath; 
     private String coverArtPath; 
 
-    public Song(String title, String artist, String album, String genre, String duration, String filePath, String coverArtPath) {
+    public Song(String title, List<String> artist, String album, String genre, String duration, String filePath, String coverArtPath) {
         this.title = title;
         this.artist = artist;
         this.album = album;
@@ -42,11 +43,11 @@ public class Song {
         this.title = title;
     }
 
-    public String getArtist() {
+    public List<String> getArtist() {
         return artist;
     }
 
-    public void setArtist(String artist) {
+    public void setArtist(List<String> artist) {
         this.artist = artist;
     }
 
@@ -97,7 +98,7 @@ public class Song {
         return "Song{" +
                 "id='" + id + '\'' +
                 ", title='" + title + '\'' +
-                ", artist='" + artist + '\'' +
+                ", artist=" + artist +
                 ", album='" + album + '\'' +
                 ", genre='" + genre + '\'' +
                 ", duration='" + duration + '\'' +

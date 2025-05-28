@@ -22,7 +22,6 @@ const RecommendedSongsPage = () => {
             try {
                 setLoading(true);
                 const data = await songService.getRecommendedSongs();
-                // Filter out duplicate songs by id before setting state
                 const uniqueSongs = data.filter((song, index, self) =>
                     index === self.findIndex((s) => (
                         s.id === song.id
@@ -39,6 +38,14 @@ const RecommendedSongsPage = () => {
         };
 
         fetchRecommendedSongs();
+
+        // Add event listener for window focus to refetch recommendations
+        window.addEventListener('focus', fetchRecommendedSongs);
+
+        // Cleanup function to remove the event listener
+        return () => {
+            window.removeEventListener('focus', fetchRecommendedSongs);
+        };
     }, [currentUser]);
 
     if (loading) {

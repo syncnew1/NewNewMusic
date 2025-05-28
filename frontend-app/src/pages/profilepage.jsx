@@ -87,7 +87,7 @@ const ProfilePage = () => {
             {profileMessage && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">{profileMessage}</div>}
             <form onSubmit={handleProfileSubmit}>
                 <div className="mb-3">
-                    <label htmlFor="username" className="block text-sm font-medium text-secondary-text">游用户名</label>
+                    <label htmlFor="username" className="block text-sm font-medium text-secondary-text">用户名</label>
                     <input
                         type="text"
                         className="mt-1 block w-full px-3 py-2 bg-input-bg border border-border-color rounded-md shadow-sm focus:outline-none focus:ring-accent-color focus:border-accent-color sm:text-sm text-primary-text"

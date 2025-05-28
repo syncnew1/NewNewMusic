@@ -1,5 +1,5 @@
 import {useContext, useEffect} from 'react';
-import {BrowserRouter as Router, Link, Route, Routes} from 'react-router-dom';
+import {BrowserRouter as Router, Link, Route, Routes, useNavigate} from 'react-router-dom'; // Import useNavigate
 import './App.css';
 import {usePlayer} from './contexts/PlayerContext';
 import SongList from './components/SongList';
@@ -18,6 +18,7 @@ function App() {
   const { currentUser, logout } = useContext(AuthContext);
   const { theme, toggleTheme } = useTheme();
   const { setSongs } = usePlayer();
+  const navigate = useNavigate(); // Get navigate function
 
   useEffect(() => {
     fetch('/api/songs')
@@ -27,6 +28,11 @@ function App() {
       })
       .catch(error => console.error('Error fetching songs:', error));
   }, [setSongs]);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login'); // Navigate to login page
+  };
 
   return (
     <div className={`App min-h-screen flex flex-col items-center bg-primary-bg text-primary-text transition-colors duration-300 ease-in-out`}>
@@ -55,7 +61,7 @@ function App() {
             {currentUser && (
               <>
                 <li><Link to="/profile" className={`hover:underline hover:text-link-hover-color`}>个人信息</Link></li>
-                <li><button onClick={logout} className={`hover:underline hover:text-link-hover-color`}>退出</button></li>
+                <li><button onClick={handleLogout} className={`hover:underline hover:text-link-hover-color`}>退出</button></li>
               </>
             )}
           </ul>
