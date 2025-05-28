@@ -1,8 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react'; // Import useContext
 import userService from '../services/userService';
 import authService from '../services/authService';
+import { AuthContext } from '../contexts/AuthContext'; // Import AuthContext
 
 const ProfilePage = () => {
+    const { login } = useContext(AuthContext); // Get login from AuthContext
     const [currentUser, setCurrentUser] = useState(authService.getCurrentUser());
     const [profileData, setProfileData] = useState({
         username: '',
@@ -51,9 +53,19 @@ const ProfilePage = () => {
         userService.updateUserProfile(profileData)
             .then(response => {
                 setProfileMessage('Profile updated successfully!');
-                const updatedUser = { ...currentUser, username: response.data.username, email: response.data.email };
+                let updatedUser = { 
+                    ...currentUser, 
+                    username: response.data.username, 
+                    email: response.data.email 
+                };
+                // Check if backend returns a new accessToken
+                if (response.data.accessToken) {
+                    updatedUser.accessToken = response.data.accessToken;
+                }
                 localStorage.setItem('user', JSON.stringify(updatedUser));
                 setCurrentUser(updatedUser);
+                // If there's a new token, or to refresh context with potentially new username/email
+                login(updatedUser); 
             })
             .catch(error => {
                 const resMessage = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
