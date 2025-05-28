@@ -38,6 +38,8 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         AuthService.logout();
         setCurrentUser(null);
+        // 触发storage事件以通知其他组件用户状态已更新
+        window.dispatchEvent(new Event('storage'));
     };
 
     if (loading) {
@@ -45,7 +47,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ currentUser, login, logout }}>
+        <AuthContext.Provider value={{ currentUser, login, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );

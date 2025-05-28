@@ -7,13 +7,11 @@ import {AuthProvider} from './contexts/AuthContext.jsx';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
     <ThemeProvider>
       <AuthProvider>
         <PlayerProvider>
           <App />
         </PlayerProvider>
       </AuthProvider>
-    </ThemeProvider>
-  </React.StrictMode>,
+    </ThemeProvider>,
 )

@@ -24,6 +24,7 @@ function App() {
     fetch('/api/songs')
       .then(response => response.json())
       .then(data => {
+        console.log('Fetched songs data:', data); // Log the fetched data
         setSongs(data);
       })
       .catch(error => console.error('Error fetching songs:', error));

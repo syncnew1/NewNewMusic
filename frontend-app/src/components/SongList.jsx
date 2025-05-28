@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import {usePlayer} from '../contexts/PlayerContext';
 import {useTheme} from '../contexts/ThemeContext';
 import {FavoriteIcon} from '../components/Icons';
 
 function SongList() {
   const { theme } = useTheme();
-  const { songs, currentSong, playSong, addFavorite, removeFavorite, isFavorite, favoriteError, clearFavoriteError } = usePlayer();
+  const { songs, currentSong, playSong, addFavorite, removeFavorite, isFavorite, favoriteError, clearFavoriteError, setSongs } = usePlayer(); // Added setSongs from context
+
+  const handleOnDragEnd = (result) => {
+    if (!result.destination) return;
+    const items = Array.from(songs);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setSongs(items); // Update songs in context
+  };
 
   if (!songs || songs.length === 0) {
     return (
@@ -31,29 +40,46 @@ function SongList() {
           </button>
         </div>
       )}
-      <ul className="space-y-2">
-        {songs.map((song, index) => (
-          <li
-            key={song.id}
-            className={`flex justify-between items-center p-4 rounded-md transition-all duration-300 ease-in-out ${currentSong?.id === song.id ? (theme === 'dark' ? 'bg-blue-600 text-white shadow-lg' : 'bg-blue-500 text-white shadow-lg') : (theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-800')}`}
-          >
-            <div onClick={() => playSong(song, index)} className="flex-grow cursor-pointer">
-              <span className="font-medium">{song.title}</span> - <span className={currentSong?.id === song.id ? (theme === 'dark' ? 'text-blue-200' : 'text-blue-100') : (theme === 'dark' ? 'text-gray-400' : 'text-gray-600')}>{song.artist}</span>
+      <DragDropContext onDragEnd={handleOnDragEnd}>
+        <Droppable droppableId="songs" key="song-list-droppable">
+          {(provided) => (
+            <div {...provided.droppableProps} ref={provided.innerRef}>
+              <ul className="space-y-2">
+                {songs.map((song, index) => (
+                  <Draggable key={song.id} draggableId={String(song.id)} index={index}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        <li
+                          className={`flex justify-between items-center p-4 rounded-md transition-all duration-300 ease-in-out ${currentSong?.id === song.id ? (theme === 'dark' ? 'bg-blue-600 text-white shadow-lg' : 'bg-blue-500 text-white shadow-lg') : (theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-800')}`}
+                        >
+                          <div onClick={() => playSong(song, index)} className="flex-grow cursor-pointer">
+                            <span className="font-medium">{song.title}</span> - <span className={currentSong?.id === song.id ? (theme === 'dark' ? 'text-blue-200' : 'text-blue-100') : (theme === 'dark' ? 'text-gray-400' : 'text-gray-600')}>{song.artist}</span>
+                          </div>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              isFavorite(song.id) ? removeFavorite(song.id) : addFavorite(song);
+                            }}
+                            className={`ml-4 p-2 rounded-full hover:bg-opacity-20 transition-colors duration-200`}
+                            aria-label={isFavorite(song.id) ? 'Remove from favorites' : 'Add to favorites'}
+                          >
+                            <FavoriteIcon color={isFavorite(song.id) ? '#FCB510' : '#cdcdcd'} size={24} />
+                          </button>
+                        </li>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </ul>
             </div>
-            <button 
-              onClick={(e) => {
-                e.stopPropagation();
-                isFavorite(song.id) ? removeFavorite(song.id) : addFavorite(song);
-              }}
-              className={`ml-4 p-2 rounded-full hover:bg-opacity-20 transition-colors duration-200`}
-              aria-label={isFavorite(song.id) ? 'Remove from favorites' : 'Add to favorites'}
-            >
-                <FavoriteIcon color={isFavorite(song.id) ? '#FCB510' : '#cdcdcd'} size={24} />
-
-            </button>
-          </li>
-        ))}
-      </ul>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div>
   );
 }
