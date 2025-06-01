@@ -2,6 +2,32 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/api/auth/';
 
+// Add axios interceptor to handle token expiration
+axios.interceptors.response.use(
+    (response) => {
+        return response;
+    },
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            // Token expired or invalid, logout user
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user && user.accessToken) {
+                localStorage.removeItem('user');
+                window.dispatchEvent(new Event('storage')); // Notify AuthContext
+                
+                // Show user-friendly message
+                alert('登录已过期，请重新登录');
+                
+                // Redirect to login page
+                if (window.location.pathname !== '/login') {
+                    window.location.href = '/login';
+                }
+            }
+        }
+        return Promise.reject(error);
+    }
+);
+
 class AuthService {
     login(username, password) {
         return axios

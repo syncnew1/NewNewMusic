@@ -47,3 +47,125 @@ code {
   padding: 2rem;
   text-align: center;
 }
+
+/* 拖拽相关样式 */
+[data-rbd-drag-handle-draggable-id] {
+  cursor: grab !important;
+}
+
+[data-rbd-drag-handle-draggable-id]:active {
+  cursor: grabbing !important;
+}
+
+[data-rbd-draggable-context-id] {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* 拖拽时的样式 */
+[data-rbd-draggable-context-id][data-rbd-drag-handle-draggable-id] {
+  transition: transform 0.2s ease;
+}
+
+/* 拖拽占位符样式 */
+[data-rbd-placeholder-context-id] {
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+/* Custom slider styles */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-track {
+  background: #e5e7eb;
+  height: 8px;
+  border-radius: 4px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #3b82f6, #06b6d4);
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  transition: all 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
+}
+
+input[type="range"]::-moz-range-track {
+  background: #e5e7eb;
+  height: 8px;
+  border-radius: 4px;
+  border: none;
+}
+
+input[type="range"]::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #3b82f6, #06b6d4);
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  transition: all 0.2s ease;
+}
+
+.dark input[type="range"]::-webkit-slider-track {
+  background: #374151;
+}
+
+.dark input[type="range"]::-moz-range-track {
+  background: #374151;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #3b82f6, #06b6d4);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #2563eb, #0891b2);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+/* Animation for music bars */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
