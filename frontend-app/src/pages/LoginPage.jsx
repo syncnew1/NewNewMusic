@@ -20,7 +20,6 @@ const LoginPage = () => {
             (response) => {
                 login(response.data);
                 navigate('/');
-                // window.location.reload();
             },
             (error) => {
                 const resMessage =

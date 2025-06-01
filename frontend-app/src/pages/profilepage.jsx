@@ -1,10 +1,10 @@
-import React, {useContext, useEffect, useState} from 'react'; // Import useContext
+import React, {useContext, useEffect, useState} from 'react'; // 导入useContext
 import userService from '../services/userService';
 import authService from '../services/authService';
-import { AuthContext } from '../contexts/AuthContext'; // Import AuthContext
+import { AuthContext } from '../contexts/AuthContext'; // 导入AuthContext
 
 const ProfilePage = () => {
-    const { login } = useContext(AuthContext); // Get login from AuthContext
+    const { login } = useContext(AuthContext); // 从AuthContext获取login
     const [currentUser, setCurrentUser] = useState(authService.getCurrentUser());
     const [profileData, setProfileData] = useState({
         username: '',
@@ -58,13 +58,13 @@ const ProfilePage = () => {
                     username: response.data.username, 
                     email: response.data.email 
                 };
-                // Check if backend returns a new accessToken
+                // 检查后端是否返回新的accessToken
                 if (response.data.accessToken) {
                     updatedUser.accessToken = response.data.accessToken;
                 }
                 localStorage.setItem('user', JSON.stringify(updatedUser));
                 setCurrentUser(updatedUser);
-                // If there's a new token, or to refresh context with potentially new username/email
+                // 如果有新令牌，或刷新可能包含新用户名/邮箱的上下文
                 login(updatedUser); 
             })
             .catch(error => {

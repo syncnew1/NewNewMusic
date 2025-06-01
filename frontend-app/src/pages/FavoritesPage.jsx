@@ -23,7 +23,7 @@ function FavoritesPage() {
                 if (songIndex !== -1) {
                   playSong(favSong, songIndex); 
                 } else {
-                  console.warn("Favorite song played individually as it's not in the current main playlist.");
+                  // 收藏歌曲单独播放，因为它不在当前主播放列表中
                 }
               }}
               className={`flex justify-between items-center p-4 rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors duration-300 ease-in-out cursor-pointer`}

@@ -18,7 +18,7 @@ class AuthService {
             .catch(error => {
                 if (error.response && error.response.status === 401) {
                     localStorage.removeItem('user');
-                    window.dispatchEvent(new Event('storage')); // Notify AuthContext
+                    window.dispatchEvent(new Event('storage')); // 通知AuthContext
                     throw new Error('用户名或密码错误');
                 }
                 throw error;

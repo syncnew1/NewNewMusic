@@ -23,7 +23,9 @@ function PlayerControls() {
   React.useEffect(() => {
     if (currentSong && audioRef.current) {
       if (isPlaying) {
-        audioRef.current.play().catch(error => console.error("Error playing audio:", error));
+        audioRef.current.play().catch(error => {
+        // 静默处理音频播放错误
+      });
       } else {
         audioRef.current.pause();
       }
@@ -91,7 +93,7 @@ function PlayerControls() {
           src={`http://localhost:8080/api/songs/stream/${currentSong.filePath}`}
           onTimeUpdate={updateProgress}
           onLoadedMetadata={updateProgress} 
-          onEnded={handlePlayNext} // Automatically play next song when current ends
+          onEnded={handlePlayNext} // 当前歌曲结束时自动播放下一首
         />
       )}
       <div className="flex items-center justify-between">

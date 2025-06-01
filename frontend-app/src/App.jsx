@@ -1,5 +1,5 @@
 import {useContext, useEffect} from 'react';
-import {BrowserRouter as Router, Link, Route, Routes, useNavigate} from 'react-router-dom'; // Import useNavigate
+import {BrowserRouter as Router, Link, Route, Routes, useNavigate} from 'react-router-dom'; // 导入useNavigate
 import './App.css';
 import {usePlayer} from './contexts/PlayerContext';
 import SongList from './components/SongList';
@@ -18,28 +18,29 @@ function App() {
   const { currentUser, logout } = useContext(AuthContext);
   const { theme, toggleTheme } = useTheme();
   const { setSongs } = usePlayer();
-  const navigate = useNavigate(); // Get navigate function
+  const navigate = useNavigate(); // 获取导航函数
 
   useEffect(() => {
     fetch('/api/songs')
       .then(response => response.json())
       .then(data => {
-        console.log('Fetched songs data:', data); // Log the fetched data
         setSongs(data);
       })
-      .catch(error => console.error('Error fetching songs:', error));
+      .catch(error => {
+        // 静默处理错误，避免在控制台显示
+      });
   }, [setSongs]);
 
   const handleLogout = () => {
     logout();
-    navigate('/login'); // Navigate to login page
+    navigate('/login'); // 导航到登录页面
   };
 
   return (
     <div className={`App min-h-screen flex flex-col items-center bg-primary-bg text-primary-text transition-colors duration-300 ease-in-out`}>
       <header className={`w-full p-6 shadow-lg bg-card-bg/80 backdrop-blur-sm border-b border-border-color transition-colors duration-300 ease-in-out`}>
         <div className="flex justify-between items-center w-full">
-          <h1 className="text-4xl font-bold text-center bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500 bg-clip-text text-transparent">NewNewMusic</h1>
+          <h1 className="text-4xl font-bold text-center bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500 bg-clip-text text-transparent">MusicPlayer</h1>
           <button 
             onClick={toggleTheme}
             className={`p-2 rounded-md transition-colors duration-200 bg-accent-color text-accent-text-color hover:opacity-button-hover`}

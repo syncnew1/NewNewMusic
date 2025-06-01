@@ -1,6 +1,6 @@
 import {createContext, useContext, useEffect, useState} from 'react';
 import axios from 'axios';
-import { AuthContext } from './AuthContext'; // Import AuthContext
+import { AuthContext } from './AuthContext'; // 导入AuthContext
 
 const PlayerContext = createContext();
 
@@ -10,17 +10,17 @@ export function PlayerProvider({ children }) {
   const [currentSongIndex, setCurrentSongIndex] = useState(-1);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.7);
-  const [favoriteSongs, setFavoriteSongs] = useState([]); // Manage favorite songs
-  const [favoriteError, setFavoriteError] = useState(null); // Added for user-friendly error messages
-  const { currentUser, loading: authLoading, logout } = useContext(AuthContext); // Get currentUser, loading state, and logout from AuthContext
+  const [favoriteSongs, setFavoriteSongs] = useState([]); // 管理收藏歌曲
+  const [favoriteError, setFavoriteError] = useState(null); // 添加用户友好的错误消息
+  const { currentUser, loading: authLoading, logout } = useContext(AuthContext); // 从AuthContext获取currentUser、加载状态和logout
 
-  const API_BASE_URL = 'http://localhost:8080/api/songs'; // Base URL for song-related favorite actions
+  const API_BASE_URL = 'http://localhost:8080/api/songs'; // 歌曲相关收藏操作的基础URL
 
-  // Fetch favorite songs when the component mounts or when user logs in/out
+  // 当组件挂载或用户登录/登出时获取收藏歌曲
   useEffect(() => {
     const fetchInitialFavorites = async () => {
-      // Use currentUser from AuthContext instead of localStorage directly
-      // Only fetch if auth is not loading and user is logged in
+      // 使用AuthContext中的currentUser而不是直接使用localStorage
+      // 仅在认证未加载且用户已登录时获取
       if (!authLoading && currentUser && currentUser.accessToken) {
         try {
           const response = await axios.get(`${API_BASE_URL}/favorites/user`, { 
@@ -28,25 +28,25 @@ export function PlayerProvider({ children }) {
           });
           setFavoriteSongs(response.data); 
         } catch (error) {
-          console.error('Error fetching initial favorite songs:', error);
+          // 获取初始收藏歌曲时出错
           if (error.response && error.response.status === 401) {
             setFavoriteError('登录已过期，请重新登录。');
-            logout(); // Call logout from AuthContext if 401 error
+            logout(); // 如果401错误则从AuthContext调用logout
           } else {
             setFavoriteError('获取收藏列表失败。'); 
           }
-          setFavoriteSongs([]); // Reset favorites on error
+          setFavoriteSongs([]); // 错误时重置收藏
         }
       } else {
-        setFavoriteSongs([]); // Clear favorites if no user is logged in or auth is loading
+        setFavoriteSongs([]); // 如果没有用户登录或认证正在加载则清除收藏
         if (!authLoading && !currentUser) {
-            // Only clear error if not loading and no user, to avoid clearing legitimate fetch errors during loading
+            // 仅在未加载且无用户时清除错误，避免在加载期间清除合法的获取错误
             setFavoriteError(null); 
         }
       }
     };
     fetchInitialFavorites();
-  }, [currentUser, authLoading, logout]); // Add logout to dependency array
+  }, [currentUser, authLoading, logout]); // 将logout添加到依赖数组
 
   const playSong = (song, index) => {
     setCurrentSong(song);
@@ -77,7 +77,7 @@ export function PlayerProvider({ children }) {
         clearFavoriteError,
         addFavorite: async (song) => {
           if (!currentUser || !currentUser.accessToken) {
-            console.error('No token found, cannot add favorite. User or accessToken is missing.');
+            // 未找到令牌，无法添加收藏。用户或accessToken缺失
             setFavoriteError('请先登录再收藏歌曲。');
             return;
           }
@@ -89,7 +89,7 @@ export function PlayerProvider({ children }) {
 
             setFavoriteSongs(prevFavorites => [...prevFavorites, { id: song.id, title: song.title, artist: song.artist }]); 
           } catch (error) {
-            console.error('Error adding favorite song:', error);
+            // 添加收藏歌曲时出错
             if (error.response && error.response.status === 400) {
               setFavoriteError('歌曲已被收藏或请求无效。');
             } else if (error.response && error.response.status === 401) {
@@ -101,7 +101,7 @@ export function PlayerProvider({ children }) {
         },
         removeFavorite: async (songId) => {
           if (!currentUser || !currentUser.accessToken) {
-            console.error('No token found, cannot remove favorite. User or accessToken is missing.');
+            // 未找到令牌，无法移除收藏。用户或accessToken缺失
             setFavoriteError('请先登录再操作。');
             return;
           }
@@ -112,7 +112,7 @@ export function PlayerProvider({ children }) {
             });
             setFavoriteSongs(prevFavorites => prevFavorites.filter(s => s.id !== songId));
           } catch (error) {
-            console.error('Error removing favorite song:', error);
+            // 移除收藏歌曲时出错
             if (error.response && error.response.status === 401) {
               setFavoriteError('登录已过期，请重新登录。');
             } else {

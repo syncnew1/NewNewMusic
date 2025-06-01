@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import songService from '../services/songService';
-import { usePlayer } from '../contexts/PlayerContext'; // Changed import to usePlayer
+import { usePlayer } from '../contexts/PlayerContext'; // 更改导入为usePlayer
 import { AuthContext } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -8,7 +8,7 @@ const RecommendedSongsPage = () => {
     const [recommendedSongs, setRecommendedSongs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { playSong } = usePlayer(); // Changed to use usePlayer hook
+    const { playSong } = usePlayer(); // 更改为使用usePlayer钩子
     const { currentUser } = useContext(AuthContext);
     const { theme } = useTheme();
 
@@ -30,7 +30,6 @@ const RecommendedSongsPage = () => {
                 setRecommendedSongs(uniqueSongs);
                 setError(null);
             } catch (err) {
-                console.error("Error fetching recommended songs:", err);
                 setError(err.response?.data?.error || '获取推荐歌曲失败，请稍后再试。');
             } finally {
                 setLoading(false);
@@ -39,10 +38,10 @@ const RecommendedSongsPage = () => {
 
         fetchRecommendedSongs();
 
-        // Add event listener for window focus to refetch recommendations
+        // 添加窗口焦点事件监听器以重新获取推荐
         window.addEventListener('focus', fetchRecommendedSongs);
 
-        // Cleanup function to remove the event listener
+        // 清理函数以移除事件监听器
         return () => {
             window.removeEventListener('focus', fetchRecommendedSongs);
         };
@@ -71,7 +70,7 @@ const RecommendedSongsPage = () => {
                                 src={`http://localhost:8080/api/songs/cover/${song.coverArtPath}`}
                                 alt={song.title} 
                                 className="w-full h-48 object-cover"
-                                onError={(e) => e.target.style.display = 'none'} // Hide if image fails to load
+                                onError={(e) => e.target.style.display = 'none'} // 如果图片加载失败则隐藏
                             />
                         )}
                         <div className="p-4">

@@ -6,14 +6,14 @@ import {FavoriteIcon} from '../components/Icons';
 
 function SongList() {
   const { theme } = useTheme();
-  const { songs, currentSong, playSong, addFavorite, removeFavorite, isFavorite, favoriteError, clearFavoriteError, setSongs } = usePlayer(); // Added setSongs from context
+  const { songs, currentSong, playSong, addFavorite, removeFavorite, isFavorite, favoriteError, clearFavoriteError, setSongs } = usePlayer(); // 从上下文添加setSongs
 
   const handleOnDragEnd = (result) => {
     if (!result.destination) return;
     const items = Array.from(songs);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
-    setSongs(items); // Update songs in context
+    setSongs(items); // 在上下文中更新歌曲
   };
 
   if (!songs || songs.length === 0) {
