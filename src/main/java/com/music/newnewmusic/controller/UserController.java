@@ -49,28 +49,28 @@ public class UserController {
         try {
             User updatedUser = userService.updateUserProfile(userDetails.getId(), profileUpdateRequest);
 
-            // Regenerate JWT token if username is updated
+            // 如果用户名更新，重新生成JWT令牌
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             UserDetailsImpl currentUserDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-            // Create a new Authentication object with the updated username if it has changed
-            // This step is crucial if the username is part of the JWT claims and affects token validity.
-            // However, directly creating a new Authentication object here might bypass some security checks
-            // or not reflect the true state of authentication if other details (like roles) also need updating.
-            // A more robust solution might involve re-authenticating the user or ensuring the JWT generation
-            // logic can be invoked with updated UserDetails.
+            // 如果用户名发生变化，创建一个新的Authentication对象
+            // 如果用户名是JWT声明的一部分并影响令牌有效性，这一步至关重要。
+            // 然而，直接在这里创建新的Authentication对象可能会绕过一些安全检查
+            // 或者不能反映认证的真实状态，如果其他详细信息（如角色）也需要更新。
+            // 更稳健的解决方案可能涉及重新认证用户或确保JWT生成
+            // 逻辑可以使用更新的UserDetails调用。
 
-            // For now, let's assume the primary concern is the username in the token.
-            // We will generate a new token based on the existing authentication principal, updated with the new username.
-            // This requires that UserDetailsImpl can be updated or a new one created with the new username.
+            // 现在，让我们假设令牌中的主要关注点是用户名。
+            // 我们将基于现有的认证主体生成一个新令牌，使用更新的用户名。
+            // 这要求UserDetailsImpl可以更新或使用新用户名创建一个新的。
 
-            // If the username was changed, we need to update the principal in the security context
-            // and generate a new token.
-            String newJwt = jwtUtils.generateJwtToken(authentication); // This will use the username from the current principal
+            // 如果用户名发生了变化，我们需要更新安全上下文中的主体
+            // 并生成一个新令牌。
+            String newJwt = jwtUtils.generateJwtToken(authentication); // 这将使用当前主体的用户名
 
-            // If the username itself was updated, the above token will still contain the old username.
-            // We need to ensure the Authentication object reflects the *new* username before generating the token.
-            // One way is to create a new UserDetailsImpl with the updatedUser details.
+            // 如果用户名本身已更新，上述令牌仍将包含旧用户名。
+            // 我们需要确保Authentication对象在生成令牌之前反映*新*用户名。
+            // 一种方法是使用updatedUser详细信息创建新的UserDetailsImpl。
             UserDetailsImpl newPrincipal = UserDetailsImpl.build(updatedUser);
             Authentication newAuthentication = new UsernamePasswordAuthenticationToken(newPrincipal, authentication.getCredentials(), newPrincipal.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(newAuthentication);

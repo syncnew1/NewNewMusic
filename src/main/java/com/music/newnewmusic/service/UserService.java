@@ -25,13 +25,13 @@ public class UserService {
     @Transactional
     public User updateUserProfile(String userId, ProfileUpdateRequest profileUpdateRequest) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Error: User not found."));
+                .orElseThrow(() -> new RuntimeException("错误：用户未找到。"));
 
         if (!user.getUsername().equals(profileUpdateRequest.getUsername()) && userRepository.existsByUsername(profileUpdateRequest.getUsername())) {
-            throw new RuntimeException("Error: Username is already taken!");
+            throw new RuntimeException("错误：用户名已被占用！");
         }
         if (!user.getEmail().equals(profileUpdateRequest.getEmail()) && userRepository.existsByEmail(profileUpdateRequest.getEmail())) {
-            throw new RuntimeException("Error: Email is already in use!");
+            throw new RuntimeException("错误：邮箱已被使用！");
         }
 
         user.setUsername(profileUpdateRequest.getUsername());
@@ -42,14 +42,14 @@ public class UserService {
     @Transactional
     public void updateUserPassword(String userId, PasswordUpdateRequest passwordUpdateRequest) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Error: User not found."));
+                .orElseThrow(() -> new RuntimeException("错误：用户未找到。"));
 
         if (!passwordEncoder.matches(passwordUpdateRequest.getCurrentPassword(), user.getPassword())) {
-            throw new RuntimeException("Error: Incorrect current password.");
+            throw new RuntimeException("错误：当前密码不正确。");
         }
 
         if (!passwordUpdateRequest.getNewPassword().equals(passwordUpdateRequest.getConfirmNewPassword())) {
-            throw new RuntimeException("Error: New passwords do not match.");
+            throw new RuntimeException("错误：新密码不匹配。");
         }
 
         user.setPassword(passwordEncoder.encode(passwordUpdateRequest.getNewPassword()));

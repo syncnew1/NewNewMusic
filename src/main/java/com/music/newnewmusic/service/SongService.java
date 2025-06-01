@@ -29,24 +29,24 @@ import java.util.Set;
 public class SongService {
 
     private final SongRepository songRepository;
-    private final UserRepository userRepository; // Added for recommendation
-    private final Path fileStorageLocation; // Added for file storage path
+    private final UserRepository userRepository; // 为推荐功能添加
+    private final Path fileStorageLocation; // 为文件存储路径添加
     private final MongoTemplate mongoTemplate;
 
     public SongService(SongRepository songRepository, UserRepository userRepository, MongoTemplate mongoTemplate) {
         this.songRepository = songRepository;
         this.userRepository = userRepository;
         this.mongoTemplate = mongoTemplate;
-        // Updated to point to the user-specified music directory
+        // 更新为指向用户指定的音乐目录
         this.fileStorageLocation = Paths.get("src/main/resources/music")
                 .toAbsolutePath().normalize();
         try {
-            // Ensure the directory exists, though for src/main/resources it usually does
+            // 确保目录存在，尽管对于src/main/resources通常已存在
             if (!Files.exists(this.fileStorageLocation)) {
                  Files.createDirectories(this.fileStorageLocation);
             }
         } catch (Exception ex) {
-            throw new RuntimeException("Could not create or access the directory where the music files are stored.", ex);
+            throw new RuntimeException("无法创建或访问存储音乐文件的目录。", ex);
         }
     }
 
@@ -65,7 +65,7 @@ public class SongService {
     public Song updateSong(String id, Song songDetails) {
         return songRepository.findById(id).map(song -> {
             song.setTitle(songDetails.getTitle());
-            // Assuming songDetails.getArtist() now returns List<String>
+            // 假设songDetails.getArtist()现在返回List<String>
             song.setArtist(songDetails.getArtist()); 
             song.setAlbum(songDetails.getAlbum());
             song.setGenre(songDetails.getGenre());
@@ -85,7 +85,7 @@ public class SongService {
     }
 
     public List<Song> findByArtist(String artist) {
-        // Assuming this method now searches if the artist is in the list of artists for a song
+        // 假设此方法现在搜索艺术家是否在歌曲的艺术家列表中
         return songRepository.findByArtist(artist);
     }
 
@@ -98,16 +98,16 @@ public class SongService {
     }
 
     public Song storeSong(String title, List<String> artists, String album, String genre, MultipartFile file) throws IOException {
-        // Normalize file name
+        // 规范化文件名
         String originalFileName = file.getOriginalFilename();
         if (originalFileName == null) {
-            throw new IllegalArgumentException("Song file name cannot be null");
+            throw new IllegalArgumentException("歌曲文件名不能为空");
         }
         String fileName = UUID.randomUUID().toString() + "_" + originalFileName.replaceAll("[^a-zA-Z0-9.\\-_]", "_");
 
         try {
             if(fileName.contains("..")) {
-                throw new IllegalArgumentException("Sorry! Filename contains invalid path sequence " + fileName);
+                throw new IllegalArgumentException("抱歉！文件名包含无效的路径序列 " + fileName);
             }
 
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
@@ -117,7 +117,7 @@ public class SongService {
             
             return songRepository.save(newSong);
         } catch (IOException ex) {
-            throw new IOException("Could not store file " + fileName + ". Please try again!", ex);
+            throw new IOException("无法存储文件 " + fileName + "。请重试！", ex);
         }
     }
 
@@ -132,18 +132,18 @@ public class SongService {
             if (resource.exists() || resource.isReadable()) {
                 return resource;
             } else {
-                throw new RuntimeException("Could not read the file: " + fileName);
+                throw new RuntimeException("无法读取文件：" + fileName);
             }
         } catch (MalformedURLException ex) {
-            throw new RuntimeException("Error: " + ex.getMessage());
+            throw new RuntimeException("错误：" + ex.getMessage());
         }
     }
 
     public List<Song> getRecommendedSongs(String userId) {
         User user = userRepository.findByUsername(userId).orElse(null);
         if (user == null || user.getFavoriteSongIds() == null || user.getFavoriteSongIds().isEmpty()) {
-            // If user has no favorites, return a list of popular or random songs (e.g., first 10 songs)
-            // For simplicity, returning first 10 songs, or an empty list if less than 10 songs exist
+            // 如果用户没有收藏，返回热门或随机歌曲列表（例如，前10首歌曲）
+            // 为简单起见，返回前10首歌曲，如果少于10首歌曲则返回空列表
             List<Song> allSongs = songRepository.findAll();
             return allSongs.size() > 10 ? allSongs.subList(0, 10) : allSongs;
         }
@@ -157,18 +157,18 @@ public class SongService {
                                                 .collect(Collectors.toSet());
 
         Set<String> favoriteArtists = favoriteSongs.stream()
-                                                 .flatMap(song -> song.getArtist().stream()) // Flatten the list of artists
+                                                 .flatMap(song -> song.getArtist().stream()) // 展平艺术家列表
                                                  .filter(artist -> artist != null && !artist.isEmpty())
                                                  .collect(Collectors.toSet());
 
         List<Song> recommendedSongs = songRepository.findAll().stream()
-                .filter(song -> !favoriteSongIds.contains(song.getId())) // Exclude already favorited songs
+                .filter(song -> !favoriteSongIds.contains(song.getId())) // 排除已收藏的歌曲
                 .filter(song -> (song.getGenre() != null && favoriteGenres.contains(song.getGenre())) || 
                                (song.getArtist() != null && !Collections.disjoint(song.getArtist(), favoriteArtists)))
-                .limit(10) // Limit to 10 recommendations
+                .limit(10) // 限制为10个推荐
                 .collect(Collectors.toList());
         
-        // If not enough recommendations, fill with some popular/random songs (excluding favorites)
+        // 如果推荐不够，用一些热门/随机歌曲填充（排除收藏）
         if (recommendedSongs.size() < 10) {
             List<Song> additionalSongs = songRepository.findAll().stream()
                 .filter(song -> !favoriteSongIds.contains(song.getId()) && !recommendedSongs.contains(song))

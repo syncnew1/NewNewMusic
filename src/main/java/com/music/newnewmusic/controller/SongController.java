@@ -43,7 +43,7 @@ public class SongController {
             org.springframework.core.io.Resource file = songService.loadSongAsResource(fileName);
             return ResponseEntity.ok()
                     .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + file.getFilename() + "\"")
-                    .contentType(org.springframework.http.MediaType.parseMediaType("audio/mpeg")) // Adjust content type as needed
+                    .contentType(org.springframework.http.MediaType.parseMediaType("audio/mpeg")) // 根据需要调整内容类型
                     .body(file);
         } catch (MalformedURLException e) {
             logger.error("Malformed URL for song {}: {}", fileName, e.getMessage());
