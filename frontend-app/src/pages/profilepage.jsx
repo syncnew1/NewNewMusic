@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react'; // 导入useContext
 import userService from '../services/userService';
 import authService from '../services/authService';
-import { AuthContext } from '../contexts/AuthContext'; // 导入AuthContext
+import { AuthContext } from '../contexts/authContext'; // 导入AuthContext
 
 const ProfilePage = () => {
     const { login } = useContext(AuthContext); // 从AuthContext获取login

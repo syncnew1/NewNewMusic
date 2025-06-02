@@ -101,7 +101,7 @@ function PlayerControls() {
           {currentSong ? (
             <>
               <p className="text-lg font-semibold">{currentSong.title || 'Unknown Title'}</p>
-              <p className={`text-sm text-[var(--secondary-text)]`}>{currentSong.artist || 'Unknown Artist'}</p>
+              <p className={`text-sm text-[var(--secondary-text)]`}>{Array.isArray(currentSong.artist) ? currentSong.artist.join(', ') : (currentSong.artist || 'Unknown Artist')}</p>
             </>
           ) : (
             <p>No song selected</p>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import songService from '../services/songService';
 import { usePlayer } from '../contexts/PlayerContext'; // 更改导入为usePlayer
-import { AuthContext } from '../contexts/AuthContext';
+import { AuthContext } from '../contexts/authContext';
 import { useTheme } from '../contexts/ThemeContext';
 
 const RecommendedSongsPage = () => {
@@ -75,7 +75,7 @@ const RecommendedSongsPage = () => {
                         )}
                         <div className="p-4">
                             <h3 className={`text-lg font-semibold mb-1 truncate ${theme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`} title={song.title}>{song.title}</h3>
-                            <p className={`text-sm mb-1 truncate ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`} title={song.artist}>{song.artist}</p>
+                            <p className={`text-sm mb-1 truncate ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`} title={Array.isArray(song.artist) ? song.artist.join(', ') : song.artist}>{Array.isArray(song.artist) ? song.artist.join(', ') : song.artist}</p>
                             <p className={`text-xs truncate ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`} title={song.album}>{song.album}</p>
                             <button 
                                 onClick={() => playSong(song)} 

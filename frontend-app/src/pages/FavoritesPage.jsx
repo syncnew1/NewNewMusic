@@ -29,7 +29,7 @@ function FavoritesPage() {
               className={`flex justify-between items-center p-4 rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors duration-300 ease-in-out cursor-pointer`}
             >
               <div className="flex-grow">
-                <span className="font-medium">{favSong.title}</span> - <span className={`text-gray-600 dark:text-gray-400 transition-colors duration-300 ease-in-out`}>{favSong.artist}</span>
+                <span className="font-medium">{favSong.title}</span> - <span className={`text-gray-600 dark:text-gray-400 transition-colors duration-300 ease-in-out`}>{Array.isArray(favSong.artist) ? favSong.artist.join(', ') : favSong.artist}</span>
               </div>
               <button
                 onClick={(e) => {

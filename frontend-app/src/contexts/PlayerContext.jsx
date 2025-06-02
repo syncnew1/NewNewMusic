@@ -1,6 +1,6 @@
 import {createContext, useContext, useEffect, useState} from 'react';
 import axios from 'axios';
-import { AuthContext } from './AuthContext'; // 导入AuthContext
+import { AuthContext } from './authContext'; // 导入AuthContext
 
 const PlayerContext = createContext();
 

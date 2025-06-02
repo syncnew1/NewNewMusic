@@ -15,10 +15,13 @@ function SearchPage() {
       setSearchResults([]);
       return;
     }
-    const filteredSongs = songs.filter(song => 
-      song.title.toLowerCase().includes(term.toLowerCase()) || 
-      song.artist.toLowerCase().includes(term.toLowerCase())
-    );
+    const filteredSongs = songs.filter(song => {
+      const titleMatch = song.title.toLowerCase().includes(term.toLowerCase());
+      const artistMatch = Array.isArray(song.artist) 
+        ? song.artist.some(artist => artist.toLowerCase().includes(term.toLowerCase()))
+        : song.artist.toLowerCase().includes(term.toLowerCase());
+      return titleMatch || artistMatch;
+    });
     setSearchResults(filteredSongs);
   };
 
@@ -43,7 +46,7 @@ function SearchPage() {
               onClick={() => playSong(song, songs.findIndex(s => s.id === song.id))}
               className={`p-4 rounded-md cursor-pointer bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors duration-300 ease-in-out`}
             >
-              <span className="font-medium">{song.title}</span> - <span className={`text-gray-600 dark:text-gray-400 transition-colors duration-300 ease-in-out`}>{song.artist}</span>
+              <span className="font-medium">{song.title}</span> - <span className={`text-gray-600 dark:text-gray-400 transition-colors duration-300 ease-in-out`}>{Array.isArray(song.artist) ? song.artist.join(', ') : song.artist}</span>
             </li>
           ))}
         </ul>

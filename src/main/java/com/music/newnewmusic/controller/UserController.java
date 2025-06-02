@@ -59,11 +59,6 @@ public class UserController {
             // 或者不能反映认证的真实状态，如果其他详细信息（如角色）也需要更新。
             // 更稳健的解决方案可能涉及重新认证用户或确保JWT生成
             // 逻辑可以使用更新的UserDetails调用。
-
-            // 现在，让我们假设令牌中的主要关注点是用户名。
-            // 我们将基于现有的认证主体生成一个新令牌，使用更新的用户名。
-            // 这要求UserDetailsImpl可以更新或使用新用户名创建一个新的。
-
             // 如果用户名发生了变化，我们需要更新安全上下文中的主体
             // 并生成一个新令牌。
             String newJwt = jwtUtils.generateJwtToken(authentication); // 这将使用当前主体的用户名

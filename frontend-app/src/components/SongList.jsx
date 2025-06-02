@@ -57,7 +57,7 @@ function SongList() {
                           className={`flex justify-between items-center p-4 rounded-md transition-all duration-300 ease-in-out ${currentSong?.id === song.id ? (theme === 'dark' ? 'bg-blue-600 text-white shadow-lg' : 'bg-blue-500 text-white shadow-lg') : (theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-800')}`}
                         >
                           <div onClick={() => playSong(song, index)} className="flex-grow cursor-pointer">
-                            <span className="font-medium">{song.title}</span> - <span className={currentSong?.id === song.id ? (theme === 'dark' ? 'text-blue-200' : 'text-blue-100') : (theme === 'dark' ? 'text-gray-400' : 'text-gray-600')}>{song.artist}</span>
+                            <span className="font-medium">{song.title}</span> - <span className={currentSong?.id === song.id ? (theme === 'dark' ? 'text-blue-200' : 'text-blue-100') : (theme === 'dark' ? 'text-gray-400' : 'text-gray-600')}>{Array.isArray(song.artist) ? song.artist.join(', ') : song.artist}</span>
                           </div>
                           <button
                             onClick={(e) => {
