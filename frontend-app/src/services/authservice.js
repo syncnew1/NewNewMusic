@@ -5,7 +5,7 @@ const API_URL = 'http://localhost:8080/api/auth/';
 class AuthService {
     login(username, password) {
         return axios
-            .post(API_URL + 'signin', {
+            .post(API_URL + 'login', {
                 username,
                 password
             })
@@ -38,7 +38,7 @@ class AuthService {
             return Promise.reject(new Error('密码长度需在6-40个字符之间'));
         }
         
-        return axios.post(API_URL + 'signup', {
+        return axios.post(API_URL + 'register', {
             username,
             email,
             password

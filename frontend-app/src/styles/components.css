@@ -1,0 +1,173 @@
+/* 统一组件样式 - Components CSS */
+
+/* 播放器控件样式 */
+.player-controls {
+  @apply fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700 px-8 py-4 flex items-center justify-between z-50 transition-all duration-300;
+}
+
+/* 当前播放歌曲信息 */
+.current-song-info {
+  @apply flex items-center gap-4 flex-1 min-w-0;
+}
+
+.current-song-cover {
+  @apply w-12 h-12 rounded-md object-cover bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold;
+}
+
+.current-song-details {
+  @apply min-w-0 flex-1;
+}
+
+.current-song-title {
+  @apply font-semibold text-gray-800 dark:text-gray-100 m-0 whitespace-nowrap overflow-hidden text-ellipsis transition-colors duration-300;
+}
+
+.current-song-artist {
+  @apply text-sm text-gray-500 dark:text-gray-400 m-0 whitespace-nowrap overflow-hidden text-ellipsis transition-colors duration-300;
+}
+
+/* 播放控制按钮 */
+.playback-controls {
+  @apply flex items-center gap-4 flex-none;
+}
+
+.control-button {
+  @apply w-10 h-10 border-0 rounded-full bg-blue-500 text-white flex items-center justify-center cursor-pointer transition-all duration-300 text-base hover:bg-blue-600 hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none;
+}
+
+.play-pause-button {
+  @apply w-12 h-12 text-xl;
+}
+
+/* 进度条容器 */
+.progress-container {
+  @apply flex items-center gap-3 flex-1 max-w-sm mx-8;
+}
+
+.time-display {
+  @apply text-xs text-gray-500 dark:text-gray-400 tabular-nums min-w-10 text-center;
+}
+
+/* 进度条 */
+.progress-bar {
+  @apply flex-1 h-1 bg-gray-200 dark:bg-gray-600 rounded-sm cursor-pointer relative overflow-hidden;
+}
+
+.progress-fill {
+  @apply h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-sm transition-all duration-100 relative;
+}
+
+.progress-fill::after {
+  content: '';
+  @apply absolute -right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 bg-blue-500 rounded-full opacity-0 transition-opacity duration-300;
+}
+
+
+.progress-bar:hover .progress-fill::after {
+  @apply opacity-100;
+}
+
+/* 音量控制 */
+.volume-controls {
+  @apply flex items-center gap-2 flex-none;
+}
+
+.volume-button {
+  @apply w-8 h-8 border-0 bg-transparent text-gray-500 dark:text-gray-400 cursor-pointer flex items-center justify-center rounded transition-all duration-300 hover:text-blue-500 hover:bg-gray-100 dark:hover:text-blue-400 dark:hover:bg-gray-700;
+}
+
+.volume-slider {
+  @apply w-20 h-1 bg-gray-200 dark:bg-gray-600 rounded-sm outline-none cursor-pointer appearance-none;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  @apply appearance-none w-3 h-3 bg-blue-500 rounded-full cursor-pointer;
+}
+
+.volume-slider::-moz-range-thumb {
+  @apply w-3 h-3 bg-blue-500 rounded-full cursor-pointer border-0;
+}
+
+/* 图标样式 */
+.icon {
+  @apply w-5 h-5 fill-current transition-all duration-300;
+}
+
+.icon-small {
+  @apply w-4 h-4;
+}
+
+.icon-large {
+  @apply w-6 h-6;
+}
+
+/* 收藏按钮样式 */
+.favorite-button {
+  @apply bg-transparent border-0 cursor-pointer p-2 rounded transition-all duration-300 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 hover:scale-110;
+}
+
+.favorite-button.favorited {
+  @apply text-red-500 hover:text-red-600;
+}
+
+/* 加载动画 */
+.loading-dots {
+  @apply inline-flex gap-1;
+}
+
+.loading-dot {
+  @apply w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce;
+}
+
+.loading-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .player-controls {
+    @apply px-4 py-3 flex-col gap-3;
+  }
+  
+  .current-song-info {
+    @apply order-1 justify-center;
+  }
+  
+  .playback-controls {
+    @apply order-2;
+  }
+  
+  .progress-container {
+    @apply order-3 mx-0 max-w-none;
+  }
+  
+  .volume-controls {
+    @apply hidden;
+  }
+  
+  .control-button {
+    @apply w-9 h-9;
+  }
+  
+  .play-pause-button {
+    @apply w-11 h-11;
+  }
+}
+
+@media (max-width: 480px) {
+  .current-song-cover {
+    @apply w-10 h-10;
+  }
+  
+  .progress-container {
+    @apply gap-2;
+  }
+  
+  .time-display {
+    @apply text-xs min-w-8;
+  }
+}
