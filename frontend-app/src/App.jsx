@@ -13,10 +13,13 @@ import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import RecommendedSongsPage from './pages/RecommendedSongsPage';
 import UploadPage from './pages/UploadPage';
+<<<<<<< HEAD
 import PlaylistsPage from './pages/PlaylistsPage';
 import PlaylistDetailPage from './pages/PlaylistDetailPage';
 import FollowPage from './pages/FollowPage';
 import SongDetailPage from './pages/SongDetailPage';
+=======
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
 import Icons from './components/Icons';
 import songService from './services/songService';
 
@@ -156,6 +159,7 @@ function App() {
                 <>
                   <li>
                     <Link 
+<<<<<<< HEAD
                       to="/playlists" 
                       className="text-secondary-text hover:text-primary-text transition-colors duration-200 font-medium relative group"
                     >
@@ -174,6 +178,8 @@ function App() {
                   </li>
                   <li>
                     <Link 
+=======
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
                       to="/upload" 
                       className="text-secondary-text hover:text-primary-text transition-colors duration-200 font-medium relative group"
                     >
@@ -221,6 +227,7 @@ function App() {
             <span className="text-xs mt-1">推荐</span>
           </Link>
           {currentUser && (
+<<<<<<< HEAD
             <>
               <Link to="/playlists" className="flex flex-col items-center p-2 text-secondary-text hover:text-accent-color transition-colors duration-200">
                 <span className="text-xs mt-1">列表</span>
@@ -229,6 +236,11 @@ function App() {
                 <span className="text-xs mt-1">关注</span>
               </Link>
             </>
+=======
+            <Link to="/upload" className="flex flex-col items-center p-2 text-secondary-text hover:text-accent-color transition-colors duration-200">
+              <span className="text-xs mt-1">上传</span>
+            </Link>
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
           )}
         </div>
       </nav>
@@ -244,11 +256,15 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/recommendations" element={<RecommendedSongsPage />} />
+<<<<<<< HEAD
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/playlists" element={<PlaylistsPage />} />
             <Route path="/playlist/:id" element={<PlaylistDetailPage />} />
               <Route path="/follow" element={<FollowPage />} />
               <Route path="/song/:id" element={<SongDetailPage />} /> 
+=======
+            <Route path="/upload" element={<UploadPage />} /> 
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
           </Routes>
         </div>
       </main>

@@ -12,9 +12,12 @@ type User struct {
 	Email         string               `json:"email" bson:"email"`
 	Password      string               `json:"-" bson:"password"` // Never return password in JSON
 	FavoriteSongs []primitive.ObjectID `json:"favoriteSongs" bson:"favoriteSongs"`
+<<<<<<< HEAD
 	Playlists     []primitive.ObjectID `json:"playlists" bson:"playlists"`
 	Following     []primitive.ObjectID `json:"following" bson:"following"`
 	Followers     []primitive.ObjectID `json:"followers" bson:"followers"`
+=======
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
 	CreatedAt     time.Time            `json:"createdAt" bson:"createdAt"`
 	UpdatedAt     time.Time            `json:"updatedAt" bson:"updatedAt"`
 }
@@ -24,9 +27,12 @@ type UserResponse struct {
 	Username      string    `json:"username"`
 	Email         string    `json:"email"`
 	FavoriteSongs []string  `json:"favoriteSongs"`
+<<<<<<< HEAD
 	Playlists     []string  `json:"playlists"`
 	Following     []string  `json:"following"`
 	Followers     []string  `json:"followers"`
+=======
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
 	CreatedAt     time.Time `json:"createdAt"`
 }
 
@@ -53,6 +59,7 @@ func (u *User) ToResponse() *UserResponse {
 		favoriteSongs[i] = id.Hex()
 	}
 
+<<<<<<< HEAD
 	playlists := make([]string, len(u.Playlists))
 	for i, id := range u.Playlists {
 		playlists[i] = id.Hex()
@@ -68,14 +75,19 @@ func (u *User) ToResponse() *UserResponse {
 		followers[i] = id.Hex()
 	}
 
+=======
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
 	return &UserResponse{
 		ID:            u.ID.Hex(),
 		Username:      u.Username,
 		Email:         u.Email,
 		FavoriteSongs: favoriteSongs,
+<<<<<<< HEAD
 		Playlists:     playlists,
 		Following:     following,
 		Followers:     followers,
+=======
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
 		CreatedAt:     u.CreatedAt,
 	}
 }

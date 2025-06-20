@@ -7,7 +7,10 @@ import (
 	"newnewmusic/internal/database"
 	"newnewmusic/internal/router"
 	"newnewmusic/internal/service"
+<<<<<<< HEAD
 	"newnewmusic/internal/utils"
+=======
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
 )
 
 func main() {
@@ -24,11 +27,16 @@ func main() {
 	}
 	defer database.Disconnect()
 
+<<<<<<< HEAD
 	// Initialize JWT manager
 	jwtManager := utils.NewJWTManager(cfg.JWT.Secret, cfg.JWT.Expiration)
 
 	// Initialize services
 	services := service.NewServices(db, jwtManager)
+=======
+	// Initialize services
+	services := service.NewServices(db, cfg)
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
 
 	// Setup router
 	r := router.SetupRouter(services, cfg)

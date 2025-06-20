@@ -10,6 +10,7 @@ import authService from '../services/authService';
 
 function SongList() {
   const { theme } = useTheme();
+<<<<<<< HEAD
   const { currentUser } = useAuth();
   const { songs, currentSong, playSong, addFavorite, removeFavorite, isFavorite, favoriteError, clearFavoriteError, setSongs } = usePlayer();
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'compact'
@@ -53,6 +54,11 @@ function SongList() {
       alert('添加失败，请重试');
     }
   };
+=======
+  const { songs, currentSong, playSong, addFavorite, removeFavorite, isFavorite, favoriteError, clearFavoriteError, setSongs } = usePlayer();
+  const [viewMode, setViewMode] = useState('list'); // 'list' or 'compact'
+  const [sortBy, setSortBy] = useState('default'); // 'default', 'title', 'artist', 'duration'
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
 
   const handleOnDragEnd = (result) => {
     if (!result.destination) return;
@@ -275,6 +281,7 @@ function SongList() {
                                 </div>
                                 
                                 {/* Song Info */}
+<<<<<<< HEAD
                                 <div className="flex-1 min-w-0">
                                   <Link 
                                     to={`/song/${song.id}`}
@@ -294,6 +301,24 @@ function SongList() {
                                         : 'text-gray-600 dark:text-gray-400'
                                     }`}
                                   >
+=======
+                                <div 
+                                  onClick={() => playSong(song, index)} 
+                                  className="flex-1 min-w-0 cursor-pointer"
+                                >
+                                  <h3 className={`font-semibold truncate ${
+                                    isCurrentSong
+                                      ? 'text-white'
+                                      : 'text-gray-900 dark:text-gray-100'
+                                  }`}>
+                                    {song.title}
+                                  </h3>
+                                  <p className={`text-sm truncate ${
+                                    isCurrentSong
+                                      ? 'text-white/80'
+                                      : 'text-gray-600 dark:text-gray-400'
+                                  }`}>
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
                                     {artist}
                                   </p>
                                 </div>
@@ -324,6 +349,7 @@ function SongList() {
                                     </svg>
                                   </button>
                                   
+<<<<<<< HEAD
                                   {/* Add to Playlist Button */}
                                   <button
                                     onClick={(e) => {
@@ -340,6 +366,8 @@ function SongList() {
                                     <PlusIcon className="w-4 h-4" />
                                   </button>
                                   
+=======
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
                                   {/* Favorite Button */}
                                   <button
                                     onClick={(e) => {
@@ -380,6 +408,7 @@ function SongList() {
                                 </div>
                                 
                                 {/* Song Info */}
+<<<<<<< HEAD
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-center justify-between">
                                     <div className="min-w-0 flex-1">
@@ -393,11 +422,27 @@ function SongList() {
                                       >
                                         {song.title}
                                       </Link>
+=======
+                                <div 
+                                  onClick={() => playSong(song, index)} 
+                                  className="flex-1 min-w-0 cursor-pointer"
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <div className="min-w-0 flex-1">
+                                      <span className={`font-medium truncate ${
+                                        isCurrentSong
+                                          ? 'text-white'
+                                          : 'text-gray-900 dark:text-gray-100'
+                                      }`}>
+                                        {song.title}
+                                      </span>
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
                                       <span className={`mx-2 ${
                                         isCurrentSong
                                           ? 'text-white/60'
                                           : 'text-gray-400 dark:text-gray-500'
                                       }`}>•</span>
+<<<<<<< HEAD
                                       <span 
                                         onClick={() => playSong(song, index)}
                                         className={`text-sm cursor-pointer ${
@@ -406,6 +451,13 @@ function SongList() {
                                             : 'text-gray-600 dark:text-gray-400'
                                         }`}
                                       >
+=======
+                                      <span className={`text-sm ${
+                                        isCurrentSong
+                                          ? 'text-white/80'
+                                          : 'text-gray-600 dark:text-gray-400'
+                                      }`}>
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
                                         {artist}
                                       </span>
                                     </div>
@@ -420,6 +472,7 @@ function SongList() {
                                       <button
                                         onClick={(e) => {
                                           e.stopPropagation();
+<<<<<<< HEAD
                                           handleAddToPlaylist(song);
                                         }}
                                         className={`p-1 rounded transition-all hover:scale-110 ${
@@ -434,6 +487,8 @@ function SongList() {
                                       <button
                                         onClick={(e) => {
                                           e.stopPropagation();
+=======
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
                                           isFav ? removeFavorite(song.id) : addFavorite(song);
                                         }}
                                         className={`p-1 rounded transition-all hover:scale-110 ${
@@ -472,6 +527,7 @@ function SongList() {
           </Droppable>
         </DragDropContext>
       </div>
+<<<<<<< HEAD
 
       {/* Playlist Selection Modal */}
       {showPlaylistModal && (
@@ -520,6 +576,8 @@ function SongList() {
           </div>
         </div>
       )}
+=======
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
     </div>
   );
 }

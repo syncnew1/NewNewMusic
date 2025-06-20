@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
+<<<<<<< HEAD
 import { useNavigate } from 'react-router-dom';
+=======
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
 import { useTheme } from '../contexts/ThemeContext';
 import { usePlayer } from '../contexts/PlayerContext';
 import { FavoriteIcon } from '../components/Icons';
@@ -48,6 +51,7 @@ function FavoritesPage() {
     removeFavorite(songId);
   };
 
+<<<<<<< HEAD
   const handleSongClick = (e, favSong) => {
     // 如果点击的是收藏按钮，不执行跳转
     if (e.target.closest('button')) {
@@ -56,6 +60,8 @@ function FavoritesPage() {
     navigate(`/song/${favSong.id}`);
   };
 
+=======
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
   const playAllFavorites = () => {
     if (favoriteSongs.length > 0) {
       playSong(favoriteSongs[0], 0);
@@ -166,7 +172,11 @@ function FavoritesPage() {
                 // Grid View
                 <div
                   key={favSong.id}
+<<<<<<< HEAD
                   onClick={(e) => handleSongClick(e, favSong)}
+=======
+                  onClick={() => handleSongPlay(favSong)}
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
                   className={`group p-6 rounded-2xl cursor-pointer transition-all duration-200 hover:bg-surface-variant ${
                     currentSong?.id === favSong.id ? 'bg-accent-color/10 border border-accent-color/20' : 'bg-card-bg hover:bg-surface'
                   }`}
@@ -193,6 +203,7 @@ function FavoritesPage() {
                         </div>
                       )}
                       
+<<<<<<< HEAD
                       {/* Action Buttons */}
                       <div className="absolute top-2 right-2 flex space-x-1">
                         <button
@@ -217,6 +228,15 @@ function FavoritesPage() {
                            <FavoriteIcon filled={true} />
                          </button>
                        </div>
+=======
+                      {/* Favorite Button */}
+                      <button
+                        onClick={(e) => handleRemoveFavorite(e, favSong.id)}
+                        className="absolute top-2 right-2 p-2 bg-black/50 rounded-full text-red-400 hover:text-red-300 transition-colors duration-200"
+                      >
+                        <FavoriteIcon filled={true} />
+                      </button>
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
                     </div>
 
                     {/* Song Info */}
@@ -237,7 +257,11 @@ function FavoritesPage() {
                 // List View
                 <div
                   key={favSong.id}
+<<<<<<< HEAD
                   onClick={(e) => handleSongClick(e, favSong)}
+=======
+                  onClick={() => handleSongPlay(favSong)}
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
                   className={`group p-4 rounded-xl cursor-pointer transition-all duration-200 hover:bg-surface-variant ${
                     currentSong?.id === favSong.id ? 'bg-accent-color/10 border border-accent-color/20' : 'hover:bg-surface'
                   }`}
@@ -291,6 +315,7 @@ function FavoritesPage() {
                         <FavoriteIcon filled={true} />
                       </button>
                       
+<<<<<<< HEAD
                       <button 
                         onClick={(e) => {
                           e.stopPropagation();
@@ -304,6 +329,11 @@ function FavoritesPage() {
                           ) : (
                             <path d="M8 5v14l11-7z"/>
                           )}
+=======
+                      <button className="opacity-0 group-hover:opacity-100 p-2 rounded-full bg-accent-color text-accent-text-color transition-all duration-200 transform hover:scale-105">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z"/>
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
                         </svg>
                       </button>
                     </div>

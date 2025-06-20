@@ -87,6 +87,7 @@ const RecommendedSongsPage = () => {
         }
     };
 
+<<<<<<< HEAD
     const handleSongClick = (e, song) => {
         // 如果点击的是按钮，不执行跳转
         if (e.target.closest('button')) {
@@ -95,6 +96,8 @@ const RecommendedSongsPage = () => {
         navigate(`/song/${song.id}`);
     };
 
+=======
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
     useEffect(() => {
         fetchRecommendedSongs();
     }, [currentUser]);
@@ -192,8 +195,12 @@ const RecommendedSongsPage = () => {
                             return (
                                 <div
                                     key={song.id}
+<<<<<<< HEAD
                                     onClick={(e) => handleSongClick(e, song)}
                                     className={`group bg-white dark:bg-gray-800 rounded-xl border border-outline-light dark:border-outline-dark hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-200 hover:shadow-lg cursor-pointer ${
+=======
+                                    className={`group bg-white dark:bg-gray-800 rounded-xl border border-outline-light dark:border-outline-dark hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-200 hover:shadow-lg ${
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
                                         isCurrentSong ? 'ring-2 ring-primary-500 border-primary-500' : ''
                                     }`}
                                 >

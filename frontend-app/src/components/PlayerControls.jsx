@@ -312,6 +312,7 @@ function PlayerControls() {
       </div>
       
       {/* Custom slider styles */}
+<<<<<<< HEAD
       <style dangerouslySetInnerHTML={{
         __html: `
           .slider::-webkit-slider-thumb {
@@ -346,6 +347,40 @@ function PlayerControls() {
           }
         `
       }} />
+=======
+      <style jsx>{`
+        .slider::-webkit-slider-thumb {
+          appearance: none;
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: var(--accent-color);
+          cursor: pointer;
+          border: 2px solid var(--card-bg);
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+        
+        .slider::-moz-range-thumb {
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: var(--accent-color);
+          cursor: pointer;
+          border: 2px solid var(--card-bg);
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+        
+        .slider::-webkit-slider-track {
+          background: var(--outline);
+          border-radius: 4px;
+        }
+        
+        .slider::-moz-range-track {
+          background: var(--outline);
+          border-radius: 4px;
+        }
+      `}</style>
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
     </div>
   );
 }

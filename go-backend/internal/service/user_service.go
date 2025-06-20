@@ -56,9 +56,12 @@ func (s *UserService) Register(req *models.RegisterRequest) (*models.AuthRespons
 		Email:         req.Email,
 		Password:      hashedPassword,
 		FavoriteSongs: []primitive.ObjectID{},
+<<<<<<< HEAD
 		Playlists:     []primitive.ObjectID{},
 		Following:     []primitive.ObjectID{},
 		Followers:     []primitive.ObjectID{},
+=======
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
 		CreatedAt:     time.Now(),
 		UpdatedAt:     time.Now(),
 	}

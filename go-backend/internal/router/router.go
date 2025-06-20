@@ -22,9 +22,12 @@ func SetupRouter(services *service.Services, cfg *config.Config) *gin.Engine {
 	// Create handlers
 	userHandler := handler.NewUserHandler(services.User)
 	songHandler := handler.NewSongHandler(services.Song, cfg.File.UploadPath)
+<<<<<<< HEAD
 	playlistHandler := handler.NewPlaylistHandler(services.Playlist)
 	commentHandler := handler.NewCommentHandler(services.Comment)
 	followHandler := handler.NewFollowHandler(services.Follow)
+=======
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
 
 	// API routes
 	api := r.Group("/api")
@@ -69,6 +72,7 @@ func SetupRouter(services *service.Services, cfg *config.Config) *gin.Engine {
 				protected.GET("/recommendations", songHandler.GetRecommendedSongs)
 			}
 		}
+<<<<<<< HEAD
 
 		// Playlist routes
 		playlists := api.Group("/playlists")
@@ -126,6 +130,8 @@ func SetupRouter(services *service.Services, cfg *config.Config) *gin.Engine {
 			users.GET("/:userId/followers", followHandler.GetFollowers)
 			users.GET("/:userId/stats", followHandler.GetFollowStats)
 		}
+=======
+>>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
 	}
 
 	// Health check endpoint
