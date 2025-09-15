@@ -30,6 +30,13 @@ function PlayerControls() {
         audioRef.current.pause();
       }
     }
+    
+    // 清理函数：组件卸载时暂停音频
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
   }, [isPlaying, currentSong]);
 
   React.useEffect(() => {

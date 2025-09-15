@@ -18,14 +18,9 @@ const PlaylistsPage = () => {
 
   const fetchPlaylists = async () => {
     try {
-      const response = await fetch('/api/playlists/my', {
-        headers: {
-          ...authService.authHeader()
-        }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setPlaylists(data);
+      const response = await authService.getMyPlaylists();
+      if (response.data && response.data.success) {
+        setPlaylists(response.data.data.playlists || []);
       }
     } catch (error) {
       console.error('Error fetching playlists:', error);
@@ -50,17 +45,20 @@ const PlaylistsPage = () => {
         body: JSON.stringify(playlistData)
       });
 
-      if (response.ok) {
-        const newPlaylist = await response.json();
-        setPlaylists(prevPlaylists => [newPlaylist, ...prevPlaylists]);
-        setShowCreateForm(false);
+      const result = await response.json();
+      
+      if (response.ok && result.success) {
+        if (result.data) {
+          setPlaylists(prevPlaylists => [result.data, ...prevPlaylists]);
+          setShowCreateForm(false);
+        }
       } else {
         console.error('Failed to create playlist');
-        alert('创建歌单失败');
+        alert(result.message || '创建歌单失败，请重试');
       }
     } catch (error) {
       console.error('Error creating playlist:', error);
-      alert('创建歌单失败');
+      alert('网络错误，请检查连接后重试');
     }
   }, [currentUser]);
 
@@ -75,20 +73,23 @@ const PlaylistsPage = () => {
         body: JSON.stringify(playlistData)
       });
 
-      if (response.ok) {
-        const updatedPlaylist = await response.json();
-        setPlaylists(prevPlaylists => 
-          prevPlaylists.map(p => p.id === editingPlaylistId ? updatedPlaylist : p)
-        );
-        setEditingPlaylistId(null);
-        setEditingPlaylist(null);
+      const result = await response.json();
+      
+      if (response.ok && result.success) {
+        if (result.data) {
+          setPlaylists(prevPlaylists => 
+            prevPlaylists.map(p => p.id === editingPlaylistId ? result.data : p)
+          );
+          setEditingPlaylistId(null);
+          setEditingPlaylist(null);
+        }
       } else {
         console.error('Failed to update playlist');
-        alert('更新歌单失败');
+        alert(result.message || '更新歌单失败，请重试');
       }
     } catch (error) {
       console.error('Error updating playlist:', error);
-      alert('更新歌单失败');
+      alert('网络错误，请检查连接后重试');
     }
   }, [editingPlaylistId]);
 
@@ -122,15 +123,17 @@ const PlaylistsPage = () => {
         }
       });
 
-      if (response.ok) {
+      const result = await response.json();
+      
+      if (response.ok && result.success) {
         setPlaylists(prevPlaylists => prevPlaylists.filter(p => p.id !== playlistId));
       } else {
         console.error('Failed to delete playlist');
-        alert('删除歌单失败');
+        alert(result.message || '删除歌单失败，请重试');
       }
     } catch (error) {
       console.error('Error deleting playlist:', error);
-      alert('删除歌单失败');
+      alert('网络错误，请检查连接后重试');
     }
   };
 

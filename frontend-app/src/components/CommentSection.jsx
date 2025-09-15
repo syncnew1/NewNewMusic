@@ -46,8 +46,12 @@ const CommentSection = ({ songId }) => {
     try {
       const response = await fetch(`/api/comments/song/${songId}`);
       if (response.ok) {
-        const data = await response.json();
-        setComments(data);
+        const result = await response.json();
+        if (result.success && result.data) {
+          setComments(result.data);
+        } else {
+          setComments([]);
+        }
       }
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -60,8 +64,12 @@ const CommentSection = ({ songId }) => {
     try {
       const response = await fetch(`/api/comments/song/${songId}/rating`);
       if (response.ok) {
-        const data = await response.json();
-        setRating(data);
+        const result = await response.json();
+        if (result.success && result.data) {
+          setRating(result.data);
+        } else {
+          setRating({ averageRating: 0, totalRatings: 0 });
+        }
       }
     } catch (error) {
       console.error('Error fetching rating:', error);
@@ -89,10 +97,12 @@ const CommentSection = ({ songId }) => {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        setComments(prevComments => [data, ...prevComments]);
-        setShowCommentForm(false);
-        fetchRating();
+        const result = await response.json();
+        if (result.success && result.data) {
+          setComments(prevComments => [result.data, ...prevComments]);
+          setShowCommentForm(false);
+          fetchRating();
+        }
       } else {
         console.error('Failed to submit comment');
         alert('评论失败');
@@ -117,20 +127,23 @@ const CommentSection = ({ songId }) => {
         })
       });
 
-      if (response.ok) {
-        const updatedComment = await response.json();
-        setComments(prevComments => 
-          prevComments.map(c => c.id === editingCommentId ? updatedComment : c)
-        );
-        setEditingCommentId(null);
-        fetchRating();
+      const result = await response.json();
+      
+      if (response.ok && result.success) {
+        if (result.data) {
+          setComments(prevComments => 
+            prevComments.map(c => c.id === editingCommentId ? result.data : c)
+          );
+          setEditingCommentId(null);
+          fetchRating();
+        }
       } else {
         console.error('Failed to update comment');
-        alert('更新评论失败');
+        alert(result.message || '更新评论失败，请重试');
       }
     } catch (error) {
       console.error('Error updating comment:', error);
-      alert('更新评论失败');
+      alert('网络错误，请检查连接后重试');
     }
   }, [editingCommentId]);
 
@@ -153,16 +166,18 @@ const CommentSection = ({ songId }) => {
         }
       });
 
-      if (response.ok) {
+      const result = await response.json();
+      
+      if (response.ok && result.success) {
         setComments(prevComments => prevComments.filter(c => c.id !== commentId));
         fetchRating();
       } else {
         console.error('Failed to delete comment');
-        alert('删除评论失败');
+        alert(result.message || '删除评论失败，请重试');
       }
     } catch (error) {
       console.error('Error deleting comment:', error);
-      alert('删除评论失败');
+      alert('网络错误，请检查连接后重试');
     }
   };
 

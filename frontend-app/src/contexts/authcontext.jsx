@@ -32,8 +32,7 @@ export const AuthProvider = ({ children }) => {
     const login = (userData) => {
         setCurrentUser(userData);
         // 触发storage事件以通知其他组件用户状态已更新
-        window.dispatchEvent(
-             Event('storage'));
+        window.dispatchEvent(new Event('storage'));
     };
 
     const logout = () => {

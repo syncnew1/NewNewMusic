@@ -161,8 +161,8 @@ const UploadPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
-            <div className="w-full max-w-2xl bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-outline-light dark:border-outline-dark overflow-hidden">
+        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116] flex items-center justify-center p-4">
+            <div className="w-full max-w-2xl bg-white dark:bg-[#0f1116] rounded-2xl shadow-xl border border-outline-light dark:border-violet-600/30 overflow-hidden">
                 {/* Header */}
                 <div className="p-8 bg-gradient-to-r from-primary-500 to-secondary-500 text-white">
                     <div className="flex items-center space-x-3">
@@ -211,7 +211,7 @@ const UploadPage = () => {
                                     ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
                                     : audioFile
                                         ? 'border-success-300 bg-success-50 dark:bg-success-900/20'
-                                        : 'border-gray-300 dark:border-gray-600 hover:border-primary-400 dark:hover:border-primary-500'
+                                        : 'border-gray-300 dark:border-violet-600/30 hover:border-violet-400 dark:hover:border-violet-500'
                             }`}
                             onDragEnter={handleDrag}
                             onDragLeave={handleDrag}

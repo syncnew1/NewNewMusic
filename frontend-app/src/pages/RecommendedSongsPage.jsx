@@ -61,25 +61,40 @@ const RecommendedSongsPage = () => {
 
     const fetchRecommendedSongs = async (isRefresh = false) => {
         if (!currentUser) {
+            console.log('❌ 用户未登录');
             setError('用户未登录，无法获取推荐歌曲。');
             setLoading(false);
             return;
         }
         try {
+            console.log('🎵 开始获取推荐歌曲...');
             if (isRefresh) {
                 setRefreshing(true);
             } else {
                 setLoading(true);
             }
-            const data = await songService.getRecommendedSongs();
+            const response = await songService.getRecommendedSongs();
+            console.log('📊 推荐API返回数据:', response);
+            console.log('📊 数据类型:', typeof response, '是否为数组:', Array.isArray(response));
+            
+            // 提取实际的歌曲数据数组
+            const data = response.data || response;
+            console.log('🎵 提取的歌曲数据:', data);
+            console.log('🎵 歌曲数据类型:', typeof data, '是否为数组:', Array.isArray(data));
+            
             const uniqueSongs = data.filter((song, index, self) =>
                 index === self.findIndex((s) => (
                     s.id === song.id
                 ))
             );
+            console.log('🎶 去重后歌曲数量:', uniqueSongs.length);
+            console.log('🎵 推荐歌曲列表:', uniqueSongs.map(s => s.title));
+            
             setRecommendedSongs(uniqueSongs);
             setError(null);
         } catch (err) {
+            console.error('❌ 获取推荐歌曲失败:', err);
+            console.error('❌ 错误响应:', err.response?.data);
             setError(err.response?.data?.error || '获取推荐歌曲失败，请稍后再试。');
         } finally {
             setLoading(false);
@@ -104,9 +119,9 @@ const RecommendedSongsPage = () => {
 
     if (loading && !refreshing) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+            <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116] flex items-center justify-center">
                 <div className="text-center space-y-4">
-                    <div className="w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    <div className="w-16 h-16 border-4 border-violet-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
                     <p className="text-lg font-medium text-gray-700 dark:text-gray-300">正在为您生成个性化推荐...</p>
                 </div>
             </div>
@@ -114,52 +129,36 @@ const RecommendedSongsPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116]">
             <div className="container mx-auto px-4 py-8">
                 {/* Header */}
                 <div className="mb-8">
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center space-x-3">
-                            <div className="w-12 h-12 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center">
-                                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">为您推荐</h1>
-                                <p className="text-gray-600 dark:text-gray-400">基于您的音乐喜好智能推荐</p>
-                            </div>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">为您推荐</h1>
+                            <p className="text-gray-600 dark:text-gray-300 mt-1">基于您的音乐喜好智能推荐</p>
                         </div>
                         <button
-                            onClick={() => fetchRecommendedSongs(true)}
-                            disabled={refreshing}
-                            className="flex items-center space-x-2 px-4 py-2 bg-white dark:bg-gray-800 border border-outline-light dark:border-outline-dark rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all disabled:opacity-50"
-                        >
-                            <svg className={`w-4 h-4 text-gray-600 dark:text-gray-400 ${refreshing ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        onClick={() => fetchRecommendedSongs(true)}
+                        disabled={refreshing}
+                        className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-violet-600/30 rounded-lg text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-[#0f1116] hover:bg-gray-50 dark:hover:bg-[#0f1116]/90 disabled:opacity-50 transition-colors"
+                    >
+                            <svg className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                             </svg>
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {refreshing ? '刷新中...' : '刷新推荐'}
-                            </span>
+                            {refreshing ? '刷新中...' : '刷新推荐'}
                         </button>
                     </div>
                 </div>
 
                 {/* Error State */}
                 {error && (
-                    <div className="mb-8 p-6 bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800 rounded-xl">
-                        <div className="flex items-center space-x-3">
-                            <svg className="w-6 h-6 text-error-500 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                            </svg>
-                            <div>
-                                <h3 className="text-lg font-semibold text-error-700 dark:text-error-300">获取推荐失败</h3>
-                                <p className="text-error-600 dark:text-error-400">{error}</p>
-                            </div>
-                        </div>
+                    <div className="mb-8 p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                        <h3 className="text-lg font-semibold text-red-700 dark:text-red-200 mb-2">获取推荐失败</h3>
+                        <p className="text-red-600 dark:text-red-300 mb-4">{error}</p>
                         <button
                             onClick={() => fetchRecommendedSongs()}
-                            className="mt-4 px-4 py-2 bg-error-600 hover:bg-error-700 text-white rounded-lg transition-colors"
+                            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
                         >
                             重试
                         </button>
@@ -169,16 +168,16 @@ const RecommendedSongsPage = () => {
                 {/* Empty State */}
                 {!loading && !error && recommendedSongs.length === 0 && (
                     <div className="text-center py-16">
-                        <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <svg className="w-12 h-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                        <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z" />
                             </svg>
                         </div>
-                        <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">暂无推荐歌曲</h3>
-                        <p className="text-gray-600 dark:text-gray-400 mb-6">添加一些喜欢的歌曲，我们将为您生成个性化推荐</p>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">暂无推荐歌曲</h3>
+                        <p className="text-gray-600 dark:text-gray-400 mb-4">添加一些喜欢的歌曲，我们将为您生成个性化推荐</p>
                         <button
                             onClick={() => fetchRecommendedSongs()}
-                            className="px-6 py-3 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-semibold rounded-lg transition-all"
+                            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
                         >
                             重新生成推荐
                         </button>
@@ -197,32 +196,37 @@ const RecommendedSongsPage = () => {
                                     key={song.id}
 <<<<<<< HEAD
                                     onClick={(e) => handleSongClick(e, song)}
+<<<<<<< HEAD
                                     className={`group bg-white dark:bg-gray-800 rounded-xl border border-outline-light dark:border-outline-dark hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-200 hover:shadow-lg cursor-pointer ${
 =======
                                     className={`group bg-white dark:bg-gray-800 rounded-xl border border-outline-light dark:border-outline-dark hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-200 hover:shadow-lg ${
 >>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
                                         isCurrentSong ? 'ring-2 ring-primary-500 border-primary-500' : ''
+=======
+                                    className={`group bg-white dark:bg-[#0f1116] rounded-lg border border-gray-200 dark:border-violet-600/30 hover:border-violet-300 dark:hover:border-violet-500/50 transition-all duration-200 hover:shadow-md cursor-pointer ${
+                                        isCurrentSong ? 'ring-2 ring-violet-500 border-violet-500' : ''
+>>>>>>> 53bdb00 (feat: 实现音乐平台核心功能与UI改进)
                                     }`}
                                 >
                                     <div className="p-6">
                                         <div className="flex items-center space-x-4">
                                             {/* Cover Placeholder */}
                                             <div className="relative flex-shrink-0">
-                                                <div className="w-16 h-16 bg-gradient-to-br from-primary-100 to-secondary-100 dark:from-primary-900 dark:to-secondary-900 rounded-lg flex items-center justify-center">
+                                                <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-violet-900/20 dark:to-violet-800/20 rounded-lg flex items-center justify-center">
                                                     {isCurrentSong && isPlaying ? (
                                                         <div className="flex space-x-1">
-                                                            <div className="w-1 h-4 bg-primary-500 rounded-full animate-pulse"></div>
-                                                            <div className="w-1 h-6 bg-primary-500 rounded-full animate-pulse" style={{animationDelay: '0.1s'}}></div>
-                                                            <div className="w-1 h-4 bg-primary-500 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                                                            <div className="w-1 h-4 bg-violet-500 rounded-full animate-pulse"></div>
+                                                            <div className="w-1 h-6 bg-violet-500 rounded-full animate-pulse" style={{animationDelay: '0.1s'}}></div>
+                                                            <div className="w-1 h-4 bg-violet-500 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
                                                         </div>
                                                     ) : (
-                                                        <svg className="w-8 h-8 text-primary-400 dark:text-primary-500" fill="currentColor" viewBox="0 0 24 24">
+                                                        <svg className="w-8 h-8 text-gray-400 dark:text-gray-300" fill="currentColor" viewBox="0 0 24 24">
                                                             <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
                                                         </svg>
                                                     )}
                                                 </div>
                                                 {isCurrentSong && (
-                                                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary-500 rounded-full flex items-center justify-center">
+                                                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-violet-500 rounded-full flex items-center justify-center">
                                                         <div className="w-2 h-2 bg-white rounded-full"></div>
                                                     </div>
                                                 )}
@@ -239,21 +243,21 @@ const RecommendedSongsPage = () => {
                                                             {Array.isArray(song.artist) ? song.artist.join(', ') : song.artist}
                                                         </p>
                                                         {song.album && (
-                                                            <p className="text-sm text-gray-500 dark:text-gray-500 truncate">
-                                                                专辑: {song.album}
-                                                            </p>
+                                                            <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
+                                                            专辑: {song.album}
+                                                        </p>
                                                         )}
                                                         <div className="flex items-center space-x-4 mt-2">
-                                                            <span className="text-xs px-2 py-1 bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 rounded-full">
+                                                            <span className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full">
                                                                 {getRecommendationReason(song)}
                                                             </span>
                                                             {song.genre && (
-                                                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                                <span className="text-xs text-gray-600 dark:text-gray-400">
                                                                     {song.genre}
                                                                 </span>
                                                             )}
                                                             {song.duration && (
-                                                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                                <span className="text-xs text-gray-600 dark:text-gray-400">
                                                                     {formatDuration(song.duration)}
                                                                 </span>
                                                             )}
@@ -275,8 +279,8 @@ const RecommendedSongsPage = () => {
                                                     }}
                                                     className={`p-2 rounded-lg transition-all ${
                                                         isFav
-                                                            ? 'text-error-500 hover:bg-error-50 dark:hover:bg-error-900/20'
-                                                            : 'text-gray-400 hover:text-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20'
+                                                            ? 'text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
+                                                            : 'text-gray-400 hover:text-violet-500 hover:bg-violet-50 dark:hover:bg-violet-900/20'
                                                     }`}
                                                 >
                                                     <svg className="w-5 h-5" fill={isFav ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
@@ -285,7 +289,7 @@ const RecommendedSongsPage = () => {
                                                 </button>
                                                 <button
                                                     onClick={() => playSong(song, index)}
-                                                    className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white rounded-lg transition-all hover:shadow-lg active:scale-95"
+                                                    className="flex items-center space-x-2 px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg transition-colors hover:shadow-md active:scale-95"
                                                 >
                                                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                                                         {isCurrentSong && isPlaying ? (

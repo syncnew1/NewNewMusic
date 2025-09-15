@@ -78,8 +78,13 @@ const SongDetailPage = () => {
       // 如果本地没有，从API获取
       const response = await fetch(`/api/songs/${id}`);
       if (response.ok) {
-        const songData = await response.json();
-        setSong(songData);
+        const result = await response.json();
+        if (result.success && result.data) {
+          setSong(result.data);
+        } else {
+          console.error('Song not found');
+          navigate('/');
+        }
       } else {
         console.error('Song not found');
         navigate('/');
@@ -166,7 +171,7 @@ const SongDetailPage = () => {
   const isFav = isFavorite(song.id);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116] pb-24">
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center mb-8">
@@ -226,7 +231,7 @@ const SongDetailPage = () => {
                   className={`p-3 rounded-full transition-colors ${
                     isFav
                       ? 'bg-red-100 text-red-600 hover:bg-red-200'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-[#0f1116] dark:text-gray-400 dark:hover:bg-[#1a1b26]'
                   }`}
                 >
                   {isFav ? (
@@ -238,7 +243,7 @@ const SongDetailPage = () => {
 
                 <button
                   onClick={handleShare}
-                  className="p-3 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors"
+                  className="p-3 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-[#0f1116] dark:text-gray-400 dark:hover:bg-[#1a1b26] transition-colors"
                 >
                   <ShareIcon className="w-5 h-5" />
                 </button>
@@ -254,7 +259,7 @@ const SongDetailPage = () => {
       {/* Playlist Selection Modal */}
       {showPlaylistModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-96 max-h-96 overflow-y-auto">
+          <div className="bg-white dark:bg-[#0f1116] rounded-lg p-6 w-96 max-h-96 overflow-y-auto">
             <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
               选择播放列表
             </h3>
@@ -269,7 +274,7 @@ const SongDetailPage = () => {
                   <button
                     key={playlist.id}
                     onClick={() => addSongToPlaylist(playlist.id)}
-                    className="w-full text-left p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    className="w-full text-left p-3 rounded-lg border border-gray-200 dark:border-violet-600/30 hover:bg-gray-50 dark:hover:bg-[#1a1b26] transition-colors"
                   >
                     <div className="font-medium text-gray-900 dark:text-gray-100">
                       {playlist.name}

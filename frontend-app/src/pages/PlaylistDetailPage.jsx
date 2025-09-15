@@ -27,19 +27,12 @@ const PlaylistDetailPage = () => {
       });
       
       if (response.ok) {
-        const data = await response.json();
-        setPlaylist(data);
-        
-        // 获取歌单中的歌曲详情
-        if (data.songs && data.songs.length > 0) {
-          const songsResponse = await fetch(`/api/playlists/${id}/songs`, {
-            headers: authService.authHeader()
-          });
-          
-          if (songsResponse.ok) {
-            const songsData = await songsResponse.json();
-            setSongs(songsData);
-          }
+        const result = await response.json();
+        if (result.success && result.data) {
+          setPlaylist(result.data);
+          setSongs(result.data.songs || []);
+        } else {
+          setError('歌单数据格式错误');
         }
       } else {
         setError('歌单不存在或无权访问');

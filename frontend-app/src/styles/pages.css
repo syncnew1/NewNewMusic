@@ -2,12 +2,12 @@
 
 /* 通用页面容器样式 */
 .page-container {
-  @apply flex-1 p-6 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 transition-all duration-300;
+  @apply flex-1 p-6 rounded-lg shadow-md bg-white dark:bg-[#0f1116] text-gray-700 dark:text-gray-200 transition-all duration-300;
 }
 
 /* 页面标题样式 */
 .page-title {
-  @apply text-3xl font-semibold mb-6 text-gray-800 dark:text-white transition-colors duration-300;
+  @apply text-3xl font-semibold mb-6 text-gray-800 dark:text-gray-100 transition-colors duration-300;
 }
 
 /* 副标题样式 */
@@ -26,7 +26,7 @@
 }
 
 .song-item {
-  @apply flex justify-between items-center p-4 rounded-md bg-gray-100 dark:bg-gray-700 cursor-pointer transition-all duration-300 hover:bg-gray-200 dark:hover:bg-gray-600 hover:-translate-y-0.5;
+  @apply flex justify-between items-center p-4 rounded-md bg-gray-100 dark:bg-[#0f1116] border border-violet-600/30 cursor-pointer transition-all duration-300 hover:bg-gray-200 dark:hover:bg-[#0f1116]/90 hover:-translate-y-0.5;
 }
 
 /* 歌曲信息样式 */

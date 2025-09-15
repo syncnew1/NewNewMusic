@@ -10,8 +10,8 @@ class AuthService {
                 password
             })
             .then(response => {
-                if (response.data.accessToken) {
-                    localStorage.setItem('user', JSON.stringify(response.data));
+                if (response.data.data && response.data.data.accessToken) {
+                    localStorage.setItem('user', JSON.stringify(response.data.data));
                 }
                 return response.data;
             })
@@ -43,6 +43,12 @@ class AuthService {
             email,
             password
         })
+        .then(response => {
+            if (response.data.data && response.data.data.accessToken) {
+                localStorage.setItem('user', JSON.stringify(response.data.data));
+            }
+            return response.data;
+        })
         .catch(error => {
             if (error.response) {
                 if (error.response.status === 400) {
@@ -71,16 +77,18 @@ class AuthService {
 
     // 获取我的播放列表
     getMyPlaylists() {
-        return axios.get('http://localhost:8080/api/playlists/my', {
+        const user = this.getCurrentUser();
+        if (!user || !user.user || !user.user.id) {
+            return Promise.reject(new Error('User not authenticated'));
+        }
+        return axios.get(`http://localhost:8080/api/playlists/user/${user.user.id}`, {
             headers: this.authHeader()
         });
     }
 
     // 添加歌曲到播放列表
     addSongToPlaylist(playlistId, songId) {
-        return axios.post(`http://localhost:8080/api/playlists/${playlistId}/songs`, {
-            songId: songId
-        }, {
+        return axios.post(`http://localhost:8080/api/playlists/${playlistId}/songs/${songId}`, {}, {
             headers: this.authHeader()
         });
     }

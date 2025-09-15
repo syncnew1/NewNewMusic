@@ -26,22 +26,26 @@ const FollowPage = () => {
     
     try {
       const [followingRes, followersRes] = await Promise.all([
-        fetch('/api/follow/my/following', {
+        fetch(`/api/users/${currentUser.user.id}/following`, {
           headers: authService.authHeader()
         }),
-        fetch('/api/follow/my/followers', {
+        fetch(`/api/users/${currentUser.user.id}/followers`, {
           headers: authService.authHeader()
         })
       ]);
 
       if (followingRes.ok) {
-        const followingData = await followingRes.json();
-        setFollowing(followingData);
+        const followingResult = await followingRes.json();
+        if (followingResult.success && followingResult.data) {
+          setFollowing(followingResult.data.following || []);
+        }
       }
 
       if (followersRes.ok) {
-        const followersData = await followersRes.json();
-        setFollowers(followersData);
+        const followersResult = await followersRes.json();
+        if (followersResult.success && followersResult.data) {
+          setFollowers(followersResult.data.followers || []);
+        }
       }
     } catch (error) {
       console.error('Error fetching follow data:', error);
@@ -59,8 +63,12 @@ const FollowPage = () => {
     try {
       const response = await fetch(`/api/users/${currentUser.user.id}/stats`);
       if (response.ok) {
-        const data = await response.json();
-        setStats(data);
+        const result = await response.json();
+        if (result.success && result.data) {
+          setStats(result.data);
+        } else {
+          setStats({ followingCount: 0, followersCount: 0 });
+        }
       }
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -69,34 +77,45 @@ const FollowPage = () => {
 
   const unfollowUser = async (userId) => {
     try {
-      const response = await fetch(`/api/follow/user/${userId}`, {
+      const response = await fetch(`/api/users/follow/${userId}`, {
         method: 'DELETE',
         headers: authService.authHeader()
       });
 
-      if (response.ok) {
-        setFollowing(following.filter(user => user.id !== userId));
+      const result = await response.json();
+      
+      if (response.ok && result.success) {
+        // 重新获取数据以确保同步
+        fetchFollowData();
         fetchStats();
+      } else {
+        alert(result.message || '取消关注失败，请重试');
       }
     } catch (error) {
       console.error('Error unfollowing user:', error);
+      alert('网络错误，请检查连接后重试');
     }
   };
 
   const followUser = async (userId) => {
     try {
-      const response = await fetch(`/api/follow/user/${userId}`, {
+      const response = await fetch(`/api/users/follow/${userId}`, {
         method: 'POST',
         headers: authService.authHeader()
       });
 
-      if (response.ok) {
+      const result = await response.json();
+      
+      if (response.ok && result.success) {
         // 刷新数据
         fetchFollowData();
         fetchStats();
+      } else {
+        alert(result.message || '关注失败，请重试');
       }
     } catch (error) {
       console.error('Error following user:', error);
+      alert('网络错误，请检查连接后重试');
     }
   };
 

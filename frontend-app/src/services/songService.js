@@ -20,7 +20,7 @@ const removeFavoriteSong = (songId) => {
 };
 
 const getFavoriteSongs = () => {
-    return axios.get(`${API_URL}/favorites/user`, { headers: authHeader() });
+    return axios.get(`${API_URL}/favorites`, { headers: authHeader() });
 };
 
 const isSongFavorited = (songId) => {
@@ -28,7 +28,19 @@ const isSongFavorited = (songId) => {
 };
 
 const getRecommendedSongs = () => {
-    return axios.get(`${API_URL}/recommendations`, { headers: authHeader() }).then(response => response.data);
+    console.log('🔗 调用推荐API:', `${API_URL}/recommendations`);
+    console.log('🔑 请求头:', authHeader());
+    return axios.get(`${API_URL}/recommendations`, { headers: authHeader() })
+        .then(response => {
+            console.log('✅ 推荐API响应:', response);
+            console.log('📊 响应数据:', response.data);
+            return response.data;
+        })
+        .catch(error => {
+            console.error('❌ 推荐API错误:', error);
+            console.error('❌ 错误详情:', error.response?.data);
+            throw error;
+        });
 };
 
 const uploadSong = (formData) => {

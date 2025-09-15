@@ -26,25 +26,25 @@
 }
 
 .dark {
-  /* Dark theme colors */
-  --primary-bg: #0f0f0f; 
-  --primary-text: #fafafa; 
-  --secondary-text: #a1a1aa; 
-  --accent-color: #8b5cf6;
-  --accent-text-color: #ffffff; 
-  --card-bg: #1a1a1a; 
-  --border-color: #27272a;
-  --input-bg: #262626; 
-  --surface: #171717;
-  --surface-variant: #262626;
-  --outline: #404040;
-  --outline-variant: #525252;
-  --shadow-color: rgba(0, 0, 0, 0.3);
-  --link-hover-color: #a78bfa;
-  --success-color: #22c55e;
-  --warning-color: #fbbf24;
-  --error-color: #f87171;
-  --info-color: #60a5fa;
+  /* Dark theme colors - 更协调的深色方案 */
+  --primary-bg: #0f1116; /* 统一深色背景 */
+  --primary-text: #f8fafc; /* slate-50 */
+  --secondary-text: #94a3b8; /* slate-400 */
+  --accent-color: #8b5cf6; /* violet-500 */
+  --accent-text-color: #ffffff;
+  --card-bg: #0f1116; /* 统一卡片背景 */
+  --border-color: #0f1116;
+  --input-bg: #0f1116; /* 统一输入背景 */
+  --surface: #0f1116; /* 统一表面背景 */
+  --surface-variant: #0f1116; /* 统一表面变体背景 */
+  --outline: #0f1116;
+  --outline-variant: #0f1116;
+  --shadow-color: rgba(0, 0, 0, 0.25);
+  --link-hover-color: #a78bfa; /* violet-400 */
+  --success-color: #10b981; /* emerald-500 */
+  --warning-color: #f59e0b; /* amber-500 */
+  --error-color: #ef4444; /* red-500 */
+  --info-color: #3b82f6; /* blue-500 */
 }
 
 * {
