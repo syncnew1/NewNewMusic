@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/authContext';
 import { PlusIcon, MusicalNoteIcon, EyeIcon, LockClosedIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import authService from '../services/authService';
@@ -7,7 +6,6 @@ import PlaylistForm from '../components/PlaylistForm';
 
 const PlaylistsPage = () => {
   const { currentUser } = useAuth();
-  const navigate = useNavigate();
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -184,19 +182,13 @@ const PlaylistsPage = () => {
                 </div>
               ) : (
                 <>
-                  <div 
-                     className="aspect-square bg-gradient-to-br from-primary/20 to-primary/40 flex items-center justify-center cursor-pointer hover:from-primary/30 hover:to-primary/50 transition-colors"
-                     onClick={() => navigate(`/playlist/${playlist.id}`)}
-                   >
+                  <div className="aspect-square bg-gradient-to-br from-primary/20 to-primary/40 flex items-center justify-center">
                      <MusicalNoteIcon className="w-16 h-16 text-primary" />
                    </div>
                   
                   <div className="p-4">
                     <div className="flex items-start justify-between mb-2">
-                      <h3 
-                         className="font-semibold text-primary-text truncate flex-1 cursor-pointer hover:text-primary transition-colors"
-                         onClick={() => navigate(`/playlist/${playlist.id}`)}
-                       >
+                      <h3 className="font-semibold text-primary-text truncate flex-1">
                         {playlist.name}
                       </h3>
                       <div className="flex items-center space-x-1 ml-2">
@@ -214,14 +206,14 @@ const PlaylistsPage = () => {
                       </p>
                     )}
                     
-                    {playlist.tags && playlist.tags.length > 0 && (
+                    {playlist.tags && (
                       <div className="flex flex-wrap gap-1 mb-3">
-                        {(Array.isArray(playlist.tags) ? playlist.tags : playlist.tags.split(',')).map((tag, index) => (
+                        {playlist.tags.split(',').map((tag, index) => (
                           <span
                             key={index}
                             className="px-2 py-1 text-xs bg-primary/10 text-primary rounded-full"
                           >
-                            {typeof tag === 'string' ? tag.trim() : tag}
+                            {tag.trim()}
                           </span>
                         ))}
                       </div>
