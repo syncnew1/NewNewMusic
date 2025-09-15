@@ -14,7 +14,7 @@ export function PlayerProvider({ children }) {
   const [favoriteError, setFavoriteError] = useState(null); // 添加用户友好的错误消息
   const { currentUser, loading: authLoading, logout } = useContext(AuthContext); // 从AuthContext获取currentUser、加载状态和logout
 
-  const API_BASE_URL = 'http://localhost:8080/api/songs'; // 歌曲相关收藏操作的基础URL
+  const API_BASE_URL = 'http://localhost:8080/api'; // API基础URL
 
   // 当组件挂载或用户登录/登出时获取收藏歌曲
   useEffect(() => {
@@ -23,10 +23,14 @@ export function PlayerProvider({ children }) {
       // 仅在认证未加载且用户已登录时获取
       if (!authLoading && currentUser && currentUser.accessToken) {
         try {
-          const response = await axios.get(`${API_BASE_URL}/favorites/user`, { 
+          const response = await axios.get(`${API_BASE_URL}/songs/favorites`, { 
             headers: { 'Authorization': `Bearer ${currentUser.accessToken}` }
           });
-          setFavoriteSongs(response.data); 
+          if (response.data.success && response.data.data) {
+            setFavoriteSongs(response.data.data);
+          } else {
+            setFavoriteSongs([]);
+          } 
         } catch (error) {
           // 获取初始收藏歌曲时出错
           if (error.response && error.response.status === 401) {
@@ -83,7 +87,7 @@ export function PlayerProvider({ children }) {
           }
           setFavoriteError(null); 
           try {
-            await axios.post(`${API_BASE_URL}/${song.id}/favorite`, {}, {
+            await axios.post(`${API_BASE_URL}/songs/${song.id}/favorite`, {}, {
               headers: { 'Authorization': `Bearer ${currentUser.accessToken}` }
             });
 
@@ -107,7 +111,7 @@ export function PlayerProvider({ children }) {
           }
           setFavoriteError(null); 
           try {
-            await axios.delete(`${API_BASE_URL}/${songId}/favorite`, {
+            await axios.delete(`${API_BASE_URL}/songs/${songId}/favorite`, {
               headers: { 'Authorization': `Bearer ${currentUser.accessToken}` }
             });
             setFavoriteSongs(prevFavorites => prevFavorites.filter(s => s.id !== songId));

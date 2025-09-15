@@ -89,7 +89,7 @@ function SongList() {
 
   if (!songs || songs.length === 0) {
     return (
-      <div className="flex-1 bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg border border-outline-light dark:border-outline-dark overflow-hidden">
+      <div className="flex-1 bg-surface-light dark:bg-[#0f1116] rounded-2xl shadow-lg border border-outline-light dark:border-violet-600/30 overflow-hidden">
         {/* Header */}
         <div className="p-6 border-b border-outline-light dark:border-outline-dark bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20">
           <div className="flex items-center justify-between">
@@ -124,9 +124,9 @@ function SongList() {
   const sortedSongs = getSortedSongs();
 
   return (
-    <div className="flex-1 bg-surface-light dark:bg-surface-dark rounded-2xl shadow-lg border border-outline-light dark:border-outline-dark overflow-hidden">
-      {/* Header */}
-      <div className="p-6 border-b border-outline-light dark:border-outline-dark bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20">
+    <div className="flex-1 bg-surface-light dark:bg-[#0f1116] rounded-2xl shadow-lg border border-outline-light dark:border-violet-600/30 overflow-hidden">
+        {/* Header */}
+        <div className="p-6 border-b border-outline-light dark:border-violet-600/30 bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-violet-900/20 dark:to-purple-900/20">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-2xl font-bold text-primary-900 dark:text-primary-100 mb-1">Playlist</h2>
@@ -148,7 +148,7 @@ function SongList() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-2 bg-white dark:bg-gray-800 border border-outline-light dark:border-outline-dark rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+              className="px-3 py-2 bg-white dark:bg-[#0f1116] border border-outline-light dark:border-violet-600/30 rounded-lg text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
             >
               <option value="default">Default Order</option>
               <option value="title">Sort by Title</option>
@@ -157,12 +157,12 @@ function SongList() {
             </select>
             
             {/* View Mode Toggle */}
-            <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+            <div className="flex bg-gray-100 dark:bg-[#0f1116] rounded-lg p-1 border border-violet-600/30">
               <button
                 onClick={() => setViewMode('list')}
                 className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
                   viewMode === 'list'
-                    ? 'bg-white dark:bg-gray-700 text-primary-600 dark:text-primary-400 shadow-sm'
+                    ? 'bg-white dark:bg-gray-700 text-violet-600 dark:text-violet-400 shadow-sm'
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                 }`}
               >
@@ -172,7 +172,7 @@ function SongList() {
                 onClick={() => setViewMode('compact')}
                 className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
                   viewMode === 'compact'
-                    ? 'bg-white dark:bg-gray-700 text-primary-600 dark:text-primary-400 shadow-sm'
+                    ? 'bg-white dark:bg-gray-700 text-violet-600 dark:text-violet-400 shadow-sm'
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                 }`}
               >
@@ -184,7 +184,7 @@ function SongList() {
           {/* Play All Button */}
           <button
             onClick={() => playSong(sortedSongs[0], 0)}
-            className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-all hover:shadow-md active:scale-95"
+            className="flex items-center space-x-2 px-4 py-2 bg-white hover:bg-gray-100 text-black dark:bg-white dark:hover:bg-gray-100 dark:text-black rounded-lg font-medium transition-all hover:shadow-md active:scale-95 border border-gray-200"
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />
@@ -239,7 +239,7 @@ function SongList() {
                             } ${
                               isCurrentSong
                                 ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg'
-                                : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border border-outline-light dark:border-outline-dark'
+                                : 'bg-white dark:bg-[#0f1116] hover:bg-gray-50 dark:hover:bg-[#1a1b26] border border-outline-light dark:border-violet-600/30'
                             }`}
                           >
                             {viewMode === 'list' ? (
@@ -260,10 +260,10 @@ function SongList() {
                                 </div>
                                 
                                 {/* Song Cover Placeholder */}
-                                <div className={`w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                                <div className={`w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 border-2 shadow-sm ${
                                   isCurrentSong
-                                    ? 'bg-white/20'
-                                    : 'bg-gradient-to-br from-primary-100 to-secondary-100 dark:from-primary-800 dark:to-secondary-800'
+                                    ? 'bg-white/20 border-white/30'
+                                    : 'bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900/20 dark:to-purple-900/20 border-violet-300/50 dark:border-violet-600/30'
                                 }`}>
                                   <svg className={`w-6 h-6 ${
                                     isCurrentSong
@@ -315,7 +315,7 @@ function SongList() {
                                     className={`p-2 rounded-full transition-all hover:scale-110 ${
                                       isCurrentSong
                                         ? 'bg-white/20 text-white hover:bg-white/30'
-                                        : 'bg-primary-100 dark:bg-primary-800 text-primary-600 dark:text-primary-400 hover:bg-primary-200 dark:hover:bg-primary-700'
+                                        : 'bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 hover:bg-violet-200 dark:hover:bg-violet-900/50'
                                     }`}
                                     aria-label="Play song"
                                   >

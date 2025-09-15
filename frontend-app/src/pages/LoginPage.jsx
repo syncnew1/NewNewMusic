@@ -19,7 +19,7 @@ const LoginPage = () => {
 
         AuthService.login(username, password).then(
             (response) => {
-                login(response.data);
+                login(response.data.data);
                 navigate('/');
             },
             (error) => {
@@ -36,9 +36,9 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center px-4 py-8">
+        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116] flex items-center justify-center px-4 py-8">
             <div className="w-full max-w-md mx-auto">
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-outline-light dark:border-outline-dark overflow-hidden">
+                <div className="bg-white dark:bg-[#0f1116] rounded-2xl shadow-xl border border-outline-light dark:border-violet-600/30 overflow-hidden">
                     <div className="bg-gradient-to-r from-primary-500 to-secondary-500 px-8 py-6">
                         <div className="flex items-center space-x-3">
                             <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
@@ -61,7 +61,7 @@ const LoginPage = () => {
                                     id="username"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
-                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0f1116] border border-gray-200 dark:border-violet-600/30 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
                                     placeholder="请输入用户名"
                                     required
                                 />
@@ -75,7 +75,7 @@ const LoginPage = () => {
                                     id="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0f1116] border border-gray-200 dark:border-violet-600/30 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
                                     placeholder="请输入密码"
                                     required
                                 />
@@ -104,7 +104,7 @@ const LoginPage = () => {
                                 </div>
                             )}
                         </form>
-                        <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
+                        <div className="mt-6 pt-6 border-t border-gray-200 dark:border-violet-600/30 text-center">
                             <p className="text-gray-600 dark:text-gray-400">
                                 还没有账户？{' '}
                                 <a href="/register" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors">

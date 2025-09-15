@@ -25,9 +25,10 @@ const ProfilePage = () => {
         if (currentUser) {
             userService.getUserProfile()
                 .then(response => {
+                    const userData = response.data.data || response.data;
                     setProfileData({
-                        username: response.data.username,
-                        email: response.data.email,
+                        username: userData.username,
+                        email: userData.email,
                     });
                 })
                 .catch(error => {
@@ -54,14 +55,15 @@ const ProfilePage = () => {
         userService.updateUserProfile(profileData)
             .then(response => {
                 setProfileMessage('Profile updated successfully!');
+                const userData = response.data.data || response.data;
                 let updatedUser = { 
                     ...currentUser, 
-                    username: response.data.username, 
-                    email: response.data.email 
+                    username: userData.username, 
+                    email: userData.email 
                 };
                 // 检查后端是否返回新的accessToken
-                if (response.data.accessToken) {
-                    updatedUser.accessToken = response.data.accessToken;
+                if (userData.accessToken) {
+                    updatedUser.accessToken = userData.accessToken;
                 }
                 localStorage.setItem('user', JSON.stringify(updatedUser));
                 setCurrentUser(updatedUser);
@@ -94,7 +96,7 @@ const ProfilePage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-6">
+        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116] p-6">
             <div className="max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
@@ -110,7 +112,7 @@ const ProfilePage = () => {
                 </div>
 
                 {/* Profile Section */}
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-outline-light dark:border-outline-dark overflow-hidden mb-8">
+                <div className="bg-white dark:bg-[#0f1116] rounded-2xl shadow-lg border border-outline-light dark:border-violet-600/30 overflow-hidden mb-8">
                     <div className="p-6 border-b border-outline-light dark:border-outline-dark bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20">
                         <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">基本信息</h2>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">更新您的用户名和邮箱地址</p>
@@ -138,7 +140,7 @@ const ProfilePage = () => {
                                         name="username"
                                         value={profileData.username}
                                         onChange={handleProfileChange}
-                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0f1116] border border-gray-200 dark:border-violet-600/30 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
                                         placeholder="请输入用户名"
                                         required
                                     />
@@ -153,7 +155,7 @@ const ProfilePage = () => {
                                         name="email"
                                         value={profileData.email}
                                         onChange={handleProfileChange}
-                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0f1116] border border-gray-200 dark:border-violet-600/30 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
                                         placeholder="请输入邮箱地址"
                                         required
                                     />
@@ -170,7 +172,7 @@ const ProfilePage = () => {
                 </div>
 
                 {/* Password Section */}
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-outline-light dark:border-outline-dark overflow-hidden">
+                <div className="bg-white dark:bg-[#0f1116] rounded-2xl shadow-lg border border-outline-light dark:border-violet-600/30 overflow-hidden">
                     <div className="p-6 border-b border-outline-light dark:border-outline-dark bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20">
                         <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">密码修改</h2>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">更新您的登录密码</p>
@@ -191,7 +193,7 @@ const ProfilePage = () => {
                                 <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">旧密码</label>
                                 <input
                                     type="password"
-                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0f1116] border border-gray-200 dark:border-violet-600/30 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
                                     id="currentPassword"
                                     name="currentPassword"
                                     value={passwordData.currentPassword}
@@ -205,7 +207,7 @@ const ProfilePage = () => {
                                     <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">新密码</label>
                                     <input
                                         type="password"
-                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0f1116] border border-gray-200 dark:border-violet-600/30 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
                                         id="newPassword"
                                         name="newPassword"
                                         value={passwordData.newPassword}
@@ -218,7 +220,7 @@ const ProfilePage = () => {
                                     <label htmlFor="confirmNewPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">确认密码</label>
                                     <input
                                         type="password"
-                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0f1116] border border-gray-200 dark:border-violet-600/30 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
                                         id="confirmNewPassword"
                                         name="confirmNewPassword"
                                         value={passwordData.confirmNewPassword}

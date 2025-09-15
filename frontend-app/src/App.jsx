@@ -29,12 +29,13 @@ function App() {
   useEffect(() => {
     songService.getAllSongs()
       .then(response => {
-        setSongs(response.data);
+        setSongs(response.data.data || []);
       })
       .catch(error => {
         // 静默处理错误，避免在控制台显示
+        setSongs([]);
       });
-  }, [setSongs]);
+  }, []); // setSongs是稳定的函数引用，不需要作为依赖
 
   const handleLogout = () => {
     logout();

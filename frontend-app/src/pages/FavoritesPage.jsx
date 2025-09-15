@@ -63,7 +63,7 @@ function FavoritesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pb-24">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116] pb-24">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -85,7 +85,7 @@ function FavoritesPage() {
             <div className="flex justify-end mb-6">
               <button
                 onClick={playAllFavorites}
-                className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg font-medium"
+                className="flex items-center space-x-2 px-6 py-3 bg-white hover:bg-gray-100 text-black dark:bg-white dark:hover:bg-gray-100 dark:text-black rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg font-medium border border-gray-200"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M8 5v14l11-7z"/>
@@ -97,7 +97,7 @@ function FavoritesPage() {
 
           {/* Controls */}
           {favoriteSongs.length > 0 && (
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-outline-light dark:border-outline-dark p-6 mb-6">
+              <div className="bg-white dark:bg-[#0f1116] rounded-2xl shadow-lg border border-outline-light dark:border-violet-600/30 p-6 mb-6">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 {/* Sort Options */}
                 <div className="flex items-center space-x-4">
@@ -105,7 +105,7 @@ function FavoritesPage() {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="px-4 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                    className="px-4 py-2 bg-gray-50 dark:bg-[#0f1116] border border-gray-200 dark:border-violet-600/30 rounded-xl text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
                   >
                     <option value="recent">最近添加</option>
                     <option value="title">歌曲名称</option>
@@ -114,11 +114,11 @@ function FavoritesPage() {
                 </div>
 
                 {/* View Mode Toggle */}
-                <div className="flex items-center space-x-2 bg-gray-100 dark:bg-gray-700 rounded-xl p-1">
+                <div className="flex items-center space-x-2 bg-gray-100 dark:bg-[#0f1116] rounded-xl p-1 border border-violet-600/30">
                   <button
                     onClick={() => setViewMode('list')}
                     className={`p-2 rounded-lg transition-all duration-200 ${
-                      viewMode === 'list' ? 'bg-primary-500 text-white shadow-md' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                      viewMode === 'list' ? 'bg-white text-black shadow-md border border-gray-200' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                     }`}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -128,7 +128,7 @@ function FavoritesPage() {
                   <button
                     onClick={() => setViewMode('grid')}
                     className={`p-2 rounded-lg transition-all duration-200 ${
-                      viewMode === 'grid' ? 'bg-primary-500 text-white shadow-md' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                      viewMode === 'grid' ? 'bg-white text-black shadow-md border border-gray-200' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                     }`}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,9 +143,9 @@ function FavoritesPage() {
 
         {/* Content */}
         {favoriteSongs.length === 0 ? (
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-outline-light dark:border-outline-dark">
+          <div className="bg-white dark:bg-[#0f1116] rounded-2xl shadow-lg border border-outline-light dark:border-violet-600/30">
             <div className="text-center py-16 px-6">
-              <div className="w-24 h-24 bg-gradient-to-br from-red-100 to-pink-100 dark:from-red-900/20 dark:to-pink-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-24 h-24 bg-gradient-to-br from-red-100 to-pink-100 dark:from-violet-900/20 dark:to-purple-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg className="w-12 h-12 text-red-400 dark:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
@@ -167,15 +167,17 @@ function FavoritesPage() {
                 <div
                   key={favSong.id}
                   onClick={(e) => handleSongClick(e, favSong)}
-                  className={`group p-6 rounded-2xl cursor-pointer transition-all duration-200 hover:bg-surface-variant ${
-                    currentSong?.id === favSong.id ? 'bg-accent-color/10 border border-accent-color/20' : 'bg-card-bg hover:bg-surface'
+                  className={`group p-6 rounded-2xl cursor-pointer transition-all duration-200 border-2 shadow-sm ${
+                    currentSong?.id === favSong.id 
+                      ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white border-white/30' 
+                      : 'bg-white dark:bg-[#0f1116] hover:bg-gray-50 dark:hover:bg-[#1a1b26] border-violet-300/50 dark:border-violet-600/30'
                   }`}
                 >
                   <div className="text-center">
                     {/* Album Art */}
                     <div className="relative mb-4">
-                      <div className="w-full aspect-square rounded-xl flex items-center justify-center">
-                        <svg className="w-6 h-6 text-black" fill="currentColor" viewBox="0 0 24 24">
+                      <div className="w-full aspect-square rounded-xl flex items-center justify-center bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900/20 dark:to-purple-900/20 border-2 border-violet-300/50 dark:border-violet-600/30 shadow-sm">
+                        <svg className="w-6 h-6 text-violet-600 dark:text-violet-400" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
                         </svg>
                       </div>
@@ -200,7 +202,11 @@ function FavoritesPage() {
                             e.stopPropagation();
                             handleSongPlay(favSong);
                           }}
-                          className="p-2 bg-black/50 rounded-full text-white hover:bg-black/70 transition-colors duration-200"
+                          className={`p-2 rounded-full transition-colors duration-200 ${
+                            currentSong?.id === favSong.id
+                              ? 'bg-white/20 text-white hover:bg-white/30'
+                              : 'bg-black/50 dark:bg-white/20 text-white hover:bg-black/70 dark:hover:bg-white/30'
+                          }`}
                         >
                           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                             {currentSong?.id === favSong.id && isPlaying ? (
@@ -212,7 +218,11 @@ function FavoritesPage() {
                         </button>
                         <button
                            onClick={(e) => handleRemoveFavorite(e, favSong.id)}
-                           className="p-2 bg-black/50 rounded-full text-red-400 hover:text-red-300 transition-colors duration-200"
+                           className={`p-2 rounded-full transition-colors duration-200 ${
+                             currentSong?.id === favSong.id
+                               ? 'bg-white/20 text-red-300 hover:text-red-200 hover:bg-red-400/20'
+                               : 'bg-black/50 dark:bg-white/20 text-red-400 hover:text-red-300'
+                           }`}
                          >
                            <FavoriteIcon filled={true} />
                          </button>
@@ -221,14 +231,18 @@ function FavoritesPage() {
 
                     {/* Song Info */}
                     <h4 className={`font-semibold truncate mb-1 ${
-                      currentSong?.id === favSong.id ? 'text-accent-color' : 'text-primary-text'
+                      currentSong?.id === favSong.id ? 'text-white' : 'text-gray-900 dark:text-gray-100'
                     }`}>
                       {favSong.title || 'Unknown Title'}
                     </h4>
-                    <p className="text-sm text-secondary-text truncate mb-2">
+                    <p className={`text-sm truncate mb-2 ${
+                      currentSong?.id === favSong.id ? 'text-white/80' : 'text-gray-600 dark:text-gray-400'
+                    }`}>
                       {Array.isArray(favSong.artist) ? favSong.artist.join(', ') : (favSong.artist || 'Unknown Artist')}
                     </p>
-                    <p className="text-xs text-secondary-text font-mono">
+                    <p className={`text-xs font-mono ${
+                      currentSong?.id === favSong.id ? 'text-white/70' : 'text-gray-500 dark:text-gray-400'
+                    }`}>
                       {formatDuration(favSong.duration)}
                     </p>
                   </div>
@@ -238,15 +252,17 @@ function FavoritesPage() {
                 <div
                   key={favSong.id}
                   onClick={(e) => handleSongClick(e, favSong)}
-                  className={`group p-4 rounded-xl cursor-pointer transition-all duration-200 hover:bg-surface-variant ${
-                    currentSong?.id === favSong.id ? 'bg-accent-color/10 border border-accent-color/20' : 'hover:bg-surface'
+                  className={`group p-4 rounded-xl cursor-pointer transition-all duration-200 border-2 shadow-sm ${
+                    currentSong?.id === favSong.id 
+                      ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white border-white/30' 
+                      : 'bg-white dark:bg-[#0f1116] hover:bg-gray-50 dark:hover:bg-[#1a1b26] border-violet-300/50 dark:border-violet-600/30'
                   }`}
                 >
                   <div className="flex items-center space-x-4">
                     {/* Song Cover */}
                     <div className="relative flex-shrink-0">
-                      <div className="w-12 h-12 rounded-lg flex items-center justify-center">
-                        <svg className="w-6 h-6 text-black" fill="currentColor" viewBox="0 0 24 24">
+                      <div className="w-12 h-12 rounded-lg flex items-center justify-center bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900/20 dark:to-purple-900/20 border-2 border-violet-300/50 dark:border-violet-600/30 shadow-sm">
+                        <svg className="w-6 h-6 text-violet-600 dark:text-violet-400" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
                         </svg>
                       </div>
@@ -268,17 +284,21 @@ function FavoritesPage() {
                     {/* Song Info */}
                     <div className="flex-1 min-w-0">
                       <h4 className={`font-semibold truncate ${
-                        currentSong?.id === favSong.id ? 'text-accent-color' : 'text-primary-text'
+                        currentSong?.id === favSong.id ? 'text-white' : 'text-gray-900 dark:text-gray-100'
                       }`}>
                         {favSong.title || 'Unknown Title'}
                       </h4>
-                      <p className="text-sm text-secondary-text truncate">
+                      <p className={`text-sm truncate ${
+                        currentSong?.id === favSong.id ? 'text-white/80' : 'text-gray-600 dark:text-gray-400'
+                      }`}>
                         {Array.isArray(favSong.artist) ? favSong.artist.join(', ') : (favSong.artist || 'Unknown Artist')}
                       </p>
                     </div>
 
                     {/* Duration */}
-                    <div className="text-sm text-secondary-text font-mono hidden sm:block">
+                    <div className={`text-sm font-mono hidden sm:block ${
+                      currentSong?.id === favSong.id ? 'text-white/70' : 'text-gray-500 dark:text-gray-400'
+                    }`}>
                       {formatDuration(favSong.duration)}
                     </div>
 
@@ -286,7 +306,11 @@ function FavoritesPage() {
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={(e) => handleRemoveFavorite(e, favSong.id)}
-                        className="p-2 rounded-full text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-all duration-200"
+                        className={`p-2 rounded-full transition-all duration-200 ${
+                          currentSong?.id === favSong.id 
+                            ? 'text-red-300 hover:text-red-200 hover:bg-red-400/20' 
+                            : 'text-red-400 hover:text-red-300 hover:bg-red-400/10'
+                        }`}
                       >
                         <FavoriteIcon filled={true} />
                       </button>
@@ -296,7 +320,11 @@ function FavoritesPage() {
                           e.stopPropagation();
                           handleSongPlay(favSong);
                         }}
-                        className="opacity-0 group-hover:opacity-100 p-2 rounded-full bg-accent-color text-accent-text-color transition-all duration-200 transform hover:scale-105"
+                        className={`opacity-0 group-hover:opacity-100 p-2 rounded-full transition-all duration-200 transform hover:scale-105 ${
+                          currentSong?.id === favSong.id
+                            ? 'bg-white/20 text-white hover:bg-white/30'
+                            : 'bg-violet-500 text-white hover:bg-violet-600'
+                        }`}
                       >
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                           {currentSong?.id === favSong.id && isPlaying ? (

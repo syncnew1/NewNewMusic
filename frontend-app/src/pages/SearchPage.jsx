@@ -81,7 +81,7 @@ function SearchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116] pb-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-4xl">
         {/* Header */}
         <div className="mb-8">
@@ -100,7 +100,7 @@ function SearchPage() {
 
         {/* Search Input */}
         <div className="relative mb-8">
-          <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-outline-light dark:border-outline-dark overflow-hidden">
+          <div className="relative bg-white dark:bg-[#0f1116] rounded-2xl shadow-lg border border-outline-light dark:border-violet-600/30 overflow-hidden">
             <svg className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
@@ -122,7 +122,7 @@ function SearchPage() {
         {/* Recent Searches */}
         {!searchTerm && recentSearches.length > 0 && (
           <div className="mb-8">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-outline-light dark:border-outline-dark p-6">
+            <div className="bg-white dark:bg-[#0f1116] rounded-2xl shadow-lg border border-outline-light dark:border-violet-600/30 p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">最近搜索</h3>
                 <button 
@@ -137,7 +137,7 @@ function SearchPage() {
                   <button
                     key={index}
                     onClick={() => handleRecentSearch(term)}
-                    className="px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-primary-100 dark:hover:bg-primary-800 border border-gray-200 dark:border-gray-600 rounded-full text-sm text-gray-700 dark:text-gray-300 hover:text-primary-700 dark:hover:text-primary-300 transition-all duration-200"
+                    className="px-4 py-2 bg-gray-100 dark:bg-[#0f1116] hover:bg-primary-100 dark:hover:bg-[#0f1116]/90 border border-gray-200 dark:border-violet-600/30 rounded-full text-sm text-gray-700 dark:text-gray-300 hover:text-primary-700 dark:hover:text-primary-300 transition-all duration-200"
                   >
                     {term}
                   </button>
@@ -150,8 +150,8 @@ function SearchPage() {
         {/* Search Results */}
         {searchTerm && (
           <div>
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-outline-light dark:border-outline-dark overflow-hidden">
-              <div className="p-6 border-b border-outline-light dark:border-outline-dark bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20">
+            <div className="bg-white dark:bg-[#0f1116] rounded-2xl shadow-lg border border-outline-light dark:border-violet-600/30 overflow-hidden">
+              <div className="p-6 border-b border-outline-light dark:border-violet-600/30 bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-violet-900/10 dark:to-purple-900/10">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
@@ -192,7 +192,7 @@ function SearchPage() {
                     {searchResults.map((song, index) => (
                       <div 
                         key={song.id} 
-                        className="group flex items-center p-4 bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl transition-all duration-200 hover:shadow-md"
+                        className="group flex items-center p-4 bg-gray-50 dark:bg-[#0f1116] hover:bg-gray-100 dark:hover:bg-[#1a1b26] border border-gray-200 dark:border-violet-600/30 rounded-xl transition-all duration-200 hover:shadow-md"
                       >
                         <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-primary-400 to-secondary-400 rounded-xl flex items-center justify-center mr-4 shadow-sm">
                           <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">

@@ -2,7 +2,7 @@
 
 /* 表单容器样式 */
 .form-container {
-  @apply w-full max-w-md mx-auto my-8 p-8 bg-white dark:bg-gray-800 rounded-xl shadow-xl transition-all duration-300 ease-in-out;
+  @apply w-full max-w-md mx-auto my-8 p-8 bg-white dark:bg-[#0f1116] rounded-xl shadow-xl transition-all duration-300 ease-in-out border border-violet-600/30;
 }
 
 /* 表单标题样式 */
@@ -26,7 +26,7 @@
 
 /* 输入框样式 */
 .form-input {
-  @apply w-full px-4 py-3.5 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-base bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-100 transition-all duration-300 outline-none placeholder-gray-400 dark:placeholder-gray-500 focus:border-blue-500 focus:bg-blue-50 dark:focus:bg-gray-600 focus:shadow-lg focus:shadow-blue-500/10;
+  @apply w-full px-4 py-3.5 border-2 border-gray-200 dark:border-violet-600/30 rounded-lg text-base bg-white dark:bg-[#0f1116] text-gray-700 dark:text-gray-100 transition-all duration-300 outline-none placeholder-gray-400 dark:placeholder-gray-500 focus:border-violet-500 focus:bg-violet-50/10 dark:focus:bg-[#0f1116]/90 focus:ring-0;
 }
 
 /* 文件输入框样式 */
@@ -39,7 +39,7 @@
 }
 
 .file-input-label {
-  @apply flex items-center justify-center gap-2 px-4 py-3.5 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400 cursor-pointer transition-all duration-300 text-center hover:border-blue-500 hover:bg-blue-50 hover:text-blue-500 dark:hover:border-blue-400 dark:hover:bg-blue-900/20 dark:hover:text-blue-400;
+  @apply flex items-center justify-center gap-2 px-4 py-3.5 border-2 border-dashed border-gray-300 dark:border-violet-600/30 rounded-lg bg-gray-50 dark:bg-[#0f1116]/50 text-gray-600 dark:text-gray-400 cursor-pointer transition-all duration-300 text-center hover:border-violet-500 hover:bg-violet-50/10 dark:hover:bg-[#0f1116]/70 hover:text-violet-600 dark:hover:text-violet-400;
 }
 
 /* 按钮样式 */
