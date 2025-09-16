@@ -1,7 +1,7 @@
 import axios from 'axios';
 import authHeader from './authHeader';
 
-const API_URL = 'http://localhost:8080/api/songs';
+const API_URL = '/api/songs';
 
 const getAllSongs = () => {
     return axios.get(API_URL);
@@ -20,7 +20,7 @@ const removeFavoriteSong = (songId) => {
 };
 
 const getFavoriteSongs = () => {
-    return axios.get(`${API_URL}/favorites/user`, { headers: authHeader() });
+    return axios.get(`${API_URL}/favorites`, { headers: authHeader() });
 };
 
 const isSongFavorited = (songId) => {
@@ -28,11 +28,17 @@ const isSongFavorited = (songId) => {
 };
 
 const getRecommendedSongs = () => {
-    return axios.get(`${API_URL}/recommendations`, { headers: authHeader() }).then(response => response.data);
+    return axios.get(`${API_URL}/recommendations`, { headers: authHeader() })
+        .then(response => {
+            return response.data;
+        })
+        .catch(error => {
+            throw error;
+        });
 };
 
 const uploadSong = (formData) => {
-    return axios.post(`${API_URL}/upload`, formData, {
+    return axios.post(API_URL, formData, {
         headers: {
             ...authHeader(),
             'Content-Type': 'multipart/form-data',

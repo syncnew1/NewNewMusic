@@ -1,17 +1,17 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/auth/';
+const API_URL = '/api/auth/';
 
 class AuthService {
     login(username, password) {
         return axios
-            .post(API_URL + 'signin', {
+            .post(API_URL + 'login', {
                 username,
                 password
             })
             .then(response => {
-                if (response.data.accessToken) {
-                    localStorage.setItem('user', JSON.stringify(response.data));
+                if (response.data.data && response.data.data.accessToken) {
+                    localStorage.setItem('user', JSON.stringify(response.data.data));
                 }
                 return response.data;
             })
@@ -38,10 +38,16 @@ class AuthService {
             return Promise.reject(new Error('密码长度需在6-40个字符之间'));
         }
         
-        return axios.post(API_URL + 'signup', {
+        return axios.post(API_URL + 'register', {
             username,
             email,
             password
+        })
+        .then(response => {
+            if (response.data.data && response.data.data.accessToken) {
+                localStorage.setItem('user', JSON.stringify(response.data.data));
+            }
+            return response.data;
         })
         .catch(error => {
             if (error.response) {
@@ -67,6 +73,50 @@ class AuthService {
         } else {
             return {};
         }
+    }
+
+    // 获取我的播放列表
+    getMyPlaylists() {
+        const user = this.getCurrentUser();
+        if (!user || !user.user || !user.user.id) {
+            return Promise.reject(new Error('User not authenticated'));
+        }
+        return axios.get('/api/playlists/my', {
+            headers: this.authHeader()
+        });
+    }
+
+    // 获取公开播放列表
+    getPublicPlaylists(page = 1, limit = 20) {
+        return axios.get(`/api/playlists?page=${page}&limit=${limit}`);
+    }
+
+    // 创建播放列表
+    createPlaylist(playlistData) {
+        return axios.post('/api/playlists', playlistData, {
+            headers: this.authHeader()
+        });
+    }
+
+    // 更新播放列表
+    updatePlaylist(playlistId, playlistData) {
+        return axios.put(`/api/playlists/${playlistId}`, playlistData, {
+            headers: this.authHeader()
+        });
+    }
+
+    // 删除播放列表
+    deletePlaylist(playlistId) {
+        return axios.delete(`/api/playlists/${playlistId}`, {
+            headers: this.authHeader()
+        });
+    }
+
+    // 添加歌曲到播放列表
+    addSongToPlaylist(playlistId, songId) {
+        return axios.post(`/api/playlists/${playlistId}/songs/${songId}`, {}, {
+            headers: this.authHeader()
+        });
     }
 }
 

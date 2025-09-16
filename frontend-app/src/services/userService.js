@@ -1,6 +1,6 @@
 import axios from 'axios';
 import authService from './authService'; // 导入authService而不是authHeader
-const API_URL = '/api/user';
+const API_URL = '/api/users';
 
 const getUserProfile = () => {
     return axios.get(API_URL + '/profile', { headers: authService.authHeader() }); // 调用authService.authHeader()
