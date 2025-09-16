@@ -13,7 +13,7 @@ function SongList() {
 <<<<<<< HEAD
   const { currentUser } = useAuth();
   const { songs, currentSong, playSong, addFavorite, removeFavorite, isFavorite, favoriteError, clearFavoriteError, setSongs } = usePlayer();
-  const [viewMode, setViewMode] = useState('list'); // 'list' or 'compact'
+  const [viewMode, setViewMode] = useState('list'); // only 'list' mode
   const [sortBy, setSortBy] = useState('default'); // 'default', 'title', 'artist', 'duration'
   const [playlists, setPlaylists] = useState([]);
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
@@ -28,9 +28,15 @@ function SongList() {
   const fetchPlaylists = async () => {
     try {
       const response = await authService.getMyPlaylists();
-      setPlaylists(response.data || []);
+      if (response.data && response.data.success) {
+        const playlistData = response.data.data.playlists || [];
+        setPlaylists(Array.isArray(playlistData) ? playlistData : []);
+      } else {
+        setPlaylists([]);
+      }
     } catch (error) {
       console.error('Failed to fetch playlists:', error);
+      setPlaylists([]);
     }
   };
 
@@ -95,17 +101,17 @@ function SongList() {
 
   if (!songs || songs.length === 0) {
     return (
-      <div className="flex-1 bg-surface-light dark:bg-[#0f1116] rounded-2xl shadow-lg border border-outline-light dark:border-violet-600/30 overflow-hidden">
+      <div className="flex-1 bg-white dark:bg-[#0f1116] rounded-2xl shadow-lg border border-gray-200 dark:border-violet-600/30 overflow-hidden">
         {/* Header */}
-        <div className="p-6 border-b border-outline-light dark:border-outline-dark bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20">
+        <div className="p-6 border-b border-gray-200 dark:border-violet-600/30 bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/10 dark:to-purple-900/10">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-primary-900 dark:text-primary-100 mb-1">Playlist</h2>
-              <p className="text-sm text-secondary-600 dark:text-secondary-400">Your music collection</p>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">音乐库</h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400">你的音乐收藏</p>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="px-3 py-1 bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium">
-                0 songs
+              <span className="px-3 py-1 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded-full text-sm font-medium">
+                0 首歌曲
               </span>
             </div>
           </div>
@@ -113,15 +119,23 @@ function SongList() {
         
         {/* Empty State */}
         <div className="flex flex-col items-center justify-center py-16 px-6">
-          <div className="w-24 h-24 bg-gradient-to-br from-primary-100 to-secondary-100 dark:from-primary-800 to-secondary-800 rounded-full flex items-center justify-center mb-6">
-            <svg className="w-12 h-12 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-24 h-24 bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900/20 dark:to-purple-900/20 rounded-full flex items-center justify-center mb-6 border-2 border-violet-200 dark:border-violet-700/30">
+            <svg className="w-12 h-12 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
             </svg>
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">No songs in your playlist</h3>
-          <p className="text-gray-600 dark:text-gray-400 text-center max-w-md">
-            Start building your music collection by uploading songs or searching for your favorites.
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">暂无歌曲</h3>
+          <p className="text-gray-600 dark:text-gray-400 text-center max-w-md mb-6">
+            开始构建你的音乐收藏吧！上传歌曲或搜索你喜欢的音乐。
           </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button className="px-6 py-3 bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg font-medium">
+              上传音乐
+            </button>
+            <button className="px-6 py-3 border-2 border-violet-500 text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/20 rounded-xl transition-all duration-200 font-medium">
+              搜索音乐
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -130,19 +144,19 @@ function SongList() {
   const sortedSongs = getSortedSongs();
 
   return (
-    <div className="flex-1 bg-surface-light dark:bg-[#0f1116] rounded-2xl shadow-lg border border-outline-light dark:border-violet-600/30 overflow-hidden">
-        {/* Header */}
-        <div className="p-6 border-b border-outline-light dark:border-violet-600/30 bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-violet-900/20 dark:to-purple-900/20">
+    <div className="flex-1 bg-white dark:bg-[#0f1116] rounded-2xl shadow-lg border border-gray-200 dark:border-violet-600/30 overflow-hidden">
+      {/* Header */}
+      <div className="p-6 border-b border-gray-200 dark:border-violet-600/30 bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/10 dark:to-purple-900/10">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-2xl font-bold text-primary-900 dark:text-primary-100 mb-1">Playlist</h2>
-            <p className="text-sm text-secondary-600 dark:text-secondary-400">
-              {songs.length} song{songs.length !== 1 ? 's' : ''} • Drag to reorder
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">音乐库</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              {songs.length} 首歌曲 • 拖拽重新排序
             </p>
           </div>
           <div className="flex items-center space-x-2">
-            <span className="px-3 py-1 bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium">
-              {songs.length} songs
+            <span className="px-3 py-1 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded-full text-sm font-medium">
+              {songs.length} 首歌曲
             </span>
           </div>
         </div>
@@ -154,7 +168,7 @@ function SongList() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-2 bg-white dark:bg-[#0f1116] border border-outline-light dark:border-violet-600/30 rounded-lg text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
+              className="px-3 py-2 bg-white dark:bg-[#0f1116] border border-outline-light dark:border-violet-600/30 rounded-lg text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
             >
               <option value="default">Default Order</option>
               <option value="title">Sort by Title</option>
@@ -162,27 +176,12 @@ function SongList() {
               <option value="duration">Sort by Duration</option>
             </select>
             
-            {/* View Mode Toggle */}
+            {/* View Mode - List Only */}
             <div className="flex bg-gray-100 dark:bg-[#0f1116] rounded-lg p-1 border border-violet-600/30">
               <button
-                onClick={() => setViewMode('list')}
-                className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
-                  viewMode === 'list'
-                    ? 'bg-white dark:bg-gray-700 text-violet-600 dark:text-violet-400 shadow-sm'
-                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                }`}
+                className="px-3 py-1 rounded-md text-sm font-medium bg-white dark:bg-gray-700 text-violet-600 dark:text-violet-400 shadow-sm"
               >
-                List
-              </button>
-              <button
-                onClick={() => setViewMode('compact')}
-                className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
-                  viewMode === 'compact'
-                    ? 'bg-white dark:bg-gray-700 text-violet-600 dark:text-violet-400 shadow-sm'
-                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                }`}
-              >
-                Compact
+                列表视图
               </button>
             </div>
           </div>
@@ -190,7 +189,7 @@ function SongList() {
           {/* Play All Button */}
           <button
             onClick={() => playSong(sortedSongs[0], 0)}
-            className="flex items-center space-x-2 px-4 py-2 bg-white hover:bg-gray-100 text-black dark:bg-white dark:hover:bg-gray-100 dark:text-black rounded-lg font-medium transition-all hover:shadow-md active:scale-95 border border-gray-200"
+            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all hover:shadow-md active:scale-95"
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />
@@ -226,7 +225,7 @@ function SongList() {
           <Droppable droppableId="songs" key="song-list-droppable">
             {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>
-                <div className={viewMode === 'list' ? 'space-y-2' : 'space-y-1'}>
+                <div className="space-y-2">
                   {sortedSongs.map((song, index) => {
                     const isCurrentSong = currentSong?.id === song.id;
                     const isFav = isFavorite(song.id);
@@ -244,13 +243,16 @@ function SongList() {
                                 : 'hover:shadow-md'
                             } ${
                               isCurrentSong
-                                ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg'
-                                : 'bg-white dark:bg-[#0f1116] hover:bg-gray-50 dark:hover:bg-[#1a1b26] border border-outline-light dark:border-violet-600/30'
+                                ? 'bg-gradient-to-r from-blue-500 to-cyan-500 dark:from-blue-600 dark:to-cyan-600 text-white shadow-lg border-0'
+                                : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border border-outline-light dark:border-outline-dark'
                             }`}
                           >
-                            {viewMode === 'list' ? (
-                              /* List View */
-                              <div className="flex items-center p-4 space-x-4">
+                            {/* List View */}
+                            <div className="flex items-center p-4 space-x-4">
+                                {/* Current Song Indicator */}
+                                {isCurrentSong && (
+                                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-white rounded-r-full" />
+                                )}
                                 {/* Drag Handle */}
                                 <div
                                   {...provided.dragHandleProps}
@@ -269,12 +271,12 @@ function SongList() {
                                 <div className={`w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 border-2 shadow-sm ${
                                   isCurrentSong
                                     ? 'bg-white/20 border-white/30'
-                                    : 'bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900/20 dark:to-purple-900/20 border-violet-300/50 dark:border-violet-600/30'
+                                    : 'bg-gradient-to-br from-blue-500/20 to-indigo-600/20 dark:from-blue-400/20 dark:to-indigo-500/20 border-primary-500/30 dark:border-primary-400/30'
                                 }`}>
                                   <svg className={`w-6 h-6 ${
                                     isCurrentSong
                                       ? 'text-white'
-                                      : 'text-primary-600 dark:text-primary-400'
+                                      : 'text-blue-600 dark:text-blue-400'
                                   }`} fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
                                   </svg>
@@ -340,7 +342,7 @@ function SongList() {
                                     className={`p-2 rounded-full transition-all hover:scale-110 ${
                                       isCurrentSong
                                         ? 'bg-white/20 text-white hover:bg-white/30'
-                                        : 'bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 hover:bg-violet-200 dark:hover:bg-violet-900/50'
+                                        : 'bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-700'
                                     }`}
                                     aria-label="Play song"
                                   >
@@ -359,7 +361,7 @@ function SongList() {
                                     className={`p-2 rounded-full transition-all hover:scale-110 ${
                                       isCurrentSong
                                         ? 'text-white/60 hover:text-white'
-                                        : 'text-gray-400 hover:text-green-500 dark:text-gray-500 dark:hover:text-green-500'
+                                        : 'text-blue-400 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400'
                                     }`}
                                     aria-label="Add to playlist"
                                   >
@@ -376,20 +378,22 @@ function SongList() {
                                     }}
                                     className={`p-2 rounded-full transition-all hover:scale-110 ${
                                       isFav
-                                        ? 'text-yellow-500 hover:text-yellow-600'
+                                        ? 'text-red-500 hover:text-red-600'
                                         : isCurrentSong
                                           ? 'text-white/60 hover:text-white'
-                                          : 'text-gray-400 hover:text-yellow-500 dark:text-gray-500 dark:hover:text-yellow-500'
+                                          : 'text-blue-400 hover:text-red-500 dark:text-blue-500 dark:hover:text-red-400'
                                     }`}
                                     aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
                                   >
                                     <FavoriteIcon 
-                                      color={isFav ? '#EAB308' : 'currentColor'} 
+                                      color={isFav ? 'currentColor' : 'currentColor'} 
                                       size={16} 
+                                      filled={isFav}
                                     />
                                   </button>
                                 </div>
                               </div>
+<<<<<<< HEAD
                             ) : (
                               /* Compact View */
                               <div className="flex items-center p-3 space-x-3">
@@ -510,6 +514,8 @@ function SongList() {
                                 </div>
                               </div>
                             )}
+=======
+>>>>>>> 0f2cacc (feat: 添加音频文件上传和播放功能)
                             
                             {/* Current Song Indicator */}
                             {isCurrentSong && (

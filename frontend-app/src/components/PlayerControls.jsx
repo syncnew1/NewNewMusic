@@ -24,8 +24,10 @@ function PlayerControls() {
     if (currentSong && audioRef.current) {
       if (isPlaying) {
         audioRef.current.play().catch(error => {
-        // 静默处理音频播放错误
-      });
+          console.error('Audio play error:', error);
+          console.log('Audio src:', audioRef.current?.src);
+          console.log('Audio readyState:', audioRef.current?.readyState);
+        });
       } else {
         audioRef.current.pause();
       }
@@ -94,13 +96,20 @@ function PlayerControls() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-card-bg/95 backdrop-blur-md border-t border-border-color shadow-strong transition-all duration-300 ease-in-out">
-      {currentSong && currentSong.filePath && (
+      {currentSong && currentSong.id && (
         <audio 
           ref={audioRef} 
-          src={`http://localhost:8080/api/songs/stream/${currentSong.id}`}
+          src={`/api/songs/${currentSong.id}/stream`}
           onTimeUpdate={updateProgress}
           onLoadedMetadata={updateProgress} 
           onEnded={handlePlayNext}
+          onError={(e) => {
+            console.error('Audio element error:', e.target.error);
+            console.log('Error code:', e.target.error?.code);
+            console.log('Error message:', e.target.error?.message);
+          }}
+          onLoadStart={() => console.log('Audio load started')}
+          onCanPlay={() => console.log('Audio can play')}
         />
       )}
       

@@ -89,6 +89,8 @@ class SongController {
   // Create new song
   async createSong(req, res) {
     try {
+      console.log('📝 Create song request body:', req.body);
+      console.log('📁 Create song files:', req.files);
       const { title, artist, album, genre, duration } = req.body;
       let { filePath, coverImage } = req.body;
 
@@ -114,7 +116,7 @@ class SongController {
         artist,
         album,
         genre,
-        duration,
+        duration: duration || 1, // 设置默认值
         filePath,
         coverImage: coverImage || ''
       });
@@ -384,9 +386,11 @@ class SongController {
 
   // Stream song file
   async streamSong(req, res) {
+    console.log('StreamSong called with ID:', req.params.id);
     try {
       const { id } = req.params;
       const song = await Song.findById(id);
+      console.log('Found song:', song ? song.title : 'Not found');
 
       if (!song) {
         return res.status(404).json({
@@ -395,12 +399,23 @@ class SongController {
         });
       }
 
-      const filePath = path.resolve(song.filePath);
+      // Handle different path formats for backward compatibility
+      let filePath;
+      if (song.filePath.includes('uploads')) {
+        // New format: uploads\audioFile-xxx.mp3 (already contains full relative path)
+        filePath = path.resolve(song.filePath);
+      } else {
+        // Old format: just filename, check if it's in uploads/audio directory
+        filePath = path.resolve('uploads/audio', song.filePath);
+      }
+      console.log('Resolved file path:', filePath);
       
       // Check if file exists
       try {
         await fs.access(filePath);
+        console.log('File exists and accessible');
       } catch (error) {
+        console.log('File access error:', error.message);
         return res.status(404).json({
           success: false,
           message: 'Song file not found'
@@ -408,8 +423,20 @@ class SongController {
       }
 
       // Set appropriate headers for audio streaming
-      res.setHeader('Content-Type', 'audio/mpeg');
+      const ext = path.extname(filePath).toLowerCase();
+      let contentType = 'audio/mpeg';
+      if (ext === '.flac') contentType = 'audio/flac';
+      else if (ext === '.ogg') contentType = 'audio/ogg';
+      else if (ext === '.mp3') contentType = 'audio/mpeg';
+      
+      res.setHeader('Content-Type', contentType);
       res.setHeader('Accept-Ranges', 'bytes');
+      
+      // Set CORS headers for audio streaming
+      res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+      res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Range');
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
       
       // Stream the file
       const readStream = require('fs').createReadStream(filePath);

@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
 import { usePlayer } from '../contexts/PlayerContext';
 import { FavoriteIcon } from '../components/Icons';
+import { PlusIcon } from '@heroicons/react/24/outline';
 import '../styles/index.css';
 
 function FavoritesPage() {
@@ -13,7 +14,6 @@ function FavoritesPage() {
   const { theme } = useTheme();
   const { playSong, songs: allSongs, favoriteSongs, removeFavorite, currentSong, isPlaying } = usePlayer();
   const [sortBy, setSortBy] = useState('recent'); // recent, title, artist
-  const [viewMode, setViewMode] = useState('list'); // list, grid
 
   const formatDuration = (duration) => {
     if (!duration) return '0:00';
@@ -69,7 +69,7 @@ function FavoritesPage() {
   };
 
   return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116] pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116] pb-24">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -91,7 +91,7 @@ function FavoritesPage() {
             <div className="flex justify-end mb-6">
               <button
                 onClick={playAllFavorites}
-                className="flex items-center space-x-2 px-6 py-3 bg-white hover:bg-gray-100 text-black dark:bg-white dark:hover:bg-gray-100 dark:text-black rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg font-medium border border-gray-200"
+                className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg font-medium"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M8 5v14l11-7z"/>
@@ -103,10 +103,10 @@ function FavoritesPage() {
 
           {/* Controls */}
           {favoriteSongs.length > 0 && (
-              <div className="bg-white dark:bg-[#0f1116] rounded-2xl shadow-lg border border-outline-light dark:border-violet-600/30 p-6 mb-6">
+            <div className="bg-white dark:bg-[#0f1116] rounded-2xl shadow-lg border border-outline-light dark:border-violet-600/30 p-6 mb-6">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 {/* Sort Options */}
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-3">
                   <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">排序:</span>
                   <select
                     value={sortBy}
@@ -119,26 +119,11 @@ function FavoritesPage() {
                   </select>
                 </div>
 
-                {/* View Mode Toggle */}
+                {/* View Mode - List Only */}
                 <div className="flex items-center space-x-2 bg-gray-100 dark:bg-[#0f1116] rounded-xl p-1 border border-violet-600/30">
-                  <button
-                    onClick={() => setViewMode('list')}
-                    className={`p-2 rounded-lg transition-all duration-200 ${
-                      viewMode === 'list' ? 'bg-white text-black shadow-md border border-gray-200' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-                    }`}
-                  >
+                  <button className="p-2 rounded-lg bg-blue-500 text-white shadow-md">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-                    </svg>
-                  </button>
-                  <button
-                    onClick={() => setViewMode('grid')}
-                    className={`p-2 rounded-lg transition-all duration-200 ${
-                      viewMode === 'grid' ? 'bg-white text-black shadow-md border border-gray-200' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-                    }`}
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                     </svg>
                   </button>
                 </div>
@@ -149,7 +134,7 @@ function FavoritesPage() {
 
         {/* Content */}
         {favoriteSongs.length === 0 ? (
-          <div className="bg-white dark:bg-[#0f1116] rounded-2xl shadow-lg border border-outline-light dark:border-violet-600/30">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-outline-light dark:border-outline-dark">
             <div className="text-center py-16 px-6">
               <div className="w-24 h-24 bg-gradient-to-br from-red-100 to-pink-100 dark:from-violet-900/20 dark:to-purple-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg className="w-12 h-12 text-red-400 dark:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -160,14 +145,15 @@ function FavoritesPage() {
               <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-6">
                 在播放歌曲时点击爱心图标来收藏你喜欢的音乐
               </p>
-              <button className="px-6 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg font-medium">
+              <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg font-medium">
                 去发现音乐
               </button>
             </div>
           </div>
         ) : (
-          <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' : 'space-y-2'}>
+          <div className="space-y-2">
             {sortedFavorites.map((favSong) => (
+<<<<<<< HEAD
               viewMode === 'grid' ? (
                 // Grid View
                 <div
@@ -314,32 +300,80 @@ function FavoritesPage() {
                         </div>
                       )}
                     </div>
+=======
+              <div
+                 key={favSong.id}
+                 onClick={(e) => handleSongClick(e, favSong)}
+                 className={`group relative bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200 dark:border-gray-700 ${
+                   currentSong?.id === favSong.id ? 'ring-2 ring-primary-500 dark:ring-primary-400' : ''
+                 } p-3`}
+               >
+                <div className="flex items-center space-x-4">
+                  {/* Current Song Indicator */}
+                  {currentSong?.id === favSong.id && (
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-white rounded-r-full" />
+                  )}
+                  {/* Song Cover Placeholder */}
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-indigo-600/20 dark:from-blue-400/20 dark:to-indigo-500/20 rounded-lg flex items-center justify-center border-2 border-primary-500/30 dark:border-primary-400/30 shadow-sm">
+                     <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                       <path d="M18 3a3 3 0 0 0-3-3H3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V3zM8 15V9l6 3-6 3z" />
+                     </svg>
+                   </div>
 
-                    {/* Song Info */}
-                    <div className="flex-1 min-w-0">
-                      <h4 className={`font-semibold truncate ${
-                        currentSong?.id === favSong.id ? 'text-white' : 'text-gray-900 dark:text-gray-100'
-                      }`}>
-                        {favSong.title || 'Unknown Title'}
-                      </h4>
-                      <p className={`text-sm truncate ${
-                        currentSong?.id === favSong.id ? 'text-white/80' : 'text-gray-600 dark:text-gray-400'
-                      }`}>
-                        {Array.isArray(favSong.artist) ? favSong.artist.join(', ') : (favSong.artist || 'Unknown Artist')}
-                      </p>
-                    </div>
+                  {/* Song Info */}
+                   <div className="flex-1 min-w-0">
+                     <h3 className="font-medium text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                       {favSong.title || 'Unknown Title'}
+                     </h3>
+                     <p className="text-gray-600 dark:text-gray-400 truncate text-sm">
+                       {Array.isArray(favSong.artist) ? favSong.artist.join(', ') : (favSong.artist || 'Unknown Artist')}
+                     </p>
+                   </div>
+                   
+                   <div className="flex-shrink-0 text-sm text-secondary-text">
+                     {formatDuration(favSong.duration)}
+                   </div>
+>>>>>>> 0f2cacc (feat: 添加音频文件上传和播放功能)
 
-                    {/* Duration */}
-                    <div className={`text-sm font-mono hidden sm:block ${
-                      currentSong?.id === favSong.id ? 'text-white/70' : 'text-gray-500 dark:text-gray-400'
-                    }`}>
-                      {formatDuration(favSong.duration)}
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex items-center space-x-2">
-                      <button
+                  {/* Actions */}
+                   <div className="flex items-center space-x-2">
+                     {/* Play Button */}
+                     <button
+                       onClick={(e) => {
+                         e.stopPropagation();
+                         handleSongPlay(favSong);
+                       }}
+                       className={`p-2 rounded-full transition-all hover:scale-110 ${
+                         currentSong?.id === favSong.id
+                           ? 'bg-white/20 text-white hover:bg-white/30'
+                           : 'bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-700'
+                       }`}
+                       aria-label="Play song"
+                     >
+                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                         <path d="M8 5v14l11-7z" />
+                       </svg>
+                     </button>
+                     {/* Add to Playlist Button */}
+                     <button
+                       onClick={(e) => {
+                         e.stopPropagation();
+                         // handleAddToPlaylist(favSong);
+                       }}
+                       className={`p-2 rounded-full transition-all hover:scale-110 ${
+                         currentSong?.id === favSong.id
+                           ? 'text-white/60 hover:text-white'
+                           : 'text-blue-400 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400'
+                       }`}
+                       aria-label="Add to playlist"
+                     >
+                       <PlusIcon className="w-4 h-4" />
+                     </button>
+                     
+                     {/* Favorite Button */}
+                     <button
                         onClick={(e) => handleRemoveFavorite(e, favSong.id)}
+<<<<<<< HEAD
                         className={`p-2 rounded-full transition-all duration-200 ${
                           currentSong?.id === favSong.id 
                             ? 'text-red-300 hover:text-red-200 hover:bg-red-400/20' 
@@ -356,11 +390,16 @@ function FavoritesPage() {
                           handleSongPlay(favSong);
                         }}
                         className={`opacity-0 group-hover:opacity-100 p-2 rounded-full transition-all duration-200 transform hover:scale-105 ${
+=======
+                        className={`p-2 rounded-full transition-all hover:scale-110 ${
+>>>>>>> 0f2cacc (feat: 添加音频文件上传和播放功能)
                           currentSong?.id === favSong.id
-                            ? 'bg-white/20 text-white hover:bg-white/30'
-                            : 'bg-violet-500 text-white hover:bg-violet-600'
+                            ? 'text-white/60 hover:text-white'
+                            : 'text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300'
                         }`}
+                        aria-label="Remove from favorites"
                       >
+<<<<<<< HEAD
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                           {currentSong?.id === favSong.id && isPlaying ? (
                             <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
@@ -373,11 +412,17 @@ function FavoritesPage() {
                           <path d="M8 5v14l11-7z"/>
 >>>>>>> eabcece (refactor: 迁移Java后端至Go语言实现)
                         </svg>
+=======
+                        <FavoriteIcon 
+                          color="currentColor" 
+                          size={16} 
+                          filled={true}
+                        />
+>>>>>>> 0f2cacc (feat: 添加音频文件上传和播放功能)
                       </button>
-                    </div>
-                  </div>
+                   </div>
                 </div>
-              )
+              </div>
             ))}
           </div>
         )}

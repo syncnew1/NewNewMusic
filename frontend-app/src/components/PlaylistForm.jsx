@@ -48,7 +48,7 @@ const PlaylistForm = ({ onSubmit, onCancel, initialPlaylist = null }) => {
             name="name"
             value={playlist.name}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-border rounded-lg bg-input-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full px-3 py-2 border border-border rounded-lg bg-input-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="输入歌单名称"
             required
           />
@@ -62,7 +62,7 @@ const PlaylistForm = ({ onSubmit, onCancel, initialPlaylist = null }) => {
             name="description"
             value={playlist.description}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-border rounded-lg bg-input-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full px-3 py-2 border border-border rounded-lg bg-input-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows="3"
             placeholder="描述您的歌单..."
           />
@@ -77,7 +77,7 @@ const PlaylistForm = ({ onSubmit, onCancel, initialPlaylist = null }) => {
             name="tags"
             value={playlist.tags}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-border rounded-lg bg-input-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full px-3 py-2 border border-border rounded-lg bg-input-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="用逗号分隔多个标签"
           />
         </div>
@@ -88,7 +88,7 @@ const PlaylistForm = ({ onSubmit, onCancel, initialPlaylist = null }) => {
             name="isPublic"
             checked={playlist.isPublic}
             onChange={handleInputChange}
-            className="mr-2 rounded border-border text-primary focus:ring-primary"
+            className="mr-2 rounded border-border text-blue-600 focus:ring-blue-500"
           />
           <label className="text-sm text-primary-text">
             公开歌单
@@ -106,7 +106,7 @@ const PlaylistForm = ({ onSubmit, onCancel, initialPlaylist = null }) => {
         </button>
         <button
           type="submit"
-          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           {initialPlaylist ? '更新' : '创建'}歌单
         </button>

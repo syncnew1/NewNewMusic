@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
 import { usePlayer } from '../contexts/PlayerContext';
+import { useAuth } from '../contexts/authContext';
+import authService from '../services/authService';
 import '../styles/index.css';
 
 function SearchPage() {
   const { theme } = useTheme();
   const { songs, playSong, currentSong, isPlaying, favoriteSongs, addFavorite, removeFavorite, isFavorite } = usePlayer();
+  const { currentUser } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [recentSearches, setRecentSearches] = useState([]);
+  const [addToPlaylistId, setAddToPlaylistId] = useState(null);
+  const [isAddingToPlaylist, setIsAddingToPlaylist] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('recentSearches');
@@ -17,6 +25,14 @@ function SearchPage() {
       setRecentSearches(JSON.parse(saved));
     }
   }, []);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const playlistId = urlParams.get('addToPlaylist');
+    if (playlistId) {
+      setAddToPlaylistId(playlistId);
+    }
+  }, [location.search]);
 
   const handleSearch = (event) => {
     const term = event.target.value;
@@ -73,6 +89,31 @@ function SearchPage() {
     localStorage.removeItem('recentSearches');
   };
 
+  const handleAddToPlaylist = async (song) => {
+    if (!addToPlaylistId || !currentUser) {
+      console.log('缺少必要参数:', { addToPlaylistId, currentUser });
+      return;
+    }
+    
+    console.log('开始添加歌曲到歌单:', { playlistId: addToPlaylistId, songId: song.id, songTitle: song.title });
+    setIsAddingToPlaylist(true);
+    try {
+      const response = await authService.addSongToPlaylist(addToPlaylistId, song.id);
+      console.log('添加歌曲成功:', response);
+      alert('歌曲已添加到歌单！');
+    } catch (error) {
+      console.error('添加歌曲到歌单失败:', error);
+      console.error('错误详情:', error.response?.data || error.message);
+      alert(`添加失败: ${error.response?.data?.message || error.message}`);
+    } finally {
+      setIsAddingToPlaylist(false);
+    }
+  };
+
+  const handleBackToPlaylist = () => {
+    navigate(`/playlist/${addToPlaylistId}`);
+  };
+
   const formatDuration = (duration) => {
     if (!duration) return '0:00';
     const minutes = Math.floor(duration / 60);
@@ -81,19 +122,33 @@ function SearchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116] pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116] pb-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-4xl">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center space-x-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center">
+            {addToPlaylistId && (
+              <button
+                onClick={handleBackToPlaylist}
+                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              >
+                <svg className="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+            )}
+            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">搜索音乐</h1>
-              <p className="text-gray-600 dark:text-gray-400">发现你喜欢的歌曲和艺术家</p>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                {addToPlaylistId ? '添加歌曲到歌单' : '搜索音乐'}
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400">
+                {addToPlaylistId ? '搜索并选择要添加的歌曲' : '发现你喜欢的歌曲和艺术家'}
+              </p>
             </div>
           </div>
         </div>
@@ -127,7 +182,7 @@ function SearchPage() {
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">最近搜索</h3>
                 <button 
                   onClick={clearRecentSearches}
-                  className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary-500 transition-colors duration-200"
+                  className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-500 transition-colors duration-200"
                 >
                   清除
                 </button>
@@ -137,7 +192,7 @@ function SearchPage() {
                   <button
                     key={index}
                     onClick={() => handleRecentSearch(term)}
-                    className="px-4 py-2 bg-gray-100 dark:bg-[#0f1116] hover:bg-primary-100 dark:hover:bg-[#0f1116]/90 border border-gray-200 dark:border-violet-600/30 rounded-full text-sm text-gray-700 dark:text-gray-300 hover:text-primary-700 dark:hover:text-primary-300 transition-all duration-200"
+                    className="px-4 py-2 bg-gray-100 dark:bg-[#0f1116] hover:bg-blue-100 dark:hover:bg-[#0f1116]/90 border border-gray-200 dark:border-violet-600/30 rounded-full text-sm text-gray-700 dark:text-gray-300 hover:text-blue-700 dark:hover:text-blue-300 transition-all duration-200"
                   >
                     {term}
                   </button>
@@ -151,7 +206,7 @@ function SearchPage() {
         {searchTerm && (
           <div>
             <div className="bg-white dark:bg-[#0f1116] rounded-2xl shadow-lg border border-outline-light dark:border-violet-600/30 overflow-hidden">
-              <div className="p-6 border-b border-outline-light dark:border-violet-600/30 bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-violet-900/10 dark:to-purple-900/10">
+              <div className="p-6 border-b border-outline-light dark:border-violet-600/30 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-violet-900/10 dark:to-purple-900/10">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
@@ -162,7 +217,7 @@ function SearchPage() {
                     </p>
                   </div>
                   {searchResults.length > 0 && (
-                    <span className="px-3 py-1 bg-primary-100 dark:bg-primary-800 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium">
+                    <span className="px-3 py-1 bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium">
                       {searchResults.length} 首歌曲
                     </span>
                   )}
@@ -192,41 +247,76 @@ function SearchPage() {
                     {searchResults.map((song, index) => (
                       <div 
                         key={song.id} 
-                        className="group flex items-center p-4 bg-gray-50 dark:bg-[#0f1116] hover:bg-gray-100 dark:hover:bg-[#1a1b26] border border-gray-200 dark:border-violet-600/30 rounded-xl transition-all duration-200 hover:shadow-md"
+                        className={`relative group flex items-center p-4 bg-white dark:bg-gray-800 hover:bg-hover-bg border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 ${
+                          currentSong?.id === song.id ? 'ring-2 ring-primary-500 dark:ring-primary-400' : ''
+                        }`}
                       >
-                        <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-primary-400 to-secondary-400 rounded-xl flex items-center justify-center mr-4 shadow-sm">
-                          <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM15.657 6.343a1 1 0 011.414 0A9.972 9.972 0 0119 12a9.972 9.972 0 01-1.929 5.657 1 1 0 11-1.414-1.414A7.971 7.971 0 0017 12c0-1.933-.685-3.711-1.829-5.1a1 1 0 010-1.414z" clipRule="evenodd" />
+                        {/* Current Song Indicator */}
+                        {currentSong?.id === song.id && (
+                          <div className="absolute left-0 top-0 bottom-0 w-1 bg-white rounded-r-full" />
+                        )}
+                        
+                        {/* Song Cover Placeholder */}
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-indigo-600/20 dark:from-blue-400/20 dark:to-indigo-500/20 rounded-lg flex items-center justify-center border-2 border-primary-500/30 dark:border-primary-400/30 shadow-sm mr-4">
+                          <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M18 3a3 3 0 0 0-3-3H3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V3zM8 15V9l6 3-6 3z" />
                           </svg>
                         </div>
                         
                         <div className="flex-1 min-w-0">
-                          <h4 className="text-gray-900 dark:text-gray-100 font-medium truncate">{song.title}</h4>
+                          <h4 className="text-gray-900 dark:text-white font-medium truncate">{song.title}</h4>
                           <p className="text-gray-600 dark:text-gray-400 text-sm truncate">{song.artist}</p>
+                        </div>
+                        
+                        <div className="flex-shrink-0 text-sm text-secondary-text mr-4">
+                          {song.duration}
                         </div>
                         
                         <div className="flex items-center space-x-2">
                           <button
                             onClick={() => handlePlaySong(song)}
-                            className="p-2 text-gray-500 dark:text-gray-400 hover:text-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-all duration-200"
+                            className={`p-2 rounded-full transition-all hover:scale-110 ${
+                              currentSong?.id === song.id
+                                ? 'bg-white/20 text-white hover:bg-white/30'
+                                : 'bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-700'
+                            }`}
+                            aria-label="Play song"
                           >
-                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M8 5v14l11-7z" />
                             </svg>
                           </button>
                           
-                          <button
-                            onClick={() => handleToggleFavorite(song)}
-                            className={`p-2 rounded-lg transition-all duration-200 ${
-                              isFavorite(song.id)
-                                ? 'text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20'
-                                : 'text-gray-500 dark:text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
-                            }`}
-                          >
-                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                            </svg>
-                          </button>
+                          {addToPlaylistId ? (
+                            <button
+                              onClick={() => handleAddToPlaylist(song)}
+                              disabled={isAddingToPlaylist}
+                              className="p-2 rounded-full bg-green-100 dark:bg-green-800 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-700 transition-all hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
+                              aria-label="Add to playlist"
+                            >
+                              {isAddingToPlaylist ? (
+                                <div className="animate-spin rounded-full h-4 w-4 border-2 border-green-600 border-t-transparent"></div>
+                              ) : (
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                              )}
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleToggleFavorite(song)}
+                              className={`p-2 rounded-full transition-all hover:scale-110 ${
+                                isFavorite(song.id)
+                                  ? 'text-red-500 hover:text-red-600'
+                                  : 'text-gray-500 dark:text-gray-400 hover:text-red-500'
+                              }`}
+                              aria-label="Toggle favorite"
+                            >
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                              </svg>
+                            </button>
+                          )}
                         </div>
                       </div>
                     ))}

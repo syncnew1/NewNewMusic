@@ -96,12 +96,12 @@ const ProfilePage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116] p-6">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116] p-6">
             <div className="max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
                     <div className="flex items-center space-x-3 mb-2">
-                        <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
                             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
@@ -113,7 +113,7 @@ const ProfilePage = () => {
 
                 {/* Profile Section */}
                 <div className="bg-white dark:bg-[#0f1116] rounded-2xl shadow-lg border border-outline-light dark:border-violet-600/30 overflow-hidden mb-8">
-                    <div className="p-6 border-b border-outline-light dark:border-outline-dark bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20">
+                    <div className="p-6 border-b border-outline-light dark:border-outline-dark bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20">
                         <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">基本信息</h2>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">更新您的用户名和邮箱地址</p>
                     </div>
@@ -163,7 +163,7 @@ const ProfilePage = () => {
                             </div>
                             <button
                                 type="submit"
-                                className="w-full bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 shadow-lg"
+                                className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-lg"
                             >
                                 更新资料
                             </button>
@@ -173,7 +173,7 @@ const ProfilePage = () => {
 
                 {/* Password Section */}
                 <div className="bg-white dark:bg-[#0f1116] rounded-2xl shadow-lg border border-outline-light dark:border-violet-600/30 overflow-hidden">
-                    <div className="p-6 border-b border-outline-light dark:border-outline-dark bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20">
+                    <div className="p-6 border-b border-outline-light dark:border-outline-dark bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20">
                         <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">密码修改</h2>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">更新您的登录密码</p>
                     </div>
@@ -232,7 +232,7 @@ const ProfilePage = () => {
                             </div>
                             <button 
                                 type="submit" 
-                                className="w-full bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 shadow-lg"
+                                className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-lg"
                             >
                                 更新密码
                             </button>

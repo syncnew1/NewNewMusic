@@ -58,7 +58,7 @@ const CommentForm = ({ initialComment = { content: '', rating: 5 }, onSubmit, on
         <textarea
           value={comment.content}
           onChange={handleContentChange}
-          className="w-full px-3 py-2 border border-border rounded-lg bg-input-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full px-3 py-2 border border-border rounded-lg bg-input-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-blue-500"
           rows="3"
           placeholder="分享您对这首歌的看法..."
           required
@@ -74,7 +74,7 @@ const CommentForm = ({ initialComment = { content: '', rating: 5 }, onSubmit, on
         </button>
         <button
           type="submit"
-          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           {isEditing ? '更新' : '发布'}评论
         </button>

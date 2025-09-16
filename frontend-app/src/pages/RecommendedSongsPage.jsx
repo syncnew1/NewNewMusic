@@ -4,6 +4,8 @@ import songService from '../services/songService';
 import { usePlayer } from '../contexts/PlayerContext';
 import { AuthContext } from '../contexts/authContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { FavoriteIcon } from '../components/Icons';
+import { PlusIcon } from '@heroicons/react/24/outline';
 import '../styles/index.css';
 
 const RecommendedSongsPage = () => {
@@ -119,7 +121,7 @@ const RecommendedSongsPage = () => {
 
     if (loading && !refreshing) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116] flex items-center justify-center">
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116] flex items-center justify-center">
                 <div className="text-center space-y-4">
                     <div className="w-16 h-16 border-4 border-violet-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
                     <p className="text-lg font-medium text-gray-700 dark:text-gray-300">正在为您生成个性化推荐...</p>
@@ -129,7 +131,7 @@ const RecommendedSongsPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116]">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116]">
             <div className="container mx-auto px-4 py-8">
                 {/* Header */}
                 <div className="mb-8">
@@ -186,16 +188,18 @@ const RecommendedSongsPage = () => {
 
                 {/* Songs List */}
                 {!loading && !error && recommendedSongs.length > 0 && (
-                    <div className="space-y-4">
+                    <div className="space-y-2">
                         {recommendedSongs.map((song, index) => {
                             const isCurrentSong = currentSong && currentSong.id === song.id;
                             const isFav = isFavorite(song.id);
+                            const artist = Array.isArray(song.artist) ? song.artist.join(', ') : song.artist;
                             
                             return (
                                 <div
                                     key={song.id}
 <<<<<<< HEAD
                                     onClick={(e) => handleSongClick(e, song)}
+<<<<<<< HEAD
 <<<<<<< HEAD
                                     className={`group bg-white dark:bg-gray-800 rounded-xl border border-outline-light dark:border-outline-dark hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-200 hover:shadow-lg cursor-pointer ${
 =======
@@ -206,103 +210,127 @@ const RecommendedSongsPage = () => {
                                     className={`group bg-white dark:bg-[#0f1116] rounded-lg border border-gray-200 dark:border-violet-600/30 hover:border-violet-300 dark:hover:border-violet-500/50 transition-all duration-200 hover:shadow-md cursor-pointer ${
                                         isCurrentSong ? 'ring-2 ring-violet-500 border-violet-500' : ''
 >>>>>>> 53bdb00 (feat: 实现音乐平台核心功能与UI改进)
+=======
+                                    className={`group relative rounded-xl transition-all duration-200 hover:shadow-md ${
+                                        isCurrentSong
+                                            ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg'
+                                            : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border border-outline-light dark:border-outline-dark'
+>>>>>>> 0f2cacc (feat: 添加音频文件上传和播放功能)
                                     }`}
                                 >
-                                    <div className="p-6">
-                                        <div className="flex items-center space-x-4">
-                                            {/* Cover Placeholder */}
-                                            <div className="relative flex-shrink-0">
-                                                <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-violet-900/20 dark:to-violet-800/20 rounded-lg flex items-center justify-center">
-                                                    {isCurrentSong && isPlaying ? (
-                                                        <div className="flex space-x-1">
-                                                            <div className="w-1 h-4 bg-violet-500 rounded-full animate-pulse"></div>
-                                                            <div className="w-1 h-6 bg-violet-500 rounded-full animate-pulse" style={{animationDelay: '0.1s'}}></div>
-                                                            <div className="w-1 h-4 bg-violet-500 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-                                                        </div>
-                                                    ) : (
-                                                        <svg className="w-8 h-8 text-gray-400 dark:text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                                                            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
-                                                        </svg>
-                                                    )}
-                                                </div>
-                                                {isCurrentSong && (
-                                                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-violet-500 rounded-full flex items-center justify-center">
-                                                        <div className="w-2 h-2 bg-white rounded-full"></div>
-                                                    </div>
-                                                )}
+                                    <div className="flex items-center p-4 space-x-4">
+                                         {/* Current Song Indicator */}
+                                         {isCurrentSong && (
+                                             <div className="absolute left-0 top-0 bottom-0 w-1 bg-white rounded-r-full" />
+                                         )}
+                                        {/* Song Cover Placeholder */}
+                                        <div className={`w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 border-2 shadow-sm ${
+                                            isCurrentSong
+                                                ? 'bg-white/20 border-white/30'
+                                                : 'bg-gradient-to-br from-blue-500/20 to-indigo-600/20 dark:from-blue-400/20 dark:to-indigo-500/20 border-primary-500/30 dark:border-primary-400/30'
+                                        }`}>
+                                            <svg className={`w-6 h-6 ${
+                                                isCurrentSong
+                                                    ? 'text-white'
+                                                    : 'text-blue-600 dark:text-blue-400'
+                                            }`} fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+                                            </svg>
+                                        </div>
+                                        
+                                        {/* Song Info */}
+                                        <div className="flex-1 min-w-0">
+                                            <div className={`font-semibold truncate block ${
+                                                isCurrentSong
+                                                    ? 'text-white'
+                                                    : 'text-gray-900 dark:text-gray-100'
+                                            }`}>
+                                                {song.title}
                                             </div>
-
-                                            {/* Song Info */}
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-start justify-between">
-                                                    <div className="min-w-0 flex-1">
-                                                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 truncate">
-                                                            {song.title}
-                                                        </h3>
-                                                        <p className="text-gray-600 dark:text-gray-400 truncate">
-                                                            {Array.isArray(song.artist) ? song.artist.join(', ') : song.artist}
-                                                        </p>
-                                                        {song.album && (
-                                                            <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
-                                                            专辑: {song.album}
-                                                        </p>
-                                                        )}
-                                                        <div className="flex items-center space-x-4 mt-2">
-                                                            <span className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full">
-                                                                {getRecommendationReason(song)}
-                                                            </span>
-                                                            {song.genre && (
-                                                                <span className="text-xs text-gray-600 dark:text-gray-400">
-                                                                    {song.genre}
-                                                                </span>
-                                                            )}
-                                                            {song.duration && (
-                                                                <span className="text-xs text-gray-600 dark:text-gray-400">
-                                                                    {formatDuration(song.duration)}
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                            <p className={`text-sm truncate ${
+                                                isCurrentSong
+                                                    ? 'text-white/80'
+                                                    : 'text-gray-600 dark:text-gray-400'
+                                            }`}>
+                                                {artist}
+                                            </p>
+                                            <div className="flex items-center space-x-2 mt-1">
+                                                <span className={`text-xs px-2 py-1 rounded-full ${
+                                                    isCurrentSong
+                                                        ? 'bg-white/20 text-white/80'
+                                                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                                                }`}>
+                                                    {getRecommendationReason(song)}
+                                                </span>
                                             </div>
-
-                                            {/* Action Buttons */}
-                                            <div className="flex items-center space-x-2">
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        if (isFav) {
-                                                            removeFavorite(song.id);
-                                                        } else {
-                                                            addFavorite(song.id);
-                                                        }
-                                                    }}
-                                                    className={`p-2 rounded-lg transition-all ${
-                                                        isFav
-                                                            ? 'text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
-                                                            : 'text-gray-400 hover:text-violet-500 hover:bg-violet-50 dark:hover:bg-violet-900/20'
-                                                    }`}
-                                                >
-                                                    <svg className="w-5 h-5" fill={isFav ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                                    </svg>
-                                                </button>
-                                                <button
-                                                    onClick={() => playSong(song, index)}
-                                                    className="flex items-center space-x-2 px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg transition-colors hover:shadow-md active:scale-95"
-                                                >
-                                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                                        {isCurrentSong && isPlaying ? (
-                                                            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
-                                                        ) : (
-                                                            <path d="M8 5v14l11-7z" />
-                                                        )}
-                                                    </svg>
-                                                    <span className="text-sm font-medium">
-                                                        {isCurrentSong && isPlaying ? '暂停' : '播放'}
-                                                    </span>
-                                                </button>
-                                            </div>
+                                        </div>
+                                        
+                                        {/* Duration */}
+                                        <div className={`text-sm font-medium ${
+                                            isCurrentSong
+                                                ? 'text-white/80'
+                                                : 'text-gray-500 dark:text-gray-400'
+                                        }`}>
+                                            {formatDuration(song.duration)}
+                                        </div>
+                                        
+                                        {/* Actions */}
+                                        <div className="flex items-center space-x-2">
+                                            {/* Play Button */}
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    playSong(song, index);
+                                                }}
+                                                className={`p-2 rounded-full transition-all hover:scale-110 ${
+                                                    isCurrentSong
+                                                        ? 'bg-white/20 text-white hover:bg-white/30'
+                                                        : 'bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-700'
+                                                }`}
+                                                aria-label="Play song"
+                                            >
+                                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M8 5v14l11-7z" />
+                                                </svg>
+                                            </button>
+                                            
+                                            {/* Add to Playlist Button */}
+                                             <button
+                                                 onClick={(e) => {
+                                                     e.stopPropagation();
+                                                     // handleAddToPlaylist(song);
+                                                 }}
+                                                 className={`p-2 rounded-full transition-all hover:scale-110 ${
+                                                     isCurrentSong
+                                                         ? 'text-white/60 hover:text-white'
+                                                         : 'text-blue-400 hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-400'
+                                                 }`}
+                                                 aria-label="Add to playlist"
+                                             >
+                                                 <PlusIcon className="w-4 h-4" />
+                                             </button>
+                                             
+                                             {/* Favorite Button */}
+                                             <button
+                                                  onClick={(e) => {
+                                                      e.stopPropagation();
+                                                      isFav ? removeFavorite(song.id) : addFavorite(song);
+                                                  }}
+                                                  className={`p-2 rounded-full transition-all hover:scale-110 ${
+                                                      isFav
+                                                          ? 'text-red-500 hover:text-red-600'
+                                                          : isCurrentSong
+                                                              ? 'text-white/60 hover:text-white'
+                                                              : 'text-blue-400 hover:text-red-500 dark:text-blue-500 dark:hover:text-red-400'
+                                                  }`}
+                                                  aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
+                                              >
+                                                  <FavoriteIcon 
+                                                      color="currentColor" 
+                                                      size={16} 
+                                                      filled={isFav}
+                                                  />
+                                              </button>
                                         </div>
                                     </div>
                                 </div>
