@@ -17,6 +17,13 @@ router.get('/',
   playlistController.getPublicPlaylists
 );
 
+// Protected routes
+router.get('/my', 
+  authenticate,
+  validatePagination,
+  playlistController.getMyPlaylists
+);
+
 router.get('/:id', 
   optionalAuth,
   validateObjectId('id'),
@@ -30,7 +37,6 @@ router.get('/user/:userId',
   playlistController.getUserPlaylists
 );
 
-// Protected routes
 router.post('/', 
   authenticate,
   validatePlaylistCreation,

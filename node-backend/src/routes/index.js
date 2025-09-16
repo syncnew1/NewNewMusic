@@ -3,6 +3,7 @@ const userRoutes = require('./userRoutes');
 const songRoutes = require('./songRoutes');
 const playlistRoutes = require('./playlistRoutes');
 const commentRoutes = require('./commentRoutes');
+const followRoutes = require('./followRoutes');
 const path = require('path');
 
 const router = express.Router();
@@ -13,6 +14,7 @@ router.use('/api/users', userRoutes);
 router.use('/api/songs', songRoutes);
 router.use('/api/playlists', playlistRoutes);
 router.use('/api/comments', commentRoutes);
+router.use('/api/follow', followRoutes);
 
 // 静态文件服务
 router.use('/uploads', express.static(path.join(__dirname, '../../uploads')));

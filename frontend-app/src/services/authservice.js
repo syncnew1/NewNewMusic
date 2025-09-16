@@ -81,9 +81,14 @@ class AuthService {
         if (!user || !user.user || !user.user.id) {
             return Promise.reject(new Error('User not authenticated'));
         }
-        return axios.get(`/api/playlists/user/${user.user.id}`, {
+        return axios.get('/api/playlists/my', {
             headers: this.authHeader()
         });
+    }
+
+    // 获取公开播放列表
+    getPublicPlaylists(page = 1, limit = 20) {
+        return axios.get(`/api/playlists?page=${page}&limit=${limit}`);
     }
 
     // 创建播放列表

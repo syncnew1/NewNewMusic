@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 
-const PlaylistForm = ({ onSubmit, onCancel, initialPlaylist = null }) => {
+const PlaylistForm = ({ onSubmit, onCancel, initialPlaylist = null, loading = false }) => {
   const [playlist, setPlaylist] = useState({
     name: initialPlaylist?.name || '',
     description: initialPlaylist?.description || '',
@@ -106,9 +106,21 @@ const PlaylistForm = ({ onSubmit, onCancel, initialPlaylist = null }) => {
         </button>
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          disabled={loading}
+          className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+            loading
+              ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+              : 'bg-gradient-to-r from-accent-color to-purple-500 text-white hover:from-accent-color/90 hover:to-purple-500/90 transform hover:scale-105 shadow-lg hover:shadow-xl'
+          }`}
         >
-          {initialPlaylist ? '更新' : '创建'}歌单
+          {loading ? (
+            <div className="flex items-center justify-center space-x-2">
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <span>{initialPlaylist ? '更新中...' : '创建中...'}</span>
+            </div>
+          ) : (
+            `${initialPlaylist ? '更新' : '创建'}歌单`
+          )}
         </button>
       </div>
     </form>

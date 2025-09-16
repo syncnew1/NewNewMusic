@@ -24,10 +24,8 @@ function PlayerControls() {
     if (currentSong && audioRef.current) {
       if (isPlaying) {
         audioRef.current.play().catch(error => {
-          console.error('Audio play error:', error);
-          console.log('Audio src:', audioRef.current?.src);
-          console.log('Audio readyState:', audioRef.current?.readyState);
-        });
+           // 静默处理音频播放错误
+         });
       } else {
         audioRef.current.pause();
       }
@@ -104,12 +102,8 @@ function PlayerControls() {
           onLoadedMetadata={updateProgress} 
           onEnded={handlePlayNext}
           onError={(e) => {
-            console.error('Audio element error:', e.target.error);
-            console.log('Error code:', e.target.error?.code);
-            console.log('Error message:', e.target.error?.message);
-          }}
-          onLoadStart={() => console.log('Audio load started')}
-          onCanPlay={() => console.log('Audio can play')}
+        // 静默处理音频元素错误
+      }}
         />
       )}
       

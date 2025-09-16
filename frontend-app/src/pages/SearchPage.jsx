@@ -91,19 +91,14 @@ function SearchPage() {
 
   const handleAddToPlaylist = async (song) => {
     if (!addToPlaylistId || !currentUser) {
-      console.log('缺少必要参数:', { addToPlaylistId, currentUser });
       return;
     }
     
-    console.log('开始添加歌曲到歌单:', { playlistId: addToPlaylistId, songId: song.id, songTitle: song.title });
     setIsAddingToPlaylist(true);
     try {
       const response = await authService.addSongToPlaylist(addToPlaylistId, song.id);
-      console.log('添加歌曲成功:', response);
       alert('歌曲已添加到歌单！');
     } catch (error) {
-      console.error('添加歌曲到歌单失败:', error);
-      console.error('错误详情:', error.response?.data || error.message);
       alert(`添加失败: ${error.response?.data?.message || error.message}`);
     } finally {
       setIsAddingToPlaylist(false);

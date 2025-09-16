@@ -3,37 +3,45 @@ import { useAuth } from '../contexts/authContext';
 import { PlusIcon, MusicalNoteIcon, EyeIcon, LockClosedIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import authService from '../services/authService';
 import PlaylistForm from '../components/PlaylistForm';
+import PlaylistModal from '../components/PlaylistModal';
 
 const PlaylistsPage = () => {
   const { currentUser } = useAuth();
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [editingPlaylistId, setEditingPlaylistId] = useState(null);
-  const [editingPlaylist, setEditingPlaylist] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMode, setModalMode] = useState('edit'); // 'edit' or 'delete'
+  const [selectedPlaylist, setSelectedPlaylist] = useState(null);
+  const [operationLoading, setOperationLoading] = useState({});
 
   useEffect(() => {
     fetchPlaylists();
   }, []);
 
-  const fetchPlaylists = async () => {
+  const fetchPlaylists = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await authService.getMyPlaylists();
-      console.log('API响应:', response);
+      const response = await authService.getPublicPlaylists();
       // 根据后端API响应结构调整数据解析
-      if (response.data && response.data.success) {
-        setPlaylists(response.data.data?.playlists || response.data.data || []);
+        if (response.data && response.data.success) {
+          const playlistsData = response.data.data?.playlists || response.data.data || [];
+          setPlaylists(playlistsData);
       } else {
         setPlaylists(response.data || []);
       }
     } catch (error) {
-      console.error('获取歌单失败:', error);
       setPlaylists([]);
+      // 显示错误提示
+      const errorMsg = document.createElement('div');
+      errorMsg.className = 'fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+      errorMsg.textContent = '获取歌单失败，请刷新页面重试';
+      document.body.appendChild(errorMsg);
+      setTimeout(() => document.body.removeChild(errorMsg), 5000);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const handleCreatePlaylist = async (playlistData) => {
     try {
@@ -41,7 +49,7 @@ const PlaylistsPage = () => {
       setShowCreateForm(false);
       fetchPlaylists();
     } catch (error) {
-      console.error('创建歌单失败:', error);
+      // 处理创建歌单失败
     }
   };
 
@@ -49,35 +57,82 @@ const PlaylistsPage = () => {
     setShowCreateForm(false);
   };
 
-  const handleEditPlaylist = (playlist) => {
-    setEditingPlaylistId(playlist.id);
-    setEditingPlaylist(playlist);
+  const handleEditPlaylist = (e, playlist) => {
+    e.stopPropagation(); // 防止触发卡片点击事件
+    setSelectedPlaylist(playlist);
+    setModalMode('edit');
+    setShowModal(true);
+  };
+
+  const handleDeletePlaylist = (e, playlist) => {
+    e.stopPropagation(); // 防止触发卡片点击事件
+    setSelectedPlaylist(playlist);
+    setModalMode('delete');
+    setShowModal(true);
   };
 
   const handleUpdatePlaylist = async (playlistData) => {
+    setOperationLoading(prev => ({ ...prev, [selectedPlaylist.id]: true }));
     try {
-      await authService.updatePlaylist(editingPlaylistId, playlistData);
-      setEditingPlaylistId(null);
-      setEditingPlaylist(null);
-      fetchPlaylists();
+      const response = await authService.updatePlaylist(selectedPlaylist.id, playlistData);
+      if (response.data && response.data.success) {
+        setShowModal(false);
+        setSelectedPlaylist(null);
+        fetchPlaylists();
+        // 显示成功提示
+        const successMsg = document.createElement('div');
+        successMsg.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+        successMsg.textContent = '歌单更新成功！';
+        document.body.appendChild(successMsg);
+        setTimeout(() => document.body.removeChild(successMsg), 3000);
+      } else {
+        throw new Error(response.data?.message || '更新失败');
+      }
     } catch (error) {
-      console.error('更新歌单失败:', error);
+      // 更新歌单失败
+      // 显示错误提示
+      const errorMsg = document.createElement('div');
+      errorMsg.className = 'fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+      errorMsg.textContent = error.response?.data?.message || error.message || '更新歌单失败，请重试';
+      document.body.appendChild(errorMsg);
+      setTimeout(() => document.body.removeChild(errorMsg), 5000);
+    } finally {
+      setOperationLoading(prev => ({ ...prev, [selectedPlaylist.id]: false }));
     }
   };
 
-  const handleCancelEdit = () => {
-    setEditingPlaylistId(null);
-    setEditingPlaylist(null);
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedPlaylist(null);
   };
 
-  const deletePlaylist = async (playlistId) => {
-    if (window.confirm('确定要删除这个歌单吗？')) {
-      try {
-        await authService.deletePlaylist(playlistId);
+  const handleConfirmDelete = async (playlistId, playlistName) => {
+    setOperationLoading(prev => ({ ...prev, [playlistId]: true }));
+    try {
+      const response = await authService.deletePlaylist(playlistId);
+      if (response.data && response.data.success) {
+        setShowModal(false);
+        setSelectedPlaylist(null);
         fetchPlaylists();
-      } catch (error) {
-        console.error('删除歌单失败:', error);
+        // 显示成功提示
+        const successMsg = document.createElement('div');
+        successMsg.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+        successMsg.textContent = `歌单「${playlistName}」已删除`;
+        document.body.appendChild(successMsg);
+        setTimeout(() => document.body.removeChild(successMsg), 3000);
+      } else {
+        throw new Error(response.data?.message || '删除失败');
       }
+    } catch (error) {
+      // 删除歌单失败
+      // 显示错误提示
+      const errorMsg = document.createElement('div');
+      errorMsg.className = 'fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+      errorMsg.textContent = error.response?.data?.message || error.message || '删除歌单失败，请重试';
+      document.body.appendChild(errorMsg);
+      setTimeout(() => document.body.removeChild(errorMsg), 5000);
+    } finally {
+      setOperationLoading(prev => ({ ...prev, [playlistId]: false }));
     }
   };
 
@@ -136,15 +191,8 @@ const PlaylistsPage = () => {
                 style={{ animationDelay: `${index * 50}ms` }}
                 onClick={() => window.location.href = `/playlist/${playlist.id}`}
               >
-                {editingPlaylistId === playlist.id ? (
-                  <div className="p-4">
-                    <PlaylistForm
-                      initialPlaylist={editingPlaylist}
-                      onSubmit={handleUpdatePlaylist}
-                      onCancel={handleCancelEdit}
-                    />
-                  </div>
-                ) : (
+                {/* 移除内联编辑，统一使用弹窗 */}
+                {(
                   <>
                     <div className="aspect-square bg-gradient-to-br from-accent-color/20 via-purple-500/20 to-pink-500/20 flex items-center justify-center relative overflow-hidden group-hover:scale-102 transition-transform duration-300">
                       <div className="absolute inset-0 bg-gradient-to-br from-accent-color/10 to-purple-600/10 group-hover:from-accent-color/20 group-hover:to-purple-600/20 transition-all duration-300"></div>
@@ -204,21 +252,46 @@ const PlaylistsPage = () => {
                         <span className="text-xs truncate max-w-20">by {playlist.username}</span>
                       </div>
                       
-                      {currentUser && currentUser.id === playlist.userId && (
+                      {(() => {
+                          const ownerIdString = typeof playlist.ownerId === 'object' ? 
+                            (playlist.ownerId._id || playlist.ownerId.id || playlist.ownerId) : 
+                            playlist.ownerId;
+                          const isOwner = currentUser && currentUser.user && currentUser.user.id === ownerIdString;
+                          // 简化权限：只有歌单所有者才能进行所有操作
+                          return isOwner;
+                        })() && (
                         <div className="flex space-x-1">
                           <button
-                            onClick={() => handleEditPlaylist(playlist)}
-                            className="flex-1 px-2 py-1.5 bg-gradient-to-r from-accent-color to-purple-500 text-white text-xs font-medium rounded-md hover:from-accent-color/90 hover:to-purple-500/90 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center space-x-1"
+                            onClick={(e) => handleEditPlaylist(e, playlist)}
+                            disabled={operationLoading[playlist.id]}
+                            className={`flex-1 px-2 py-1.5 text-white text-xs font-medium rounded-md transition-all duration-300 flex items-center justify-center space-x-1 ${
+                              operationLoading[playlist.id] 
+                                ? 'bg-gray-400 cursor-not-allowed' 
+                                : 'bg-gradient-to-r from-accent-color to-purple-500 hover:from-accent-color/90 hover:to-purple-500/90 transform hover:scale-105 shadow-lg hover:shadow-xl'
+                            }`}
                           >
-                            <PencilIcon className="w-3 h-3" />
-                            <span>编辑</span>
+                            {operationLoading[playlist.id] ? (
+                              <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <PencilIcon className="w-3 h-3" />
+                            )}
+                            <span>{operationLoading[playlist.id] ? '更新中...' : '编辑'}</span>
                           </button>
                           <button
-                            onClick={() => deletePlaylist(playlist.id)}
-                            className="flex-1 px-2 py-1.5 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-medium rounded-md hover:from-red-600 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center space-x-1"
+                            onClick={(e) => handleDeletePlaylist(e, playlist)}
+                            disabled={operationLoading[playlist.id]}
+                            className={`flex-1 px-2 py-1.5 text-white text-xs font-medium rounded-md transition-all duration-300 flex items-center justify-center space-x-1 ${
+                              operationLoading[playlist.id] 
+                                ? 'bg-gray-400 cursor-not-allowed' 
+                                : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 transform hover:scale-105 shadow-lg hover:shadow-xl'
+                            }`}
                           >
-                            <TrashIcon className="w-3 h-3" />
-                            <span>删除</span>
+                            {operationLoading[playlist.id] ? (
+                              <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <TrashIcon className="w-3 h-3" />
+                            )}
+                            <span>{operationLoading[playlist.id] ? '删除中...' : '删除'}</span>
                           </button>
                         </div>
                       )}
@@ -247,6 +320,17 @@ const PlaylistsPage = () => {
           )}
         </div>
       </div>
+
+      {/* Playlist Modal */}
+      <PlaylistModal
+        isOpen={showModal}
+        onClose={handleCloseModal}
+        playlist={selectedPlaylist}
+        mode={modalMode}
+        onEdit={handleUpdatePlaylist}
+        onDelete={handleConfirmDelete}
+        loading={selectedPlaylist ? operationLoading[selectedPlaylist.id] : false}
+      />
     </div>
   );
 };
