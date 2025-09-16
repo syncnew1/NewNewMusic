@@ -184,18 +184,27 @@ func (h *FollowHandler) GetFollowStats(c *gin.Context) {
 	userIDStr := c.Param("userId")
 	userID, err := primitive.ObjectIDFromHex(userIDStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"success": false,
+			"message": "Invalid user ID",
+		})
 		return
 	}
 
 	followingCount, followersCount, err := h.followService.GetFollowStats(userID)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{
+			"success": false,
+			"message": err.Error(),
+		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"followingCount": followingCount,
-		"followersCount": followersCount,
+		"success": true,
+		"data": gin.H{
+			"followingCount": followingCount,
+			"followersCount": followersCount,
+		},
 	})
 }

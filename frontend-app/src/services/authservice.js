@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/auth/';
+const API_URL = '/api/auth/';
 
 class AuthService {
     login(username, password) {
@@ -81,14 +81,35 @@ class AuthService {
         if (!user || !user.user || !user.user.id) {
             return Promise.reject(new Error('User not authenticated'));
         }
-        return axios.get(`http://localhost:8080/api/playlists/user/${user.user.id}`, {
+        return axios.get(`/api/playlists/user/${user.user.id}`, {
+            headers: this.authHeader()
+        });
+    }
+
+    // 创建播放列表
+    createPlaylist(playlistData) {
+        return axios.post('/api/playlists', playlistData, {
+            headers: this.authHeader()
+        });
+    }
+
+    // 更新播放列表
+    updatePlaylist(playlistId, playlistData) {
+        return axios.put(`/api/playlists/${playlistId}`, playlistData, {
+            headers: this.authHeader()
+        });
+    }
+
+    // 删除播放列表
+    deletePlaylist(playlistId) {
+        return axios.delete(`/api/playlists/${playlistId}`, {
             headers: this.authHeader()
         });
     }
 
     // 添加歌曲到播放列表
     addSongToPlaylist(playlistId, songId) {
-        return axios.post(`http://localhost:8080/api/playlists/${playlistId}/songs/${songId}`, {}, {
+        return axios.post(`/api/playlists/${playlistId}/songs/${songId}`, {}, {
             headers: this.authHeader()
         });
     }

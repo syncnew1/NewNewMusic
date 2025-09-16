@@ -133,9 +133,12 @@ const UploadPage = () => {
 
         try {
             const uploadFormData = new FormData();
-            uploadFormData.append('audio', audioFile);
+            uploadFormData.append('audioFile', audioFile);
             uploadFormData.append('title', formData.title);
-            uploadFormData.append('artist', validArtists.join(', ')); // 将多个艺术家合并
+            // 发送艺术家数组
+            validArtists.forEach(artist => {
+                uploadFormData.append('artist', artist.trim());
+            });
             uploadFormData.append('album', formData.album);
             uploadFormData.append('genre', formData.genre);
 
@@ -161,10 +164,10 @@ const UploadPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116] flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116] flex items-center justify-center p-4">
             <div className="w-full max-w-2xl bg-white dark:bg-[#0f1116] rounded-2xl shadow-xl border border-outline-light dark:border-violet-600/30 overflow-hidden">
                 {/* Header */}
-                <div className="p-8 bg-gradient-to-r from-primary-500 to-secondary-500 text-white">
+                <div className="p-8 bg-gradient-to-r from-blue-500 to-cyan-500 text-white">
                     <div className="flex items-center space-x-3">
                         <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -208,7 +211,7 @@ const UploadPage = () => {
                         <div
                             className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 ${
                                 dragActive
-                                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                                     : audioFile
                                         ? 'border-success-300 bg-success-50 dark:bg-success-900/20'
                                         : 'border-gray-300 dark:border-violet-600/30 hover:border-violet-400 dark:hover:border-violet-500'
@@ -296,7 +299,7 @@ const UploadPage = () => {
                                 <button
                                     type="button"
                                     onClick={addArtist}
-                                    className="text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
+                                    className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
                                 >
                                     + 添加艺术家
                                 </button>
@@ -371,7 +374,7 @@ const UploadPage = () => {
                         <button 
                             type="submit" 
                             disabled={uploading}
-                            className="w-full flex items-center justify-center space-x-3 px-6 py-4 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-semibold rounded-lg transition-all duration-200 hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:active:scale-100"
+                            className="w-full flex items-center justify-center space-x-3 px-6 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-semibold rounded-lg transition-all duration-200 hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:active:scale-100"
                         >
                             {uploading ? (
                                 <>

@@ -40,9 +40,15 @@ const SongDetailPage = () => {
   const fetchPlaylists = async () => {
     try {
       const response = await authService.getMyPlaylists();
-      setPlaylists(response.data || []);
+      if (response.data && response.data.success) {
+        const playlistData = response.data.data.playlists || [];
+        setPlaylists(Array.isArray(playlistData) ? playlistData : []);
+      } else {
+        setPlaylists([]);
+      }
     } catch (error) {
       console.error('Failed to fetch playlists:', error);
+      setPlaylists([]);
     }
   };
 
@@ -157,7 +163,7 @@ const SongDetailPage = () => {
           <h2 className="text-2xl font-bold text-primary-text mb-4">歌曲未找到</h2>
           <button
             onClick={() => navigate('/')}
-            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             返回首页
           </button>
@@ -171,7 +177,7 @@ const SongDetailPage = () => {
   const isFav = isFavorite(song.id);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116] pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100 dark:from-[#0f1116] dark:via-[#0f1116] dark:to-[#0f1116] pb-24">
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center mb-8">
@@ -188,8 +194,8 @@ const SongDetailPage = () => {
         <div className="bg-card-bg rounded-2xl p-8 mb-8 border border-border">
           <div className="flex flex-col md:flex-row items-start md:items-center space-y-6 md:space-y-0 md:space-x-8">
             {/* Album Art Placeholder */}
-            <div className="w-48 h-48 bg-gradient-to-br from-primary-100 to-secondary-100 dark:from-primary-800 dark:to-secondary-800 rounded-2xl flex items-center justify-center flex-shrink-0">
-              <svg className="w-24 h-24 text-primary-600 dark:text-primary-400" fill="currentColor" viewBox="0 0 24 24">
+            <div className="w-48 h-48 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-800 dark:to-cyan-800 rounded-2xl flex items-center justify-center flex-shrink-0">
+              <svg className="w-24 h-24 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
               </svg>
             </div>
@@ -209,7 +215,7 @@ const SongDetailPage = () => {
               <div className="flex items-center space-x-4">
                 <button
                   onClick={handlePlayPause}
-                  className="flex items-center space-x-2 px-6 py-3 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors"
+                  className="flex items-center space-x-2 px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
                 >
                   {isCurrentSong && isPlaying ? (
                     <PauseIcon className="w-5 h-5" />

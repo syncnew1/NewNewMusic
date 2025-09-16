@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/authContext';
-import { UserIcon, UserPlusIcon, UserMinusIcon } from '@heroicons/react/24/outline';
+import {
+  UserIcon,
+  UserPlusIcon,
+  UserMinusIcon,
+  HeartIcon,
+  UsersIcon,
+  SparklesIcon
+} from '@heroicons/react/24/outline';
+import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import authService from '../services/authService';
 
 const FollowPage = () => {
@@ -19,11 +27,12 @@ const FollowPage = () => {
   }, [currentUser]);
 
   const fetchFollowData = async () => {
-    if (!currentUser) {
-      console.warn('No current user available for follow data');
+    if (!currentUser?.user?.id) {
+      console.warn('No current user ID available');
       return;
     }
     
+    setLoading(true);
     try {
       const [followingRes, followersRes] = await Promise.all([
         fetch(`/api/users/${currentUser.user.id}/following`, {
@@ -61,7 +70,9 @@ const FollowPage = () => {
     }
     
     try {
-      const response = await fetch(`/api/users/${currentUser.user.id}/stats`);
+      const response = await fetch(`/api/users/${currentUser.user.id}/stats`, {
+        headers: authService.authHeader()
+      });
       if (response.ok) {
         const result = await response.json();
         if (result.success && result.data) {
@@ -77,7 +88,7 @@ const FollowPage = () => {
 
   const unfollowUser = async (userId) => {
     try {
-      const response = await fetch(`/api/users/follow/${userId}`, {
+      const response = await fetch(`/api/users/${userId}/follow`, {
         method: 'DELETE',
         headers: authService.authHeader()
       });
@@ -99,7 +110,7 @@ const FollowPage = () => {
 
   const followUser = async (userId) => {
     try {
-      const response = await fetch(`/api/users/follow/${userId}`, {
+      const response = await fetch(`/api/users/${userId}/follow`, {
         method: 'POST',
         headers: authService.authHeader()
       });
@@ -120,15 +131,19 @@ const FollowPage = () => {
   };
 
   const UserCard = ({ user, showUnfollowButton = false, showFollowButton = false }) => (
-    <div className="bg-card-bg rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
+    <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-            <UserIcon className="w-6 h-6 text-white" />
+        <div className="flex items-center space-x-3">
+          <div className="w-12 h-12 bg-gray-200 dark:bg-gray-600 rounded-full flex items-center justify-center">
+            <UserIcon className="w-6 h-6 text-gray-600 dark:text-gray-300" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-primary-text">{user.username}</h3>
-            <p className="text-sm text-secondary-text">{user.email}</p>
+            <h3 className="font-semibold text-gray-900 dark:text-white">{user.username}</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{user.email}</p>
+            <div className="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <span>{user.followingCount || 0} 关注</span>
+              <span>{user.followersCount || 0} 粉丝</span>
+            </div>
           </div>
         </div>
         
@@ -136,27 +151,20 @@ const FollowPage = () => {
           {showUnfollowButton && (
             <button
               onClick={() => unfollowUser(user.id)}
-              className="flex items-center space-x-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+              className="px-3 py-1.5 bg-red-600 text-white text-sm rounded-md hover:bg-red-700 transition-colors"
             >
-              <UserMinusIcon className="w-4 h-4" />
-              <span>取消关注</span>
+              取消关注
             </button>
           )}
           {showFollowButton && (
             <button
               onClick={() => followUser(user.id)}
-              className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors"
             >
-              <UserPlusIcon className="w-4 h-4" />
-              <span>关注</span>
+              关注
             </button>
           )}
         </div>
-      </div>
-      
-      <div className="mt-4 flex space-x-4 text-sm text-secondary-text">
-        <span>关注: {user.followingCount || 0}</span>
-        <span>粉丝: {user.followersCount || 0}</span>
       </div>
     </div>
   );
@@ -181,80 +189,91 @@ const FollowPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-primary-text mb-4">关注管理</h1>
-        
-        {/* Stats */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-card-bg rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-primary">{stats.followingCount}</div>
-            <div className="text-sm text-secondary-text">关注</div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">关注管理</h1>
+            <p className="text-gray-600 dark:text-gray-400">管理你的关注和粉丝</p>
           </div>
-          <div className="bg-card-bg rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-primary">{stats.followersCount}</div>
-            <div className="text-sm text-secondary-text">粉丝</div>
+          
+          {/* Stats */}
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+              <div className="text-2xl font-bold text-gray-900 dark:text-white">{stats.followingCount}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">关注</div>
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+              <div className="text-2xl font-bold text-gray-900 dark:text-white">{stats.followersCount}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">粉丝</div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Tab Navigation */}
-      <div className="flex space-x-4 mb-6">
-        <button
-          onClick={() => setActiveTab('following')}
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            activeTab === 'following'
-              ? 'bg-primary text-white'
-              : 'bg-card-bg text-secondary-text hover:text-primary-text'
-          }`}
-        >
-          我的关注 ({following.length})
-        </button>
-        <button
-          onClick={() => setActiveTab('followers')}
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            activeTab === 'followers'
-              ? 'bg-primary text-white'
-              : 'bg-card-bg text-secondary-text hover:text-primary-text'
-          }`}
-        >
-          我的粉丝 ({followers.length})
-        </button>
-      </div>
+        {/* Tab Navigation */}
+        <div className="mb-8">
+          <div className="border-b border-gray-200 dark:border-gray-700">
+            <nav className="flex space-x-8">
+              <button
+                onClick={() => setActiveTab('following')}
+                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === 'following'
+                    ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
+              >
+                我的关注 ({following.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('followers')}
+                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === 'followers'
+                    ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
+              >
+                我的粉丝 ({followers.length})
+              </button>
+            </nav>
+          </div>
+        </div>
 
       {/* User Lists */}
       <div className="space-y-4">
-        {activeTab === 'following' ? (
-          following.length > 0 ? (
-            following.map(user => (
-              <UserCard 
-                key={user.id} 
-                user={user} 
-                showUnfollowButton={true}
-              />
-            ))
-          ) : (
-            <div className="text-center py-12">
-              <UserIcon className="w-16 h-16 text-secondary-text mx-auto mb-4" />
-              <p className="text-secondary-text">您还没有关注任何用户</p>
+        {(activeTab === 'following' ? following : followers).length === 0 ? (
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+              {activeTab === 'following' ? (
+                <HeartIcon className="w-8 h-8 text-gray-400 dark:text-gray-500" />
+              ) : (
+                <UsersIcon className="w-8 h-8 text-gray-400 dark:text-gray-500" />
+              )}
             </div>
-          )
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+              {activeTab === 'following' ? '还没有关注任何人' : '还没有粉丝'}
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm">
+              {activeTab === 'following' 
+                ? '发现并关注你感兴趣的用户' 
+                : '分享你的内容，吸引更多朋友关注'
+              }
+            </p>
+            <button className="px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors">
+              {activeTab === 'following' ? '发现用户' : '完善资料'}
+            </button>
+          </div>
         ) : (
-          followers.length > 0 ? (
-            followers.map(user => (
-              <UserCard 
-                key={user.id} 
-                user={user}
-                showFollowButton={!following.some(f => f.id === user.id)}
-              />
-            ))
-          ) : (
-            <div className="text-center py-12">
-              <UserIcon className="w-16 h-16 text-secondary-text mx-auto mb-4" />
-              <p className="text-secondary-text">您还没有粉丝</p>
-            </div>
-          )
+          (activeTab === 'following' ? following : followers).map(user => (
+            <UserCard 
+              key={user.id} 
+              user={user} 
+              showUnfollowButton={activeTab === 'following'}
+              showFollowButton={activeTab === 'followers' && !following.some(f => f.id === user.id)}
+            />
+          ))
         )}
+      </div>
       </div>
     </div>
   );

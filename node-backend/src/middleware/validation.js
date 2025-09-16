@@ -1,10 +1,22 @@
 const { body, param, query, validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 
+// Middleware to convert FormData arrays
+const convertFormDataArrays = (req, res, next) => {
+  // Convert artist field from FormData to array if it's a string
+  if (req.body.artist && typeof req.body.artist === 'string') {
+    req.body.artist = [req.body.artist];
+  }
+  next();
+};
+
 // Handle validation errors
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log('❌ Validation errors:', errors.array());
+    console.log('📝 Request body:', req.body);
+    console.log('📁 Request files:', req.files);
     return res.status(400).json({
       success: false,
       message: 'Validation failed',
@@ -54,6 +66,7 @@ const validateUserLogin = [
 
 // Song validation rules
 const validateSongCreation = [
+  convertFormDataArrays,
   body('title')
     .trim()
     .notEmpty()
@@ -80,6 +93,7 @@ const validateSongCreation = [
     .isLength({ max: 50 })
     .withMessage('Genre cannot exceed 50 characters'),
   body('duration')
+    .optional()
     .isInt({ min: 1 })
     .withMessage('Duration must be a positive integer'),
   handleValidationErrors

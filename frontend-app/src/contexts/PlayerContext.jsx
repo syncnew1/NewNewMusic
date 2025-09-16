@@ -14,7 +14,7 @@ export function PlayerProvider({ children }) {
   const [favoriteError, setFavoriteError] = useState(null); // 添加用户友好的错误消息
   const { currentUser, loading: authLoading, logout } = useContext(AuthContext); // 从AuthContext获取currentUser、加载状态和logout
 
-  const API_BASE_URL = 'http://localhost:8080/api'; // API基础URL
+  const API_BASE_URL = '/api'; // API基础URL
 
   // 当组件挂载或用户登录/登出时获取收藏歌曲
   useEffect(() => {

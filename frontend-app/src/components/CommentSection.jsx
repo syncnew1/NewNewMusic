@@ -196,7 +196,7 @@ const CommentSection = ({ songId }) => {
         <h3 className="text-lg font-semibold text-primary-text mb-4">评分与评论</h3>
         <div className="flex items-center space-x-4 mb-4">
           <div className="text-center">
-            <div className="text-3xl font-bold text-primary">
+            <div className="text-3xl font-bold text-blue-600">
               {rating.averageRating ? rating.averageRating.toFixed(1) : '0.0'}
             </div>
             <StarRating rating={Math.round(rating.averageRating || 0)} />
@@ -209,7 +209,7 @@ const CommentSection = ({ songId }) => {
         {currentUser && (
           <button
             onClick={() => setShowCommentForm(!showCommentForm)}
-            className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <ChatBubbleLeftIcon className="w-4 h-4" />
             <span>写评论</span>
@@ -241,7 +241,7 @@ const CommentSection = ({ songId }) => {
                 <>
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                      <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
                         <span className="text-white text-sm font-medium">
                           {comment.username.charAt(0).toUpperCase()}
                         </span>
@@ -261,7 +261,7 @@ const CommentSection = ({ songId }) => {
                       <div className="flex space-x-2">
                         <button
                           onClick={() => setEditingCommentId(comment.id)}
-                          className="p-1 text-secondary-text hover:text-primary transition-colors"
+                          className="p-1 text-secondary-text hover:text-blue-600 transition-colors"
                         >
                           <PencilIcon className="w-4 h-4" />
                         </button>

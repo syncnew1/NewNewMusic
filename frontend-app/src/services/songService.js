@@ -1,7 +1,7 @@
 import axios from 'axios';
 import authHeader from './authHeader';
 
-const API_URL = 'http://localhost:8080/api/songs';
+const API_URL = '/api/songs';
 
 const getAllSongs = () => {
     return axios.get(API_URL);
@@ -44,7 +44,7 @@ const getRecommendedSongs = () => {
 };
 
 const uploadSong = (formData) => {
-    return axios.post(`${API_URL}/upload`, formData, {
+    return axios.post(API_URL, formData, {
         headers: {
             ...authHeader(),
             'Content-Type': 'multipart/form-data',
