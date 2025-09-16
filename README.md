@@ -253,8 +253,8 @@ yarn test
 
 ## 📞 联系方式
 
-- 项目维护者：NewNewMusic Team
-- 邮箱：contact@newnewmusic.com
+- 项目维护者：Azur
+- 邮箱：synchron7777@gmail.com
 
 ---
 
