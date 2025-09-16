@@ -154,6 +154,7 @@ function FavoritesPage() {
           <div className="space-y-2">
             {sortedFavorites.map((favSong) => (
 <<<<<<< HEAD
+<<<<<<< HEAD
               viewMode === 'grid' ? (
                 // Grid View
                 <div
@@ -335,6 +336,41 @@ function FavoritesPage() {
                    </div>
 >>>>>>> 0f2cacc (feat: 添加音频文件上传和播放功能)
 
+=======
+              <div
+                 key={favSong.id}
+                 onClick={(e) => handleSongClick(e, favSong)}
+                 className={`group relative bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200 dark:border-gray-700 ${
+                   currentSong?.id === favSong.id ? 'ring-2 ring-primary-500 dark:ring-primary-400' : ''
+                 } p-3`}
+               >
+                <div className="flex items-center space-x-4">
+                  {/* Current Song Indicator */}
+                  {currentSong?.id === favSong.id && (
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-white rounded-r-full" />
+                  )}
+                  {/* Song Cover Placeholder */}
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-indigo-600/20 dark:from-blue-400/20 dark:to-indigo-500/20 rounded-lg flex items-center justify-center border-2 border-primary-500/30 dark:border-primary-400/30 shadow-sm">
+                     <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                       <path d="M18 3a3 3 0 0 0-3-3H3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V3zM8 15V9l6 3-6 3z" />
+                     </svg>
+                   </div>
+
+                  {/* Song Info */}
+                   <div className="flex-1 min-w-0">
+                     <h3 className="font-medium text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                       {favSong.title || 'Unknown Title'}
+                     </h3>
+                     <p className="text-gray-600 dark:text-gray-400 truncate text-sm">
+                       {Array.isArray(favSong.artist) ? favSong.artist.join(', ') : (favSong.artist || 'Unknown Artist')}
+                     </p>
+                   </div>
+                   
+                   <div className="flex-shrink-0 text-sm text-secondary-text">
+                     {formatDuration(favSong.duration)}
+                   </div>
+
+>>>>>>> 71a2c6553c7e9d77bbc1d431aa3d1ba15a5506a7
                   {/* Actions */}
                    <div className="flex items-center space-x-2">
                      {/* Play Button */}
@@ -374,14 +410,28 @@ function FavoritesPage() {
                      <button
                         onClick={(e) => handleRemoveFavorite(e, favSong.id)}
 <<<<<<< HEAD
+<<<<<<< HEAD
                         className={`p-2 rounded-full transition-all duration-200 ${
                           currentSong?.id === favSong.id 
                             ? 'text-red-300 hover:text-red-200 hover:bg-red-400/20' 
                             : 'text-red-400 hover:text-red-300 hover:bg-red-400/10'
                         }`}
+=======
+                        className={`p-2 rounded-full transition-all hover:scale-110 ${
+                          currentSong?.id === favSong.id
+                            ? 'text-white/60 hover:text-white'
+                            : 'text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300'
+                        }`}
+                        aria-label="Remove from favorites"
+>>>>>>> 71a2c6553c7e9d77bbc1d431aa3d1ba15a5506a7
                       >
-                        <FavoriteIcon filled={true} />
+                        <FavoriteIcon 
+                          color="currentColor" 
+                          size={16} 
+                          filled={true}
+                        />
                       </button>
+<<<<<<< HEAD
                       
 <<<<<<< HEAD
                       <button 
@@ -420,6 +470,8 @@ function FavoritesPage() {
                         />
 >>>>>>> 0f2cacc (feat: 添加音频文件上传和播放功能)
                       </button>
+=======
+>>>>>>> 71a2c6553c7e9d77bbc1d431aa3d1ba15a5506a7
                    </div>
                 </div>
               </div>

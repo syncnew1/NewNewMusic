@@ -394,6 +394,7 @@ function SongList() {
                                 </div>
                               </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
                             ) : (
                               /* Compact View */
                               <div className="flex items-center p-3 space-x-3">
@@ -516,6 +517,8 @@ function SongList() {
                             )}
 =======
 >>>>>>> 0f2cacc (feat: 添加音频文件上传和播放功能)
+=======
+>>>>>>> 71a2c6553c7e9d77bbc1d431aa3d1ba15a5506a7
                             
                             {/* Current Song Indicator */}
                             {isCurrentSong && (

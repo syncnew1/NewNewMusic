@@ -191,6 +191,7 @@ const RecommendedSongsPage = () => {
                                     onClick={(e) => handleSongClick(e, song)}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                                     className={`group bg-white dark:bg-gray-800 rounded-xl border border-outline-light dark:border-outline-dark hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-200 hover:shadow-lg cursor-pointer ${
 =======
                                     className={`group bg-white dark:bg-gray-800 rounded-xl border border-outline-light dark:border-outline-dark hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-200 hover:shadow-lg ${
@@ -201,11 +202,16 @@ const RecommendedSongsPage = () => {
                                         isCurrentSong ? 'ring-2 ring-violet-500 border-violet-500' : ''
 >>>>>>> 53bdb00 (feat: 实现音乐平台核心功能与UI改进)
 =======
+=======
+>>>>>>> 71a2c6553c7e9d77bbc1d431aa3d1ba15a5506a7
                                     className={`group relative rounded-xl transition-all duration-200 hover:shadow-md ${
                                         isCurrentSong
                                             ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg'
                                             : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border border-outline-light dark:border-outline-dark'
+<<<<<<< HEAD
 >>>>>>> 0f2cacc (feat: 添加音频文件上传和播放功能)
+=======
+>>>>>>> 71a2c6553c7e9d77bbc1d431aa3d1ba15a5506a7
                                     }`}
                                 >
                                     <div className="flex items-center p-4 space-x-4">
