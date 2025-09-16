@@ -156,7 +156,6 @@ const UploadPage = () => {
             document.getElementById('audio-file').value = '';
             
         } catch (error) {
-            console.error('Upload error:', error);
             setError(error.response?.data?.error || '上传失败');
         } finally {
             setUploading(false);

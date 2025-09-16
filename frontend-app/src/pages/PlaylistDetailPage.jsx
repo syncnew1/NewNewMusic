@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/authContext';
 import { usePlayer } from '../contexts/PlayerContext';
-import { PlayIcon, PauseIcon, PlusIcon, TrashIcon, ArrowLeftIcon, ShareIcon } from '@heroicons/react/24/solid';
+import { PlayIcon, PauseIcon, PlusIcon, TrashIcon, ArrowLeftIcon, ShareIcon, UserPlusIcon, UserMinusIcon } from '@heroicons/react/24/solid';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import authService from '../services/authService';
+import followService from '../services/followService';
 
 const PlaylistDetailPage = () => {
   const { id } = useParams();
@@ -15,10 +16,20 @@ const PlaylistDetailPage = () => {
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
+  const [followStats, setFollowStats] = useState({ followersCount: 0, followingCount: 0 });
 
   useEffect(() => {
     fetchPlaylistDetail();
   }, [id]);
+
+  useEffect(() => {
+    if (playlist && playlist.ownerId && currentUser && playlist.ownerId.id !== currentUser.user.id) {
+      checkFollowStatus();
+      fetchFollowStats();
+    }
+  }, [playlist, currentUser]);
 
   const fetchPlaylistDetail = async () => {
     try {
@@ -39,7 +50,6 @@ const PlaylistDetailPage = () => {
         setError('歌单不存在或无权访问');
       }
     } catch (error) {
-      console.error('Error fetching playlist detail:', error);
       setError('获取歌单详情失败');
     } finally {
       setLoading(false);
@@ -53,15 +63,59 @@ const PlaylistDetailPage = () => {
       audioUrl: `/api/songs/${song.id}/stream`
     };
     
-    console.log('尝试播放歌曲:', songWithAudio);
-    console.log('音频URL:', songWithAudio.audioUrl);
-    
     if (currentSong?.id === song.id && isPlaying) {
-      console.log('暂停当前歌曲');
       pauseSong();
     } else {
-      console.log('开始播放歌曲');
       playSong(songWithAudio);
+    }
+  };
+
+  // 检查关注状态
+  const checkFollowStatus = async () => {
+    try {
+      const response = await followService.checkFollowStatus(playlist.ownerId.id);
+      if (response.data.success) {
+        setIsFollowing(response.data.data.isFollowing);
+      }
+    } catch (error) {
+      // 静默处理关注状态检查失败
+    }
+  };
+
+  // 获取关注统计
+  const fetchFollowStats = async () => {
+    try {
+      const response = await followService.getUserStats(playlist.ownerId.id);
+      if (response.data.success) {
+        setFollowStats(response.data.data);
+      }
+    } catch (error) {
+      // 静默处理关注统计获取失败
+    }
+  };
+
+  // 处理关注/取消关注
+  const handleFollowToggle = async () => {
+    if (!currentUser) {
+      alert('请先登录');
+      return;
+    }
+
+    setFollowLoading(true);
+    try {
+      if (isFollowing) {
+        await followService.unfollowUser(playlist.ownerId.id);
+        setIsFollowing(false);
+        setFollowStats(prev => ({ ...prev, followersCount: prev.followersCount - 1 }));
+      } else {
+        await followService.followUser(playlist.ownerId.id);
+        setIsFollowing(true);
+        setFollowStats(prev => ({ ...prev, followersCount: prev.followersCount + 1 }));
+      }
+    } catch (error) {
+      alert(error.response?.data?.message || '操作失败，请重试');
+    } finally {
+      setFollowLoading(false);
     }
   };
 
@@ -89,7 +143,6 @@ const PlaylistDetailPage = () => {
         alert('移除失败，请重试');
       }
     } catch (error) {
-      console.error('Error removing song from playlist:', error);
       alert('移除失败，请重试');
     }
   };
@@ -109,7 +162,6 @@ const PlaylistDetailPage = () => {
         alert('歌单链接已复制到剪贴板');
       }
     } catch (error) {
-      console.error('Error sharing playlist:', error);
       alert('分享失败，请重试');
     }
   };
@@ -137,12 +189,10 @@ const PlaylistDetailPage = () => {
       });
       
       if (!response.ok) {
-        console.error('Failed to reorder songs');
         // 如果失败，恢复原来的顺序
         fetchPlaylistDetail();
       }
     } catch (error) {
-      console.error('Error reordering songs:', error);
       // 如果失败，恢复原来的顺序
       fetchPlaylistDetail();
     }
@@ -193,7 +243,7 @@ const PlaylistDetailPage = () => {
             {playlist?.description && (
               <p className="text-secondary-text mb-4">{playlist.description}</p>
             )}
-            <div className="flex items-center space-x-4 text-sm text-secondary-text">
+            <div className="flex items-center space-x-4 text-sm text-secondary-text mb-3">
               <span>{songs.length} 首歌曲</span>
               <span>创建者: {playlist?.ownerName}</span>
               {playlist?.isPublic ? (
@@ -202,6 +252,34 @@ const PlaylistDetailPage = () => {
                 <span className="text-yellow-500">私有</span>
               )}
             </div>
+            
+            {/* 创建者信息和关注按钮 */}
+            {playlist?.ownerId && currentUser && playlist.ownerId.id !== currentUser.user.id && (
+              <div className="flex items-center space-x-4 mb-3">
+                <div className="flex items-center space-x-2 text-sm text-secondary-text">
+                  <span>粉丝: {followStats.followersCount}</span>
+                  <span>关注: {followStats.followingCount}</span>
+                </div>
+                <button
+                  onClick={handleFollowToggle}
+                  disabled={followLoading}
+                  className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 ${
+                    isFollowing
+                      ? 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                      : 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white hover:from-blue-600 hover:to-indigo-600 transform hover:scale-105 shadow-lg hover:shadow-xl'
+                  } ${followLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  {followLoading ? (
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  ) : isFollowing ? (
+                    <UserMinusIcon className="w-4 h-4" />
+                  ) : (
+                    <UserPlusIcon className="w-4 h-4" />
+                  )}
+                  <span>{followLoading ? '处理中...' : isFollowing ? '取消关注' : '关注'}</span>
+                </button>
+              </div>
+            )}
             {playlist?.tags && playlist.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-3">
                 {(Array.isArray(playlist.tags) ? playlist.tags : playlist.tags.split(',')).map((tag, index) => (

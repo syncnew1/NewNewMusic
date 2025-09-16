@@ -152,6 +152,50 @@ class PlaylistController {
     }
   }
 
+  // Get current user's playlists
+  async getMyPlaylists(req, res) {
+    try {
+      const currentUserId = req.user.id;
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 20;
+      const skip = (page - 1) * limit;
+
+      const [playlists, total] = await Promise.all([
+        Playlist.find({ ownerId: currentUserId })
+          .populate('ownerId', 'username')
+          .populate('songs', 'title artist album coverImage duration')
+          .skip(skip)
+          .limit(limit)
+          .sort({ createdAt: -1 }),
+        Playlist.countDocuments({ ownerId: currentUserId })
+      ]);
+
+      const totalPages = Math.ceil(total / limit);
+
+      res.json({
+        success: true,
+        data: {
+          playlists: playlists.map(playlist => 
+            playlist.toResponse(playlist.ownerId.username)
+          ),
+          pagination: {
+            page,
+            limit,
+            total,
+            pages: totalPages
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Get my playlists error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to get my playlists',
+        error: error.message
+      });
+    }
+  }
+
   // Get playlist by ID
   async getPlaylistById(req, res) {
     try {

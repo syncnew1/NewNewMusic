@@ -63,40 +63,30 @@ const RecommendedSongsPage = () => {
 
     const fetchRecommendedSongs = async (isRefresh = false) => {
         if (!currentUser) {
-            console.log('❌ 用户未登录');
             setError('用户未登录，无法获取推荐歌曲。');
             setLoading(false);
             return;
         }
         try {
-            console.log('🎵 开始获取推荐歌曲...');
             if (isRefresh) {
                 setRefreshing(true);
             } else {
                 setLoading(true);
             }
             const response = await songService.getRecommendedSongs();
-            console.log('📊 推荐API返回数据:', response);
-            console.log('📊 数据类型:', typeof response, '是否为数组:', Array.isArray(response));
             
             // 提取实际的歌曲数据数组
             const data = response.data || response;
-            console.log('🎵 提取的歌曲数据:', data);
-            console.log('🎵 歌曲数据类型:', typeof data, '是否为数组:', Array.isArray(data));
             
             const uniqueSongs = data.filter((song, index, self) =>
                 index === self.findIndex((s) => (
                     s.id === song.id
                 ))
             );
-            console.log('🎶 去重后歌曲数量:', uniqueSongs.length);
-            console.log('🎵 推荐歌曲列表:', uniqueSongs.map(s => s.title));
             
             setRecommendedSongs(uniqueSongs);
             setError(null);
         } catch (err) {
-            console.error('❌ 获取推荐歌曲失败:', err);
-            console.error('❌ 错误响应:', err.response?.data);
             setError(err.response?.data?.error || '获取推荐歌曲失败，请稍后再试。');
         } finally {
             setLoading(false);

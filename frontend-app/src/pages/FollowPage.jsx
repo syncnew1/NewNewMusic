@@ -57,7 +57,7 @@ const FollowPage = () => {
         }
       }
     } catch (error) {
-      console.error('Error fetching follow data:', error);
+      // Error fetching follow data
     } finally {
       setLoading(false);
     }
@@ -82,13 +82,13 @@ const FollowPage = () => {
         }
       }
     } catch (error) {
-      console.error('Error fetching stats:', error);
+      // Error fetching stats
     }
   };
 
   const unfollowUser = async (userId) => {
     try {
-      const response = await fetch(`/api/users/${userId}/follow`, {
+      const response = await fetch(`/api/users/follow/${userId}`, {
         method: 'DELETE',
         headers: authService.authHeader()
       });
@@ -103,14 +103,13 @@ const FollowPage = () => {
         alert(result.message || '取消关注失败，请重试');
       }
     } catch (error) {
-      console.error('Error unfollowing user:', error);
       alert('网络错误，请检查连接后重试');
     }
   };
 
   const followUser = async (userId) => {
     try {
-      const response = await fetch(`/api/users/${userId}/follow`, {
+      const response = await fetch(`/api/users/follow/${userId}`, {
         method: 'POST',
         headers: authService.authHeader()
       });
@@ -125,7 +124,6 @@ const FollowPage = () => {
         alert(result.message || '关注失败，请重试');
       }
     } catch (error) {
-      console.error('Error following user:', error);
       alert('网络错误，请检查连接后重试');
     }
   };

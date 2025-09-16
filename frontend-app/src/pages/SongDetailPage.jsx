@@ -96,7 +96,6 @@ const SongDetailPage = () => {
         navigate('/');
       }
     } catch (error) {
-      console.error('Error fetching song details:', error);
       navigate('/');
     } finally {
       setLoading(false);

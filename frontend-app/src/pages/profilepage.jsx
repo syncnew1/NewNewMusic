@@ -1,6 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react'; // 导入useContext
 import userService from '../services/userService';
 import authService from '../services/authService';
+import followService from '../services/followService';
 import { AuthContext } from '../contexts/authContext'; // 导入AuthContext
 import '../styles/index.css';
 
@@ -20,6 +21,7 @@ const ProfilePage = () => {
     const [passwordMessage, setPasswordMessage] = useState('');
     const [profileError, setProfileError] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [followStats, setFollowStats] = useState({ followingCount: 0, followersCount: 0 });
 
     useEffect(() => {
         if (currentUser) {
@@ -35,6 +37,40 @@ const ProfilePage = () => {
                     const resMessage = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
                     setProfileError(resMessage);
                 });
+        }
+    }, [currentUser]);
+
+    // 单独的useEffect来获取关注统计信息
+    useEffect(() => {
+        const getUserId = () => {
+            if (currentUser && currentUser.user && currentUser.user.id) {
+                return currentUser.user.id;
+            }
+            if (currentUser && currentUser.id) {
+                return currentUser.id;
+            }
+            if (currentUser && currentUser._id) {
+                return currentUser._id;
+            }
+            return null;
+        };
+
+        const userId = getUserId();
+        if (userId && userId !== 'undefined' && userId.length > 0) {
+            followService.getUserStats(userId)
+                .then(response => {
+                    if (response.data && response.data.data) {
+                        setFollowStats(response.data.data);
+                    } else if (response.data) {
+                        setFollowStats(response.data);
+                    }
+                })
+                .catch(error => {
+                    // 设置默认值，避免显示undefined
+                    setFollowStats({ followingCount: 0, followersCount: 0 });
+                });
+        } else {
+            setFollowStats({ followingCount: 0, followersCount: 0 });
         }
     }, [currentUser]);
 
@@ -114,8 +150,22 @@ const ProfilePage = () => {
                 {/* Profile Section */}
                 <div className="bg-white dark:bg-[#0f1116] rounded-2xl shadow-lg border border-outline-light dark:border-violet-600/30 overflow-hidden mb-8">
                     <div className="p-6 border-b border-outline-light dark:border-outline-dark bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20">
-                        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">基本信息</h2>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">更新您的用户名和邮箱地址</p>
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">基本信息</h2>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">更新您的用户名和邮箱地址</p>
+                            </div>
+                            <div className="flex space-x-6 text-sm">
+                                <div className="text-center">
+                                    <div className="font-semibold text-gray-900 dark:text-gray-100">{followStats.followingCount}</div>
+                                    <div className="text-gray-600 dark:text-gray-400">关注</div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="font-semibold text-gray-900 dark:text-gray-100">{followStats.followersCount}</div>
+                                    <div className="text-gray-600 dark:text-gray-400">粉丝</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div className="p-6">
                         {profileError && (
