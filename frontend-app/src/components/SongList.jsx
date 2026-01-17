@@ -123,12 +123,12 @@ function SongList() {
             开始构建你的音乐收藏吧！上传歌曲或搜索你喜欢的音乐。
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <button className="px-6 py-3 bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg font-medium">
+            <Link to="/upload" className="px-6 py-3 bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg font-medium text-center">
               上传音乐
-            </button>
-            <button className="px-6 py-3 border-2 border-violet-500 text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/20 rounded-xl transition-all duration-200 font-medium">
+            </Link>
+            <Link to="/search" className="px-6 py-3 border-2 border-violet-500 text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/20 rounded-xl transition-all duration-200 font-medium text-center">
               搜索音乐
-            </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -162,6 +162,7 @@ function SongList() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
+              aria-label="Sort songs"
               className="px-3 py-2 bg-white dark:bg-[#0f1116] border border-outline-light dark:border-violet-600/30 rounded-lg text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
             >
               <option value="default">Default Order</option>
@@ -385,9 +386,14 @@ function SongList() {
 
       {/* Playlist Selection Modal */}
       {showPlaylistModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="playlist-modal-title"
+        >
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-96 max-h-96 overflow-y-auto">
-            <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
+            <h3 id="playlist-modal-title" className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
               选择播放列表
             </h3>
             
