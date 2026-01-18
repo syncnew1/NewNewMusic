@@ -1,4 +1,4 @@
-import {createContext, useContext, useEffect, useState} from 'react';
+import {createContext, useContext, useEffect, useState, useCallback, useMemo} from 'react';
 import axios from 'axios';
 import { AuthContext } from './authContext'; // 导入AuthContext
 
@@ -52,83 +52,102 @@ export function PlayerProvider({ children }) {
     fetchInitialFavorites();
   }, [currentUser, authLoading, logout]); // 将logout添加到依赖数组
 
-  const playSong = (song, index) => {
+  const playSong = useCallback((song, index) => {
     setCurrentSong(song);
     setCurrentSongIndex(index);
     setIsPlaying(true);
-  };
+  }, []);
 
-  const clearFavoriteError = () => {
+  const clearFavoriteError = useCallback(() => {
     setFavoriteError(null);
-  };
+  }, []);
+
+  const addFavorite = useCallback(async (song) => {
+    if (!currentUser || !currentUser.accessToken) {
+      // 未找到令牌，无法添加收藏。用户或accessToken缺失
+      setFavoriteError('请先登录再收藏歌曲。');
+      return;
+    }
+    setFavoriteError(null);
+    try {
+      await axios.post(`${API_BASE_URL}/songs/${song.id}/favorite`, {}, {
+        headers: { 'Authorization': `Bearer ${currentUser.accessToken}` }
+      });
+
+      setFavoriteSongs(prevFavorites => [...prevFavorites, { id: song.id, title: song.title, artist: song.artist }]);
+    } catch (error) {
+      // 添加收藏歌曲时出错
+      if (error.response && error.response.status === 400) {
+        setFavoriteError('歌曲已被收藏或请求无效。');
+      } else if (error.response && error.response.status === 401) {
+        setFavoriteError('登录已过期，请重新登录。');
+      } else {
+        setFavoriteError('添加收藏失败，请稍后再试。');
+      }
+    }
+  }, [currentUser]);
+
+  const removeFavorite = useCallback(async (songId) => {
+    if (!currentUser || !currentUser.accessToken) {
+      // 未找到令牌，无法移除收藏。用户或accessToken缺失
+      setFavoriteError('请先登录再操作。');
+      return;
+    }
+    setFavoriteError(null);
+    try {
+      await axios.delete(`${API_BASE_URL}/songs/${songId}/favorite`, {
+        headers: { 'Authorization': `Bearer ${currentUser.accessToken}` }
+      });
+      setFavoriteSongs(prevFavorites => prevFavorites.filter(s => s.id !== songId));
+    } catch (error) {
+      // 移除收藏歌曲时出错
+      if (error.response && error.response.status === 401) {
+        setFavoriteError('登录已过期，请重新登录。');
+      } else {
+        setFavoriteError('取消收藏失败，请稍后再试。');
+      }
+    }
+  }, [currentUser]);
+
+  const isFavorite = useCallback((songId) => {
+    return favoriteSongs.some(s => s.id === songId);
+  }, [favoriteSongs]);
+
+  const value = useMemo(() => ({
+    songs,
+    setSongs,
+    currentSong,
+    setCurrentSong,
+    currentSongIndex,
+    setCurrentSongIndex,
+    isPlaying,
+    setIsPlaying,
+    volume,
+    setVolume,
+    playSong,
+    favoriteSongs,
+    favoriteError,
+    clearFavoriteError,
+    addFavorite,
+    removeFavorite,
+    isFavorite
+  }), [
+    songs,
+    currentSong,
+    currentSongIndex,
+    isPlaying,
+    volume,
+    favoriteSongs,
+    favoriteError,
+    playSong,
+    clearFavoriteError,
+    addFavorite,
+    removeFavorite,
+    isFavorite
+  ]);
 
   return (
-    <PlayerContext.Provider
-      value={{
-        songs,
-        setSongs,
-        currentSong,
-        setCurrentSong,
-        currentSongIndex,
-        setCurrentSongIndex,
-        isPlaying,
-        setIsPlaying,
-        volume,
-        setVolume,
-        playSong,
-        favoriteSongs,
-        favoriteError,
-        clearFavoriteError,
-        addFavorite: async (song) => {
-          if (!currentUser || !currentUser.accessToken) {
-            // 未找到令牌，无法添加收藏。用户或accessToken缺失
-            setFavoriteError('请先登录再收藏歌曲。');
-            return;
-          }
-          setFavoriteError(null); 
-          try {
-            await axios.post(`${API_BASE_URL}/songs/${song.id}/favorite`, {}, {
-              headers: { 'Authorization': `Bearer ${currentUser.accessToken}` }
-            });
-
-            setFavoriteSongs(prevFavorites => [...prevFavorites, { id: song.id, title: song.title, artist: song.artist }]); 
-          } catch (error) {
-            // 添加收藏歌曲时出错
-            if (error.response && error.response.status === 400) {
-              setFavoriteError('歌曲已被收藏或请求无效。');
-            } else if (error.response && error.response.status === 401) {
-              setFavoriteError('登录已过期，请重新登录。');
-            } else {
-              setFavoriteError('添加收藏失败，请稍后再试。');
-            }
-          }
-        },
-        removeFavorite: async (songId) => {
-          if (!currentUser || !currentUser.accessToken) {
-            // 未找到令牌，无法移除收藏。用户或accessToken缺失
-            setFavoriteError('请先登录再操作。');
-            return;
-          }
-          setFavoriteError(null); 
-          try {
-            await axios.delete(`${API_BASE_URL}/songs/${songId}/favorite`, {
-              headers: { 'Authorization': `Bearer ${currentUser.accessToken}` }
-            });
-            setFavoriteSongs(prevFavorites => prevFavorites.filter(s => s.id !== songId));
-          } catch (error) {
-            // 移除收藏歌曲时出错
-            if (error.response && error.response.status === 401) {
-              setFavoriteError('登录已过期，请重新登录。');
-            } else {
-              setFavoriteError('取消收藏失败，请稍后再试。');
-            }
-          }
-        },
-        isFavorite: (songId) => {
-          return favoriteSongs.some(s => s.id === songId);
-        }
-      }}
-    >
+    <PlayerContext.Provider value={value}>
       {children}
     </PlayerContext.Provider>
   );
