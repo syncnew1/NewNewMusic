@@ -1,9 +1,7 @@
 import React from 'react';
 import {usePlayer} from '../contexts/PlayerContext';
-import {useTheme} from '../contexts/ThemeContext';
 
 function PlayerControls() {
-  const { theme } = useTheme();
   const { 
     currentSong, 
     isPlaying, 
@@ -23,7 +21,7 @@ function PlayerControls() {
   React.useEffect(() => {
     if (currentSong && audioRef.current) {
       if (isPlaying) {
-        audioRef.current.play().catch(error => {
+        audioRef.current.play().catch(() => {
            // 静默处理音频播放错误
          });
       } else {
@@ -101,7 +99,7 @@ function PlayerControls() {
           onTimeUpdate={updateProgress}
           onLoadedMetadata={updateProgress} 
           onEnded={handlePlayNext}
-          onError={(e) => {
+          onError={() => {
         // 静默处理音频元素错误
       }}
         />
@@ -183,7 +181,7 @@ function PlayerControls() {
               {/* Progress Bar */}
               {currentSong && (
                 <div className="w-full flex items-center space-x-3">
-                  <span className="text-xs text-secondary-text font-mono min-w-[40px]">
+                  <span className="text-xs text-secondary-text font-mono min-w-[40px]" aria-hidden="true">
                     {formatTime(audioRef.current?.currentTime || 0)}
                   </span>
                   <div className="flex-1 relative">
@@ -195,9 +193,11 @@ function PlayerControls() {
                       onChange={handleProgressChange} 
                       className="w-full h-2 bg-outline rounded-full appearance-none cursor-pointer slider"
                       disabled={!currentSong}
+                      aria-label="Playback progress"
+                      aria-valuetext={`${formatTime(audioRef.current?.currentTime || 0)} of ${formatTime(duration)}`}
                     />
                   </div>
-                  <span className="text-xs text-secondary-text font-mono min-w-[40px]">
+                  <span className="text-xs text-secondary-text font-mono min-w-[40px]" aria-hidden="true">
                     {formatTime(duration)}
                   </span>
                 </div>
@@ -206,7 +206,7 @@ function PlayerControls() {
 
             {/* Volume Control */}
             <div className="flex items-center space-x-3 min-w-0 flex-1 max-w-xs justify-end">
-              <svg className="w-5 h-5 text-secondary-text" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-secondary-text" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
               </svg>
               <div className="w-24 relative">
@@ -218,6 +218,8 @@ function PlayerControls() {
                   value={volume} 
                   onChange={handleVolumeChange} 
                   className="w-full h-2 bg-outline rounded-full appearance-none cursor-pointer slider"
+                  aria-label="Volume"
+                  aria-valuetext={`${Math.round(volume * 100)}%`}
                 />
               </div>
             </div>
@@ -240,11 +242,13 @@ function PlayerControls() {
                   onChange={handleProgressChange} 
                   className="w-full h-1 bg-outline rounded-full appearance-none cursor-pointer slider"
                   disabled={!currentSong}
+                  aria-label="Playback progress"
+                  aria-valuetext={`${formatTime(audioRef.current?.currentTime || 0)} of ${formatTime(duration)}`}
                 />
               </div>
               <div className="flex justify-between text-xs text-secondary-text mt-1">
-                <span>{formatTime(audioRef.current?.currentTime || 0)}</span>
-                <span>{formatTime(duration)}</span>
+                <span aria-hidden="true">{formatTime(audioRef.current?.currentTime || 0)}</span>
+                <span aria-hidden="true">{formatTime(duration)}</span>
               </div>
             </div>
           )}
