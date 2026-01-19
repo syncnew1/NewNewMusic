@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useEffect, useState} from 'react';
+import {createContext, useContext, useEffect, useState, useMemo, useCallback} from 'react';
 
 const ThemeContext = createContext();
 
@@ -20,19 +20,16 @@ export const ThemeProvider = ({ children }) => {
     window.localStorage.setItem('theme', theme);
   }, [theme]);
 
-  const toggleTheme = () => {
+  // Optimize: remove redundant DOM manipulation and memoize function
+  const toggleTheme = useCallback(() => {
     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
-    // 确保图标根据主题切换
-    const root = window.document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-  };
+  }, []);
+
+  // Optimize: memoize context value to prevent unnecessary re-renders of consumers
+  const value = useMemo(() => ({ theme, toggleTheme }), [theme, toggleTheme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
   );
