@@ -145,6 +145,7 @@ function PlayerControls() {
                   disabled={!currentSong || songs.length === 0} 
                   className="p-2 rounded-full bg-surface hover:bg-surface-variant disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 active:scale-95"
                   aria-label="Previous song"
+                  title="Previous song"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
@@ -156,6 +157,7 @@ function PlayerControls() {
                   disabled={!currentSong} 
                   className="p-3 rounded-full bg-accent-color text-accent-text-color hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-medium"
                   aria-label={isPlaying ? 'Pause' : 'Play'}
+                  title={isPlaying ? 'Pause' : 'Play'}
                 >
                   {isPlaying ? (
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -173,6 +175,7 @@ function PlayerControls() {
                   disabled={!currentSong || songs.length === 0} 
                   className="p-2 rounded-full bg-surface hover:bg-surface-variant disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 active:scale-95"
                   aria-label="Next song"
+                  title="Next song"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
@@ -195,6 +198,7 @@ function PlayerControls() {
                       onChange={handleProgressChange} 
                       className="w-full h-2 bg-outline rounded-full appearance-none cursor-pointer slider"
                       disabled={!currentSong}
+                      aria-label="Playback progress"
                     />
                   </div>
                   <span className="text-xs text-secondary-text font-mono min-w-[40px]">
@@ -218,6 +222,7 @@ function PlayerControls() {
                   value={volume} 
                   onChange={handleVolumeChange} 
                   className="w-full h-2 bg-outline rounded-full appearance-none cursor-pointer slider"
+                  aria-label="Volume control"
                 />
               </div>
             </div>
@@ -240,6 +245,7 @@ function PlayerControls() {
                   onChange={handleProgressChange} 
                   className="w-full h-1 bg-outline rounded-full appearance-none cursor-pointer slider"
                   disabled={!currentSong}
+                  aria-label="Playback progress"
                 />
               </div>
               <div className="flex justify-between text-xs text-secondary-text mt-1">
@@ -283,6 +289,7 @@ function PlayerControls() {
                 disabled={!currentSong || songs.length === 0} 
                 className="p-2 rounded-full bg-surface hover:bg-surface-variant disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                 aria-label="Previous song"
+                title="Previous song"
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
@@ -294,6 +301,7 @@ function PlayerControls() {
                 disabled={!currentSong} 
                 className="p-2.5 rounded-full bg-accent-color text-accent-text-color hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-medium"
                 aria-label={isPlaying ? 'Pause' : 'Play'}
+                title={isPlaying ? 'Pause' : 'Play'}
               >
                 {isPlaying ? (
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -311,6 +319,7 @@ function PlayerControls() {
                 disabled={!currentSong || songs.length === 0} 
                 className="p-2 rounded-full bg-surface hover:bg-surface-variant disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                 aria-label="Next song"
+                title="Next song"
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
