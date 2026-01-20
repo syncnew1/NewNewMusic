@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import songService from '../services/songService';
 import { usePlayer } from '../contexts/PlayerContext';
@@ -18,6 +18,29 @@ const RecommendedSongsPage = () => {
     const { currentUser } = useContext(AuthContext);
     const { theme } = useTheme();
 
+    // Optimization: Pre-calculate sets for O(1) lookups
+    const { favArtistsSet, favGenresSet, favAlbumsSet } = useMemo(() => {
+        const artists = new Set();
+        const genres = new Set();
+        const albums = new Set();
+
+        if (favoriteSongs) {
+            favoriteSongs.forEach(favSong => {
+                if (favSong.artist) {
+                    const songArtists = Array.isArray(favSong.artist) ? favSong.artist : [favSong.artist];
+                    songArtists.forEach(artist => artists.add(artist));
+                }
+                if (favSong.genre) genres.add(favSong.genre);
+                if (favSong.album) albums.add(favSong.album);
+            });
+        }
+        return {
+            favArtistsSet: artists,
+            favGenresSet: genres,
+            favAlbumsSet: albums
+        };
+    }, [favoriteSongs]);
+
     const formatDuration = (duration) => {
         if (!duration) return '0:00';
         const minutes = Math.floor(duration / 60);
@@ -30,32 +53,23 @@ const RecommendedSongsPage = () => {
             return '为您精选';
         }
 
-        // Check for exact artist match
-        for (const favSong of favoriteSongs) {
-            const favArtists = Array.isArray(favSong.artist) ? favSong.artist : [favSong.artist];
-            const songArtists = Array.isArray(song.artist) ? song.artist : [song.artist];
-            
-            for (const favArtist of favArtists) {
-                for (const songArtist of songArtists) {
-                    if (favArtist === songArtist) {
-                        return `因为您喜欢 ${favArtist}`;
-                    }
-                }
+        const songArtists = Array.isArray(song.artist) ? song.artist : [song.artist];
+
+        // Check for artist match
+        for (const songArtist of songArtists) {
+            if (favArtistsSet.has(songArtist)) {
+                return `因为您喜欢 ${songArtist}`;
             }
         }
 
         // Check for genre match
-        for (const favSong of favoriteSongs) {
-            if (favSong.genre === song.genre && song.genre) {
-                return `因为您喜欢 ${song.genre} 音乐`;
-            }
+        if (song.genre && favGenresSet.has(song.genre)) {
+            return `因为您喜欢 ${song.genre} 音乐`;
         }
 
         // Check for album match
-        for (const favSong of favoriteSongs) {
-            if (favSong.album === song.album && song.album) {
-                return `来自专辑《${song.album}》`;
-            }
+        if (song.album && favAlbumsSet.has(song.album)) {
+            return `来自专辑《${song.album}》`;
         }
 
         return '为您推荐';
